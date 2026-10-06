@@ -9,7 +9,7 @@ from app.schemas import Critique, HandoffBundle, Intent
 
 AS_OF = datetime.date(2026, 10, 6)
 
-# The policy_registry rows this module reads, copied from CLAUDE.md (so we do not depend on the seed script).
+# The policy_registry rows this module reads, copied from the README policy table (so we do not depend on the seed script).
 POLICY_ROWS = [
     ("CRITIC-MIN-01", "Minimum critic groundedness", "critic_min_groundedness", ">=", "0.70", "ALL",
      "2026-01-01", "POL-ESC-001", "Answer quality"),
@@ -18,6 +18,8 @@ POLICY_ROWS = [
     ("ESC-SLA-02", "Handoff response time", "escalation_sla_hours", "<=", "4", "Business;Enterprise",
      "2026-01-01", "POL-ESC-001", "Response times"),
     ("ESC-REPEAT-01", "Repeated contact", "repeat_contact_threshold", ">=", "2", "ALL",
+     "2026-01-01", "POL-ESC-001", "Repeated contact"),
+    ("ESC-REPEAT-02", "Repeat window", "repeat_contact_window_days", "<=", "30", "ALL",
      "2026-01-01", "POL-ESC-001", "Repeated contact"),
 ]
 
@@ -276,3 +278,12 @@ def test_repeated_contact_ignores_old_and_other_accounts():
     add_conversation("C-0004", "A1001", 2)
     assert escalation.repeated_contact_from_history("A1004", AS_OF) is False
     assert escalation.repeated_contact_from_history(None, AS_OF) is False
+
+
+# Live-eval fix: "no usage recorded for this period" is data absence, not a broken tool.
+def test_no_data_errors_are_not_tool_failures():
+    from app.escalation import _tool_failed
+    assert not _tool_failed({"tool": "get_usage", "status": "error", "output": {"error": "usage_not_found", "period": "2026-12"}})
+    assert not _tool_failed({"tool": "check_refund_eligibility", "status": "error", "output": {"error": "invoice_not_found"}})
+    assert _tool_failed({"tool": "get_plan_limits", "status": "error", "output": {"error": "plan_not_found"}})
+    assert _tool_failed({"tool": "get_invoices", "status": "error", "output": {"error": "OperationalError: database is locked"}})

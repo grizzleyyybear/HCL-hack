@@ -285,3 +285,22 @@ def test_password_sentence_not_redacted():
     assert redact("Your password is managed there by your identity provider.")[1] is False
     assert redact("my password is managed by SSO")[1] is False
     assert "[SECRET]" in redact("my password is Hunter2!")[0]
+
+
+# Digit runs glued to a word are still caught (found by the public-data stress test on real tweets).
+def test_glued_digit_runs_are_redacted():
+    from app.safety import redact
+    assert redact("check line07700900123 today")[0] == "check line[PHONE] today"
+    assert "[CARD]" in redact("card4111111111111111 was charged")[0]
+    for safe in ("A1004", "INV-6001", "TKT-2025-0142", "2026-10-06", "10,000 runs", "CF-503", "ending 4242"):
+        assert redact(safe)[1] is False, safe
+
+
+# Found by the public-data echo check on real tweets: a 10-digit reference behind a letter prefix and a long
+# non-Luhn tracking number glued to letters were echoed back. Both are hidden now; short IDs are not touched.
+def test_prefixed_and_long_glued_numbers_are_redacted():
+    from app.safety import redact
+    assert redact("ref VT-123456-7890 thanks")[0] == "ref VT-[PHONE] thanks"
+    assert redact("parcel 1Z9FW1234567890123 is late")[0] == "parcel 1Z9FW[PHONE] is late"
+    for safe in ("INC-2026-1004", "TKT-2025-0142", "RN-4.4-001", "KB-ADV-007-3X"):
+        assert redact(safe)[1] is False, safe

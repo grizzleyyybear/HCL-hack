@@ -1,4 +1,4 @@
-"""PII / secret leak scanner (R9 evidence for gate G4). Owner: A14 red-team.
+"""PII / secret leak scanner (R9 evidence). Area: safety, critic and eval.
 
 Runs app.safety.redact over every line of every text file, every CSV cell and every text value in
 SQLite tables, and prints each hit with its location and a masked preview (the redacted text, so the

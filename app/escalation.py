@@ -1,4 +1,4 @@
-"""Escalation Policy (Annex A.3) in plain code, plus routing and the handoff bundle. Owner: A9 escalation.
+"""Escalation Policy (Annex A.3) in plain code, plus routing and the handoff bundle. Area: safety, critic and eval.
 
 The LLM never decides here: the critic only gives scores and these functions apply the policy.
 Every threshold (critic minimum, SLA hours, repeat-contact count) is read from policy_registry.
@@ -12,6 +12,7 @@ from app.schemas import Critique, HandoffBundle, Intent
 BILLING_SUBTYPES = ("refund", "credit", "dispute", "duplicate_charge")
 
 _PRIORITY_RANK = {"low": 0, "normal": 1, "high": 2, "urgent": 3}
+NO_DATA_ERRORS = ("account_not_found", "usage_not_found", "invoice_not_found")
 _TEAM_NAMES = {"billing": "billing team", "security": "security team", "legal": "legal team",
                "technical": "technical support team"}
 
@@ -21,7 +22,9 @@ _TEAM_NAMES = {"billing": "billing team", "security": "security team", "legal": 
 def _tool_failed(result: dict) -> bool:
     output = result.get("output")
     has_error_key = isinstance(output, dict) and "error" in output
-    if has_error_key and output["error"] == "account_not_found":
+    # "No such record" is an answer, not a broken tool: an unknown account gets general answers only, and a
+    # period with no usage yet (e.g. an as_of_date in the future) or an unknown invoice is reported, not escalated.
+    if has_error_key and output["error"] in NO_DATA_ERRORS:
         return False
     return result.get("status") == "error" or has_error_key
 
@@ -68,14 +71,16 @@ def decide(intent: Intent, critique: Critique, tool_results: list[dict], revisio
     return "answer", []
 
 
-# True when the account already had >= repeat_contact_threshold conversations in the 30 days up to as_of_date.
+# True when the account already had >= repeat_contact_threshold conversations in the
+# repeat_contact_window_days (registry) up to as_of_date.
 # The pipeline OR-s this into intent.repeated_contact; pass the current conversation_id so it is not counted.
 def repeated_contact_from_history(account_id: str | None, as_of_date, exclude_conversation_id: str | None = None) -> bool:
     if not account_id:
         return False
     threshold = int(db.get_policy("repeat_contact_threshold", as_of_date=as_of_date)[0])
     as_of = datetime.date.fromisoformat(str(as_of_date)) if as_of_date else datetime.date.today()
-    start = as_of - datetime.timedelta(days=30)
+    window_days = int(db.get_policy("repeat_contact_window_days", as_of_date=as_of_date)[0])
+    start = as_of - datetime.timedelta(days=window_days)
     with db.connect() as conn:
         count = conn.execute(
             "SELECT COUNT(*) FROM conversations WHERE account_id = ? AND conversation_id != ? "
@@ -94,7 +99,7 @@ def _intent_queue(intent: Intent) -> str:
     return "technical"
 
 
-# (queue, priority) for one escalation reason, straight from the CLAUDE.md routing table.
+# (queue, priority) for one escalation reason, straight from the escalation routing table (README).
 def _route_one(reason: str, intent: Intent) -> tuple[str, str]:
     if reason in ("security_incident", "account_deletion"):
         return "security", "urgent"

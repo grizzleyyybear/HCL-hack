@@ -1,4 +1,4 @@
-"""PII/secret redaction, authorisation checks and promise detection, all in plain code. Owner: A8 safety.
+"""PII/secret redaction, authorisation checks and promise detection, all in plain code. Area: safety, critic and eval.
 
 Everything here is regex + simple Python, so it works even when the LLM misbehaves.
 """
@@ -52,6 +52,15 @@ CARD_RE = re.compile(r"(?<![\w+-])\d(?:[ -]?\d){12,18}(?![\w-])")
 # Separators are mandatory between plain digit groups, which keeps the regex fast (no backtracking blow-up).
 PHONE_RE = re.compile(r"(?<![\w+-])\+?(?:\(\d+\)|\d+)(?:[ -]?\(\d+\)|[ -]\d+|(?<=\))\d+)*(?![\w-])")
 
+# Digit runs glued to letters ("line07700900123", "card4111111111111111") that the patterns above skip
+# because of their word-boundary lookbehind: 13-19 digits (Luhn-checked) are cards, 10-12 digits phones.
+GLUED_CARD_RE = re.compile(r"(?<!\d)\d{13,19}(?!\d)")
+GLUED_PHONE_RE = re.compile(r"(?<!\d)\d{10,12}(?!\d)")
+
+# Digit groups behind a letter prefix ("ref VT-123456-7890"). PHONE_RE skips them on purpose so IDs such as
+# TKT-2025-0142 (8 digits) survive; 10 or more digits in total are treated as a phone number.
+PREFIXED_DIGITS_RE = re.compile(r"(?<=[A-Za-z]-)\d+(?:[ -]\d+)+")
+
 # Matches an ISO date (2026-10-06); a run of dates must never be mistaken for a phone or card.
 DATE_RE = re.compile(r"\b\d{4}-\d{2}-\d{2}\b")
 
@@ -78,6 +87,12 @@ def _card_sub(match: re.Match) -> str:
     return "[CARD]"
 
 
+# A long digit run glued to letters: [CARD] when it passes Luhn, otherwise still hidden as [PHONE]
+# (an order or tracking number, or a mistyped card; never shown either way).
+def _glued_long_sub(match: re.Match) -> str:
+    return "[CARD]" if _luhn_ok(match.group()) else "[PHONE]"
+
+
 # Replace a phone candidate with [PHONE] when it has 10+ digits and is not a list of dates.
 def _phone_sub(match: re.Match) -> str:
     text = match.group()
@@ -100,6 +115,9 @@ def redact(text: str) -> tuple[str, bool]:
     out = EMAIL_RE.sub("[EMAIL]", out)
     out = CARD_RE.sub(_card_sub, out)
     out = PHONE_RE.sub(_phone_sub, out)
+    out = PREFIXED_DIGITS_RE.sub(_phone_sub, out)
+    out = GLUED_CARD_RE.sub(_glued_long_sub, out)
+    out = GLUED_PHONE_RE.sub("[PHONE]", out)
     return out, out != text
 
 
