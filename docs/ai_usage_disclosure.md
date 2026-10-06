@@ -4,12 +4,12 @@ The hackathon rules (guide section 10) allow AI coding assistants as long as the
 
 ## Assistant and how it was used
 
-- **Tool:** Claude Code (Anthropic), model `claude-opus-5-5`. One orchestrator session launched **subagents**, one per area, following [BUILD_PLAN.md](../BUILD_PLAN.md) (Mode B: one machine, parallel subagents). If any subagent ran on a different model, that is to be confirmed by the team.
-- **Rules every agent followed** (BUILD_PLAN.md section 1): write only the files it owns (exclusive ownership), never change the frozen contracts in section 3, read every threshold from `policy_registry`, never hard-code answers to demo or eval questions, never use judge-reserved IDs, comment every function, and make it work with `MOCK_LLM=true`. Each agent ended by running its own "Done when" checks.
-- **Gates:** after each wave the orchestrator merged the work and ran the gate checks in BUILD_PLAN.md section 7. A reviewer agent (A15) then read the code against CLAUDE.md for requirement gaps, magic numbers, hard-coded answers and PII paths.
-- **No LLM at runtime during the build.** Ollama was not installed on the build machine, so every module was built and tested with `MOCK_LLM=true`. The local model (`qwen2.5:7b-instruct`) has not yet been exercised end to end. The team must do that before judging (see "What humans must still do").
+- **Tool:** Claude Code (Anthropic), model `claude-opus-5-5`. One orchestrator session launched **subagents**, one per area, following a written multi-agent build plan (a working document, not kept in the final repo) (Mode B: one machine, parallel subagents). If any subagent ran on a different model, that is to be confirmed by the team.
+- **Rules every agent followed** : write only the files it owns (exclusive ownership), never change the frozen contracts in section 3, read every threshold from `policy_registry`, never hard-code answers to demo or eval questions, never use judge-reserved IDs, comment every function, and make it work with `MOCK_LLM=true`. Each agent ended by running its own "Done when" checks.
+- **Gates:** after each wave the orchestrator merged the work and ran a gate check (tests plus an end-to-end request). A reviewer agent (A15) then read the code against the build spec for requirement gaps, magic numbers, hard-coded answers and PII paths.
+- **LLM at runtime.** The modules were built and unit-tested with `MOCK_LLM=true`. Afterwards the whole pipeline was run on a local model, `qwen2.5-coder:7b`, under Ollama in WSL: the live eval (`eval/results/live_qwen2.5-coder-7b_bge_k3_core.json`), the Docker smoke test (`scripts/smoke_test.py --live`) and the live fixes that came out of them (critic verification, no-data errors, upcoming-change mention). The spec default `qwen2.5:7b-instruct` works the same way through `OLLAMA_MODEL`.
 - **The cloud-LLM switch was not used.** `LLM_PROVIDER=cloud` exists in `app/llm.py` as a disclosed fallback (README "Cloud-LLM fallback"). No code or data in this repository was produced through it.
-- **Design documents.** [CLAUDE.md](../CLAUDE.md) and `docs/design_doc.md` carry the byline "@Mrinal Sharma". Who wrote [BUILD_PLAN.md](../BUILD_PLAN.md), `docs/design_doc.pdf`, `docs/diagrams/` and `docs/pitch/`, and whether AI helped write any of these documents, is to be confirmed by the team.
+- **Design documents.** The build spec and the multi-agent build plan were working documents for the build. They are not in the final repo; the README now carries the architecture, the decisions and the team workflow. Whether AI helped write the remaining documents (`docs/pitch/`, `docs/diagrams/`) is to be confirmed by the team.
 
 ## Code: agent → files → how it was verified
 
@@ -34,7 +34,7 @@ Test counts are the number of test cases pytest collects for each file (parametr
 | A15 reviewer | none (reports only) | Gate verdicts with evidence |
 | A16 docs (M1) | `docs/data_card.md` | Counts re-checked against the CSVs, the register and the generation logs. Which agent wrote `docs/knowledge_base.md` (A16 or A2) is to be confirmed by the team |
 | W6 docs-readme (M1/M4) | `README.md`, `docs/ai_usage_disclosure.md`, `docs/team_contribution.md`, `docs/declaration.md` | Every command, path, env var and endpoint was checked against the code, and the orchestrator reviewed the result |
-| Eval cases (everyone) | `eval/eval_set.jsonl` (32 cases, `E-M1-nn` … `E-M4-nn`), `eval/README.md`, `eval/fixtures/` | Labels come from CLAUDE.md, the KB and the account CSVs, never from system output (eval/README.md). Whether each member's 8 cases were drafted by an agent or by the member is **to be confirmed by the team**. Each member must review their own 8 cases |
+| Eval cases (everyone) | `eval/eval_set.jsonl` (32 cases, `E-M1-nn` … `E-M4-nn`), `eval/README.md`, `eval/fixtures/` | Labels come from the guide, the KB and the account CSVs, never from system output (eval/README.md). Whether each member's 8 cases were drafted by an agent or by the member is **to be confirmed by the team**. Each member must review their own 8 cases |
 
 ### Fixes made after integration
 
@@ -67,9 +67,9 @@ Details: [docs/data_card.md](data_card.md) (Annex E), [data/generation/README.md
 The AI produced a working first version. The team owns it, and each item below is a human responsibility.
 
 1. **Review and understand every file.** Each member reads every file in their area (see [docs/team_contribution.md](team_contribution.md)) and can explain both their own part and the whole pipeline in Q&A, including small live code changes.
-2. **Install Ollama and run on the real model.** Run `ollama pull qwen2.5:7b-instruct`, check JSON output (README step 4), run the demo script, and run `python eval/run_eval.py --compare --live`. Fix or document any difference from the MOCK results.
+2. **Rehearse on the real model.** The live eval and the Docker smoke test already ran on `qwen2.5-coder:7b`. Before judging, warm the model, run the demo script on the judging machine, and rerun `python eval/run_eval.py --live` if code changed.
 3. **Label the critic-agreement sample.** Two members independently fill `eval/critic_labels.csv` from `eval/critic_sample.csv`, preferably regenerated with the live model, without looking at the critic score first. Then rerun the eval.
-4. **Capture samples from real Ollama runs:** three audit records in `docs/sample_audits/` and two handoff bundles in `docs/sample_handoffs/` (not present yet).
+4. **Refresh the samples from real Ollama runs:** `docs/sample_audits/` (3) and `docs/sample_handoffs/` (2) exist; regenerate them with `python scripts/make_samples.py` against the live model so they show real token counts.
 5. **Check Docker from a fresh clone:** `docker compose up --build`, `/health` all ok, three curls, loader inside the container.
-6. **Commit under your own names.** Git history must show commits from all four members. Agree how AI co-authorship is marked in commit messages (BUILD_PLAN.md section 8).
+6. **Commit under your own names.** Git history must show commits from all four members.
 7. **Resolve every "to be confirmed by the team" item on this page,** fill in [docs/team_contribution.md](team_contribution.md), and sign [docs/declaration.md](declaration.md).
