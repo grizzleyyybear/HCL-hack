@@ -6,14 +6,27 @@ from app import db
 
 # Return plan, status, product_version, created_at for the account (never owner_email).
 def lookup_account(account_id: str) -> dict:
+    query = """
+        SELECT account_id, plan, status, product_version, created_at
+        FROM accounts
+        WHERE account_id = ?
+    """
+
     with db.connect() as conn:
-        row = conn.execute(
-            "SELECT account_id, plan, status, product_version, created_at FROM accounts WHERE account_id = ?",
-            (account_id,),
-        ).fetchone()
-    if row is None:
-        return {"error": "account_not_found"}
-    return dict(row)
+        row = conn.execute(query, (account_id,)).fetchone()
+
+    if not row:
+        return {
+            "error": "account_not_found"
+        }
+
+    return {
+        "account_id": row["account_id"],
+        "plan": row["plan"],
+        "status": row["status"],
+        "product_version": row["product_version"],
+        "created_at": row["created_at"],
+    }
 
 
 # Return workflow_runs, api_calls_peak_per_min, seats_used for a period (default: as_of_date month).
