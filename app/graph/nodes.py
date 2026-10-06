@@ -209,7 +209,14 @@ def _kb_gap(state) -> dict:
 # Step 4 (retrieve): search articles and tickets; nothing relevant -> not_found or a KB-gap escalation.
 def retrieve(state) -> dict:
     with state["trace"].step("retrieve"):
-        chunks = retrieval.search(state["message_redacted"], state.get("product_version"), settings.TOP_K)
+        message = state["message_redacted"]
+        top_k = settings.TOP_K
+        # Failed-payment answers need both the reason and the cited recovery steps, which may
+        # rank below the default top three article sections.
+        if re.search(r"\b(?:past[ -]?due|payment.{0,24}(?:fail|declin)|(?:fail|declin).{0,24}payment)\b",
+                     message, re.IGNORECASE):
+            top_k = max(top_k, 5)
+        chunks = retrieval.search(message, state.get("product_version"), top_k)
         min_relevance = float(db.get_policy("min_relevance", as_of_date=state["as_of_date"])[0])
         relevant = [c for c in chunks if float(c.get("score") or 0) >= min_relevance]
         update = {"retrieved_chunks": chunks, "relevant_chunks": relevant}

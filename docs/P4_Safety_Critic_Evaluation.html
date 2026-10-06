@@ -1,0 +1,1156 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>InsightDesk — P4: Safety, Critic & Evaluation</title>
+  <style>
+    :root {
+      --bg: #f4f7ff;
+      --panel: #ffffff;
+      --panel-alt: #eef4ff;
+      --ink: #1b2540;
+      --muted: #58657d;
+      --line: #dfe7ff;
+      --blue: #3366ff;
+      --indigo: #4a52d8;
+      --cyan: #00a5d8;
+      --green: #108b59;
+      --amber: #d97706;
+      --red: #d14343;
+      --purple: #6655d0;
+      --shadow: 0 16px 40px rgba(54, 71, 125, 0.12);
+      --radius: 18px;
+    }
+
+    * { box-sizing: border-box; }
+    html { scroll-behavior: smooth; }
+    body {
+      margin: 0;
+      background: linear-gradient(180deg, #f6f8ff 0%, #eef2ff 100%);
+      color: var(--ink);
+      font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
+      line-height: 1.6;
+    }
+
+    .page {
+      max-width: 1200px;
+      margin: 0 auto;
+      padding: 24px;
+    }
+
+    .topbar {
+      position: sticky;
+      top: 0;
+      z-index: 99;
+      backdrop-filter: blur(8px);
+      background: rgba(255,255,255,0.9);
+      border-bottom: 1px solid var(--line);
+    }
+
+    .topbar-inner {
+      max-width: 1200px;
+      margin: 0 auto;
+      padding: 12px 24px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 16px;
+      font-size: 14px;
+    }
+
+    .brand {
+      font-weight: 700;
+      letter-spacing: 0.03em;
+      color: var(--indigo);
+    }
+
+    .mini-nav {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 12px;
+    }
+
+    .mini-nav a {
+      color: var(--muted);
+      text-decoration: none;
+      font-weight: 600;
+    }
+
+    .cover {
+      background: linear-gradient(135deg, rgba(255,255,255,0.96), rgba(234,240,255,0.96));
+      border: 1px solid var(--line);
+      border-radius: 28px;
+      box-shadow: var(--shadow);
+      padding: 54px 36px 42px;
+      margin: 32px 0 18px;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .cover::before {
+      content: "";
+      position: absolute;
+      inset: 0;
+      background: radial-gradient(circle at top right, rgba(51,102,255,0.16), transparent 28%),
+                  radial-gradient(circle at bottom left, rgba(74,82,216,0.12), transparent 30%);
+      pointer-events: none;
+    }
+
+    .cover-inner { position: relative; z-index: 1; }
+
+    .eyebrow {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      padding: 8px 14px;
+      border-radius: 999px;
+      font-size: 12px;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+      background: rgba(51,102,255,0.08);
+      color: var(--blue);
+      font-weight: 700;
+      border: 1px solid rgba(51,102,255,0.15);
+    }
+
+    h1, h2, h3, h4 { margin: 0 0 12px; }
+    h1 {
+      font-size: clamp(2.1rem, 4vw, 4.1rem);
+      line-height: 1.1;
+      margin-top: 18px;
+      letter-spacing: -0.05em;
+    }
+
+    .subtitle {
+      font-size: clamp(1.1rem, 2vw, 1.6rem);
+      color: var(--muted);
+      margin-bottom: 16px;
+      font-weight: 600;
+    }
+
+    .lead {
+      max-width: 760px;
+      font-size: 1.05rem;
+      color: var(--ink);
+      margin: 20px 0 0;
+    }
+
+    .badge-row {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 10px;
+      margin-top: 20px;
+    }
+
+    .badge {
+      display: inline-block;
+      padding: 7px 12px;
+      border-radius: 999px;
+      font-size: 11px;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      font-weight: 800;
+      border: 1px solid transparent;
+    }
+
+    .badge.blue { background: rgba(51,102,255,0.1); color: var(--blue); border-color: rgba(51,102,255,0.2); }
+    .badge.indigo { background: rgba(74,82,216,0.08); color: var(--indigo); border-color: rgba(74,82,216,0.2); }
+    .badge.green { background: rgba(16,139,89,0.08); color: var(--green); border-color: rgba(16,139,89,0.2); }
+    .badge.orange { background: rgba(217,119,6,0.1); color: var(--amber); border-color: rgba(217,119,6,0.2); }
+    .badge.purple { background: rgba(102,85,208,0.08); color: var(--purple); border-color: rgba(102,85,208,0.2); }
+    .badge.red { background: rgba(209,67,67,0.08); color: var(--red); border-color: rgba(209,67,67,0.2); }
+
+    section {
+      margin: 30px 0;
+      scroll-margin-top: 80px;
+    }
+
+    .section-header {
+      margin-bottom: 16px;
+      border-bottom: 1px solid var(--line);
+      padding-bottom: 10px;
+    }
+
+    .section-header h2 {
+      font-size: clamp(1.7rem, 2.2vw, 2.4rem);
+      margin: 0;
+      letter-spacing: -0.03em;
+    }
+
+    .grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+      gap: 18px;
+    }
+
+    .card {
+      background: var(--panel);
+      border: 1px solid var(--line);
+      border-radius: var(--radius);
+      box-shadow: var(--shadow);
+      padding: 22px 20px;
+    }
+
+    .card h3 {
+      font-size: 1.1rem;
+      margin-bottom: 10px;
+      color: var(--ink);
+    }
+
+    .card p, .card li { color: var(--muted); }
+
+    .pipeline {
+      background: linear-gradient(180deg, #fdfdff, #f3f6ff);
+      border: 1px solid var(--line);
+      border-radius: 28px;
+      box-shadow: var(--shadow);
+      padding: 24px 20px 18px;
+      overflow: hidden;
+    }
+
+    .pipeline-steps {
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: center;
+      gap: 10px;
+      align-items: center;
+    }
+
+    .node {
+      background: var(--panel);
+      border: 1px solid var(--line);
+      border-radius: 16px;
+      padding: 12px 18px;
+      min-width: 150px;
+      text-align: center;
+      font-weight: 700;
+      font-size: 14px;
+      color: var(--ink);
+      box-shadow: 0 8px 20px rgba(77,90,145,0.07);
+    }
+
+    .node.llm { background: rgba(74,82,216,0.06); border-color: rgba(74,82,216,0.2); }
+    .node.code { background: rgba(17,139,89,0.05); border-color: rgba(17,139,89,0.2); }
+    .node.alert { background: rgba(209,67,67,0.05); border-color: rgba(209,67,67,0.2); }
+    .node.human { background: rgba(217,119,6,0.07); border-color: rgba(217,119,6,0.25); }
+
+    .arrow {
+      font-size: 28px;
+      color: var(--blue);
+      line-height: 1;
+      margin: 0 4px;
+      user-select: none;
+    }
+
+    .principle {
+      margin-top: 20px;
+      background: rgba(51,102,255,0.06);
+      border: 1px solid rgba(51,102,255,0.18);
+      border-left: 6px solid var(--blue);
+      padding: 16px 18px;
+      border-radius: 14px;
+      font-weight: 800;
+      color: var(--ink);
+      letter-spacing: 0.02em;
+    }
+
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      background: white;
+      border: 1px solid var(--line);
+      border-radius: 12px;
+      overflow: hidden;
+      box-shadow: var(--shadow);
+    }
+
+    th, td {
+      border-bottom: 1px solid var(--line);
+      padding: 12px 14px;
+      text-align: left;
+      vertical-align: top;
+      font-size: 14px;
+    }
+
+    th {
+      background: #edf3ff;
+      color: var(--indigo);
+      font-size: 12px;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+    }
+
+    code, pre {
+      font-family: Consolas, "SFMono-Regular", Menlo, Monaco, monospace;
+    }
+
+    code {
+      background: #eef3ff;
+      border: 1px solid var(--line);
+      border-radius: 7px;
+      padding: 2px 7px;
+      color: var(--ink);
+      font-size: 0.92em;
+    }
+
+    pre {
+      background: #0d1435;
+      color: #dfe9ff;
+      border-radius: 14px;
+      padding: 18px 16px;
+      overflow-x: auto;
+      border: 1px solid rgba(255,255,255,0.06);
+      margin: 0;
+      box-shadow: inset 0 0 0 1px rgba(255,255,255,0.02);
+    }
+
+    .safety-diagram {
+      display: grid;
+      grid-template-columns: repeat(7, minmax(110px, 1fr));
+      gap: 10px;
+      align-items: center;
+      background: rgba(255,255,255,0.7);
+      border: 1px solid var(--line);
+      border-radius: 18px;
+      padding: 18px 12px;
+      margin-top: 12px;
+    }
+
+    .safety-box {
+      background: #f2f7ff;
+      border: 1px solid var(--line);
+      border-radius: 12px;
+      padding: 10px 8px;
+      text-align: center;
+      min-height: 64px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 12px;
+      font-weight: 700;
+      color: var(--ink);
+    }
+
+    .safety-box.refuse {
+      background: rgba(209,67,67,0.06);
+      border-color: rgba(209,67,67,0.2);
+      color: var(--red);
+    }
+
+    .bullet-list {
+      margin: 0;
+      padding-left: 18px;
+      color: var(--muted);
+    }
+
+    .two-col {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 18px;
+    }
+
+    .metric-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+      gap: 14px;
+    }
+
+    .metric {
+      background: var(--panel);
+      border: 1px solid var(--line);
+      border-radius: 14px;
+      padding: 16px;
+      box-shadow: 0 12px 22px rgba(51,102,255,0.05);
+    }
+
+    .metric strong {
+      display: block;
+      font-size: 1.5rem;
+      color: var(--indigo);
+      margin-bottom: 6px;
+      letter-spacing: -0.04em;
+    }
+
+    .metric span {
+      color: var(--muted);
+      font-size: 0.9rem;
+    }
+
+    .callout {
+      background: #f5f8ff;
+      border: 1px solid var(--line);
+      border-radius: 14px;
+      padding: 16px 18px;
+      margin-top: 16px;
+      color: var(--ink);
+    }
+
+    .callout strong { color: var(--indigo); }
+
+    .footer {
+      border-top: 1px solid var(--line);
+      margin-top: 40px;
+      padding-top: 18px;
+      color: var(--muted);
+      font-size: 0.92rem;
+    }
+
+    @media (max-width: 820px) {
+      .two-col, .safety-diagram { grid-template-columns: 1fr; }
+      .pipeline-steps { flex-direction: column; }
+      .arrow { transform: rotate(90deg); }
+      .cover { padding: 38px 20px 28px; }
+      .topbar-inner { flex-direction: column; align-items: flex-start; }
+    }
+
+    @media print {
+      body { background: white; }
+      .topbar { display: none; }
+      section { break-inside: avoid; page-break-inside: avoid; }
+      .card, .cover, .pipeline, table { box-shadow: none; }
+      .page { max-width: 100%; }
+    }
+  </style>
+</head>
+<body>
+  <div class="topbar">
+    <div class="topbar-inner">
+      <div class="brand">InsightDesk</div>
+      <nav class="mini-nav" aria-label="Table of contents">
+        <a href="#cover">Top</a>
+        <a href="#diagram">Diagram</a>
+        <a href="#responsibility-map">Map</a>
+        <a href="#safety-layer">Safety</a>
+        <a href="#critic">Critic</a>
+        <a href="#policy-gate">Policy</a>
+        <a href="#evaluation">Evaluation</a>
+        <a href="#judge">Judge</a>
+      </nav>
+    </div>
+  </div>
+
+  <div class="page">
+    <section id="cover" class="cover">
+      <div class="cover-inner">
+        <div class="eyebrow">P4 · Trust layer</div>
+        <h1>InsightDesk — P4: Safety, Critic &amp; Evaluation</h1>
+        <div class="subtitle">The Trust Layer</div>
+        <p class="lead">P4 ensures that the system does not merely generate an answer — it verifies that the answer is safe, grounded, policy-compliant and measurable.</p>
+        <div class="badge-row">
+          <span class="badge blue">Safety</span>
+          <span class="badge indigo">Critic</span>
+          <span class="badge green">Policy</span>
+          <span class="badge orange">Evaluation</span>
+          <span class="badge purple">LLM</span>
+          <span class="badge red">Code</span>
+        </div>
+      </div>
+    </section>
+
+    <section id="diagram">
+      <div class="section-header">
+        <h2>P4 in One Diagram</h2>
+      </div>
+      <div class="pipeline">
+        <div class="pipeline-steps" aria-label="P4 support pipeline">
+          <div class="node">Customer</div>
+          <div class="arrow">↓</div>
+          <div class="node code">Safety / Pre-checks</div>
+          <div class="arrow">↓</div>
+          <div class="node code">Tools + Retrieval</div>
+          <div class="arrow">↓</div>
+          <div class="node llm">LLM Composer</div>
+          <div class="arrow">↓</div>
+          <div class="node">Draft Answer</div>
+          <div class="arrow">↓</div>
+          <div class="node llm">LLM Critic + Deterministic Checks</div>
+          <div class="arrow">↓</div>
+          <div class="node code">Policy Gate</div>
+          <div class="arrow">↓</div>
+          <div class="node code">Answer / Revise once / Escalate</div>
+          <div class="arrow">↓</div>
+          <div class="node human">Human Handoff</div>
+        </div>
+        <div class="principle">
+          Principle: <strong>LLM scores and writes. Code decides.</strong>
+        </div>
+      </div>
+    </section>
+
+    <section id="responsibility-map">
+      <div class="section-header">
+        <h2>P4 Responsibility Map</h2>
+      </div>
+      <table>
+        <thead>
+          <tr>
+            <th>Area</th>
+            <th>File</th>
+            <th>Main responsibility</th>
+            <th>Why it exists</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td>Safety and auth</td>
+            <td><code>app/safety.py</code></td>
+            <td>PII redaction, secret detection, account checks, promise scan, log redaction.</td>
+            <td>Code must catch unsafe input and unsafe output even if the model misbehaves.</td>
+          </tr>
+          <tr>
+            <td>P4 pipeline gate</td>
+            <td><code>app/graph/nodes.py</code></td>
+            <td>Pre-checks, classify, retrieve, critic, decide, respond, and final safety notes.</td>
+            <td>Coordinates the fixed pipeline and where safety and critique are enforced.</td>
+          </tr>
+          <tr>
+            <td>Escalation policy</td>
+            <td><code>app/escalation.py</code></td>
+            <td>Decisions: answer, revise, escalate; route, SLA and handoff bundle rules.</td>
+            <td>Every escalation decision is made in plain Python, not by the model.</td>
+          </tr>
+          <tr>
+            <td>LLM JSON layer</td>
+            <td><code>app/llm.py</code></td>
+            <td>Ollama/cloud JSON calls, retry, validation, deterministic mock fallback.</td>
+            <td>Classifier, composer and critic are still LLM-driven, but they are bounded by validation and fallback.</td>
+          </tr>
+          <tr>
+            <td>Evaluation runner</td>
+            <td><code>eval/run_eval.py</code></td>
+            <td>Runs labelled cases, applies exact-match scoring, records metrics.</td>
+            <td>Measures whether the system is safe, grounded and correctly escalated.</td>
+          </tr>
+          <tr>
+            <td>Evaluation report</td>
+            <td><code>eval/report.md</code></td>
+            <td>Measured outcomes and the chosen configuration.</td>
+            <td>Evidence source for the presentation and risk disclosure.</td>
+          </tr>
+          <tr>
+            <td>Safety tests</td>
+            <td><code>tests/test_safety.py</code></td>
+            <td>Redaction, auth, secret detection, promise detection, log filter.</td>
+            <td>Confirms the trust layer behaves correctly when the input is unsafe.</td>
+          </tr>
+          <tr>
+            <td>Escalation tests</td>
+            <td><code>tests/test_escalation.py</code></td>
+            <td>Every escalation reason, routing, SLA logic, one-revision behavior.</td>
+            <td>Ensures the policy gate is predictable and tested.</td>
+          </tr>
+          <tr>
+            <td>Pipeline tests</td>
+            <td><code>tests/test_pipeline.py</code></td>
+            <td>Full POST /support path against mock mode, including refusal, escalation and citations.</td>
+            <td>Proves the end-to-end route does what the spec says.</td>
+          </tr>
+          <tr>
+            <td>LLM tests</td>
+            <td><code>tests/test_llm.py</code></td>
+            <td>Retry logic, Pydantic validation, fallback, deterministic keyword helper.</td>
+            <td>Validates the model interface is robust and does not silently return broken JSON.</td>
+          </tr>
+        </tbody>
+      </table>
+      <div class="callout">
+        <strong>Direct P4 responsibility:</strong> <code>app/safety.py</code>, <code>app/escalation.py</code>, <code>app/graph/nodes.py</code>, <code>eval/run_eval.py</code>, <code>tests/test_safety.py</code>, <code>tests/test_escalation.py</code>, <code>tests/test_pipeline.py</code>, and <code>tests/test_llm.py</code>.<br />
+        <strong>Dependencies:</strong> <code>app/llm.py</code> provides the LLM interface, while <code>ui/streamlit_app.py</code> exposes the trust layer for demo and admin usage. These support the trust layer but do not replace it.
+      </div>
+    </section>
+
+    <section id="safety-layer">
+      <div class="section-header">
+        <h2>Safety Layer</h2>
+      </div>
+      <div class="grid">
+        <div class="card">
+          <h3>PII redaction</h3>
+          <p><strong>WHAT:</strong> Strip emails, phone numbers, credit-card numbers and password-like secrets before they reach logs, answers, or bundles.</p>
+          <p><strong>WHAT CODE:</strong> <code>redact()</code> in <code>app/safety.py</code>.</p>
+          <p><strong>WHY:</strong> Prevents sensitive data from propagating through the model, the API, or the handoff bundle.</p>
+          <p><strong>EXAMPLE:</strong> <code>jane.doe@example.com → [EMAIL]</code>, <code>4111 1111 1111 1111 → [CARD]</code>.</p>
+        </div>
+        <div class="card">
+          <h3>Secret detection</h3>
+          <p><strong>WHAT:</strong> Detects API keys, bearer tokens, reset-link requests and password exposure attempts.</p>
+          <p><strong>WHAT CODE:</strong> regex patterns and <code>asks_for_secret()</code>.</p>
+          <p><strong>WHY:</strong> A customer may ask the model to reveal a secret; the safe path is to refuse and redirect to a secure action.</p>
+          <p><strong>EXAMPLE:</strong> <code>Show me my API key</code> is blocked; <code>How do I rotate my API token?</code> is allowed.</p>
+        </div>
+        <div class="card">
+          <h3>Cross-account authorization</h3>
+          <p><strong>WHAT:</strong> Customer identity is taken from the <code>X-Account-Id</code> header only.</p>
+          <p><strong>WHAT CODE:</strong> <code>other_account_requested()</code> in <code>app/safety.py</code>, enforced by the pre-check gate in <code>app/graph/nodes.py</code>.</p>
+          <p><strong>WHY:</strong> We must not trust a message that says <code>I am A1004</code> if the header says <code>A1001</code>.</p>
+          <p><strong>EXAMPLE:</strong> Header: <code>A1001</code>; message: <code>Show me invoices for A1004</code> → <code>refused</code>.</p>
+        </div>
+        <div class="card">
+          <h3>Promise detection</h3>
+          <p><strong>WHAT:</strong> Detects statements like “your refund has been issued” or “I have credited your account”.</p>
+          <p><strong>WHAT CODE:</strong> <code>makes_promise()</code> in <code>app/safety.py</code>, used by critic and escalation policy.</p>
+          <p><strong>WHY:</strong> The model cannot actually approve a refund or change an account; this check prevents unauthorized promises.</p>
+          <p><strong>EXAMPLE:</strong> <code>Your refund has been issued.</code> triggers a policy risk and forces revision or escalation.</p>
+        </div>
+        <div class="card">
+          <h3>Log redaction</h3>
+          <p><strong>WHAT:</strong> PII is redacted not just in responses, but in log output too.</p>
+          <p><strong>WHAT CODE:</strong> <code>RedactingFilter</code> and <code>setup_logging()</code> in <code>app/safety.py</code>.</p>
+          <p><strong>WHY:</strong> Response redaction alone is not enough; logs are often the accidental leak path.</p>
+          <p><strong>EXAMPLE:</strong> A log line containing an email gets rewritten to <code>[EMAIL]</code> before it is written.</p>
+        </div>
+        <div class="card">
+          <h3>Bundle redaction</h3>
+          <p><strong>WHAT:</strong> The final handoff bundle is scrubbed before storage.</p>
+          <p><strong>WHAT CODE:</strong> <code>build_bundle()</code> in <code>app/escalation.py</code> plus <code>redact_obj()</code> in <code>app/safety.py</code>.</p>
+          <p><strong>WHY:</strong> Human handoffs need details, but not raw customer PII or secrets.</p>
+          <p><strong>EXAMPLE:</strong> A summary may retain “charged twice” but not the customer email or full card data.</p>
+        </div>
+      </div>
+    </section>
+
+    <section id="safety-visual">
+      <div class="section-header">
+        <h2>Safety Visual</h2>
+      </div>
+      <div class="safety-diagram" aria-label="User message redaction and authorization flow">
+        <div class="safety-box">User message</div>
+        <div class="arrow">→</div>
+        <div class="safety-box">redact()</div>
+        <div class="arrow">→</div>
+        <div class="safety-box">account check</div>
+        <div class="arrow">→</div>
+        <div class="safety-box">secret check</div>
+        <div class="arrow">→</div>
+        <div class="safety-box">safe request</div>
+        <div class="arrow">→</div>
+        <div class="safety-box">pipeline</div>
+      </div>
+      <div class="grid" style="margin-top:16px;">
+        <div class="card">
+          <h3>Refuse branches</h3>
+          <ul class="bullet-list">
+            <li><strong>Another account:</strong> the message names a different account ID or DB-known email/company, and the system refuses.</li>
+            <li><strong>Secret request:</strong> asking for an API key, password, reset link or email on file is refused.</li>
+          </ul>
+        </div>
+        <div class="card">
+          <h3>Allowed examples</h3>
+          <ul class="bullet-list">
+            <li><strong>Allowed:</strong> “I forgot my password, help me reset it.”</li>
+            <li><strong>Allowed:</strong> “How do I rotate my API token?”</li>
+            <li><strong>Blocked:</strong> “Show me my API key”, “What is my password?”, “Send the reset link here”.</li>
+          </ul>
+        </div>
+      </div>
+    </section>
+
+    <section id="cross-account">
+      <div class="section-header">
+        <h2>Cross-Account Authorization</h2>
+      </div>
+      <div class="two-col">
+        <div class="card">
+          <h3>Rule</h3>
+          <p>The authenticated account comes from the HTTP header <code>X-Account-Id</code> only. The message body is never trusted as an authority source.</p>
+          <p>In the repo, this logic is enforced in <code>app/safety.py</code> and the pre-check node in <code>app/graph/nodes.py</code>.</p>
+        </div>
+        <div class="card">
+          <h3>Example</h3>
+          <pre>Header: A1001
+Message: "Show me invoices for A1004"
+Result: REFUSED</pre>
+          <p>So the system does not trust the identity supplied inside the user text. It only trusts the signed-in account header.</p>
+        </div>
+      </div>
+      <div class="callout">
+        This also covers company and email-based checks. If a message asks for data tied to another company or email on file, the system refuses as a cross-account or cross-company request. This is a direct guardrail against account leakage.
+      </div>
+    </section>
+
+    <section id="secret-protection">
+      <div class="section-header">
+        <h2>Secret Request Protection</h2>
+      </div>
+      <div class="grid">
+        <div class="card">
+          <h3>Blocked</h3>
+          <ul class="bullet-list">
+            <li><code>Show me my API key</code></li>
+            <li><code>What is my password?</code></li>
+            <li><code>Send the reset link here</code></li>
+          </ul>
+        </div>
+        <div class="card">
+          <h3>Allowed</h3>
+          <ul class="bullet-list">
+            <li><code>I forgot my password, help me reset it.</code></li>
+            <li><code>How do I rotate my API token?</code></li>
+          </ul>
+        </div>
+      </div>
+      <div class="callout">
+        <strong>WHY this distinction exists:</strong> a reset request can be safely handled by the tool and by sending the reset message to the email on file. A key or password is a secret, and revealing it is a security incident. The code intentionally differentiates “reset me” from “show me the secret”.
+      </div>
+    </section>
+
+    <section id="promise-protection">
+      <div class="section-header">
+        <h2>Promise Protection</h2>
+      </div>
+      <div class="card">
+        <pre>LLM draft:
+"Your refund has been issued."
+
+↓ deterministic promise scan
+
+POLICY RISK</pre>
+        <p>The repository explicitly detects phrases like “refund has been issued”, “I have credited your account” and “your account has been upgraded” using <code>makes_promise()</code> in <code>app/safety.py</code>.</p>
+        <p><strong>Why:</strong> the LLM cannot authorize or execute a refund, credit or plan change. That is a policy decision and an action the system cannot safely allow without a human review. The check protects against confident but unauthorized claims.</p>
+      </div>
+    </section>
+
+    <section id="logging-safety">
+      <div class="section-header">
+        <h2>Logging Safety</h2>
+      </div>
+      <div class="card">
+        <pre>Raw request
+ ↓
+Application logs
+ ↓
+Without filter → PII leak
+With RedactingFilter → safe logs
+</pre>
+        <p><strong>WHAT:</strong> Logs, console output and file output are all redacted before persisting.</p>
+        <p><strong>WHAT CODE:</strong> <code>RedactingFilter</code> and <code>setup_logging()</code> in <code>app/safety.py</code>.</p>
+        <p><strong>WHY:</strong> Response redaction is necessary, but insufficient. Logs often end up in support tickets, CI output, observability tools or developer terminals.</p>
+      </div>
+    </section>
+
+    <section id="critic">
+      <div class="section-header">
+        <h2>Critic</h2>
+      </div>
+      <div class="card">
+        <pre>Retrieved evidence
+       +
+Tool facts
+       +
+Draft answer
+       ↓
+     CRITIC
+       ↓
+Groundedness
+Coverage
+PII risk
+Policy risk
+Issues
+Decision</pre>
+        <p><strong>WHAT:</strong> The critic reviews the candidate answer and the evidence it was built from.</p>
+        <p><strong>WHAT CODE:</strong> The critic prompt and validation logic live in <code>app/llm.py</code> and are applied by the <code>critic</code> node in <code>app/graph/nodes.py</code>.</p>
+        <p><strong>WHY:</strong> A grounded answer must be supported by retrieved documentation and tool results, not just plausibly written prose.</p>
+        <p><strong>HOW:</strong> The critic returns a <code>Critique</code> object with groundedness, coverage, PII risk, policy risk, issues and decision. It is useful because it scores content quality, but it is not trusted to make the final decision.</p>
+      </div>
+    </section>
+
+    <section id="hybrid-critic">
+      <div class="section-header">
+        <h2>Hybrid Critic</h2>
+      </div>
+      <div class="card">
+        <pre>             CRITIC
+                |
+       +--------+--------+
+       |                 |
+   LLM scoring      Code checks
+       |                 |
+  groundedness       promise scan
+  coverage           unsupported terms
+  PII risk           (hard checks)
+  policy risk
+       |                 |
+       +--------+--------+
+                |
+        Final critique
+                ↓
+          Policy Gate</pre>
+        <p>This repository uses a hybrid model: the LLM provides a language-quality score, while deterministic code adds exact checks that cannot be left to model discretion.</p>
+        <p><strong>Important idea:</strong> <em>The LLM evaluates language quality; deterministic code catches conditions that must be exact.</em></p>
+      </div>
+    </section>
+
+    <section id="unsupported-terms">
+      <div class="section-header">
+        <h2>Unsupported Terms</h2>
+      </div>
+      <div class="card">
+        <p><strong>Example:</strong> “Does CloudFlow integrate with SAP Ariba?”</p>
+        <p><strong>Retrieved evidence:</strong> no SAP or Ariba evidence in the retrieved knowledge base.</p>
+        <p><strong>System behavior:</strong> do not confidently answer, and do not present a guessed answer as fact. This is a controlled guardrail in <code>unsupported_terms()</code> inside <code>app/graph/nodes.py</code>.</p>
+        <p><strong>Why it matters:</strong> it prevents hallucinatory product claims and keeps the pipeline honest when the KB does not support an answer.</p>
+      </div>
+    </section>
+
+    <section id="policy-gate">
+      <div class="section-header">
+        <h2>Policy Gate</h2>
+      </div>
+      <div class="card">
+        <pre>Critique + intent + tool state + policy
+                ↓
+             decide()
+          /      |       \
+       ANSWER  REVISE  ESCALATE</pre>
+        <p><strong>WHAT:</strong> The final “answer or escalate” decision is made in code, not by the LLM.</p>
+        <p><strong>WHAT CODE:</strong> <code>app/escalation.py</code> and the <code>decide</code> node in <code>app/graph/nodes.py</code>.</p>
+        <p><strong>WHY:</strong> Code is predictable, auditable and testable; the model should not be the final arbitrator of whether a human must take over.</p>
+        <p><strong>Escalation reasons included in code:</strong></p>
+        <ul class="bullet-list">
+          <li>billing dispute</li>
+          <li>legal matter</li>
+          <li>account deletion</li>
+          <li>security incident</li>
+          <li>explicit human request</li>
+          <li>repeated contact</li>
+          <li>tool failure</li>
+          <li>KB gap</li>
+          <li>unresolved conflict</li>
+          <li>low groundedness</li>
+          <li>promise made</li>
+        </ul>
+      </div>
+    </section>
+
+    <section id="one-revision-rule">
+      <div class="section-header">
+        <h2>One-Revision Rule</h2>
+      </div>
+      <div class="card">
+        <pre>Draft
+ ↓
+Critic
+ ↓
+Weak?
+ ↓ yes
+Revise
+ ↓
+Critic again
+ ↓
+Still weak?
+ ↓
+Escalate</pre>
+        <p><strong>WHY it exists:</strong> prevents infinite loops, limits latency, controls cost, preserves safety, and gives the system a guaranteed endpoint.</p>
+        <p>This logic is implemented in <code>decide()</code> in <code>app/escalation.py</code> and enforced by <code>app/graph/nodes.py</code>.</p>
+      </div>
+    </section>
+
+    <section id="policy-registry">
+      <div class="section-header">
+        <h2>Policy Registry</h2>
+      </div>
+      <div class="card">
+        <p>The system reads key thresholds from the SQLite policy registry instead of hard-coding them. This was explicitly designed to make policy changes easy and auditable.</p>
+        <ul class="bullet-list">
+          <li><code>critic_min_groundedness</code></li>
+          <li><code>escalation_sla_hours</code></li>
+          <li><code>repeat_contact_threshold</code></li>
+          <li><code>min_relevance</code></li>
+        </ul>
+        <p><strong>Why this matters:</strong> changing a policy value can change runtime behavior without rewriting the decision logic. The implementation pulls these values at runtime from the <code>policy_registry</code> table.</p>
+      </div>
+    </section>
+
+    <section id="handoff">
+      <div class="section-header">
+        <h2>Human Handoff</h2>
+      </div>
+      <div class="card">
+        <pre>Customer
+ ↓
+InsightDesk
+ ↓
+Escalation
+ ↓
+Handoff Bundle
+ ├── summary
+ ├── intent
+ ├── reasons
+ ├── tool evidence
+ ├── citations
+ ├── conflicts
+ └── unresolved questions</pre>
+        <p><strong>WHAT:</strong> When the system cannot safely answer, it creates a structured bundle for a human queue.</p>
+        <p><strong>WHAT CODE:</strong> <code>create_handoff</code> in <code>app/tools/handoff_tools.py</code>, used by <code>app/escalation.py</code> and the escalate node in <code>app/graph/nodes.py</code>.</p>
+        <p><strong>WHY:</strong> A human does not want to re-ask the customer for the same details. The bundle contains context, evidence and unresolved questions in one place.</p>
+      </div>
+    </section>
+
+    <section id="evaluation">
+      <div class="section-header">
+        <h2>Evaluation</h2>
+      </div>
+      <div class="card">
+        <pre>67 evaluation scenarios
+        ↓
+API
+        ↓
+Pipeline
+        ↓
+Safety + Critic + Escalation
+        ↓
+Metrics
+        ↓
+report.md</pre>
+        <p>The evaluation harness is in <code>eval/run_eval.py</code>, with the measured results in <code>eval/report.md</code>.</p>
+        <p><strong>Dataset sources:</strong></p>
+        <ul class="bullet-list">
+          <li><code>eval/eval_set.jsonl</code> — 32 core cases</li>
+          <li><code>eval/probes_oos.jsonl</code> — 20 out-of-scope probes</li>
+          <li><code>eval/probes_tone.jsonl</code> — 15 tone/escalation probes</li>
+        </ul>
+      </div>
+    </section>
+
+    <section id="what-measure">
+      <div class="section-header">
+        <h2>What We Measure</h2>
+      </div>
+      <div class="metric-grid">
+        <div class="metric"><strong>Answer correctness</strong><span>Checks whether the response matches the expected outcome and key phrases.</span></div>
+        <div class="metric"><strong>Citation validity</strong><span>Verifies each cited source is part of the retrieved evidence set.</span></div>
+        <div class="metric"><strong>Retrieval hit rate</strong><span>Measures whether expected documents are found by the retrieval layer.</span></div>
+        <div class="metric"><strong>Escalation precision</strong><span>Checks that escalations are not over-triggered.</span></div>
+        <div class="metric"><strong>Escalation recall</strong><span>Checks that genuine escalations are not missed.</span></div>
+        <div class="metric"><strong>Tool exactness</strong><span>Ensures the right tool outputs appear for the expected case.</span></div>
+        <div class="metric"><strong>PII leakage</strong><span>Counts whether sensitive data leaked into logs, responses or bundles.</span></div>
+        <div class="metric"><strong>Latency</strong><span>Tracks p50 and p95 timing for the pipeline.</span></div>
+        <div class="metric"><strong>LLM calls / tokens</strong><span>Tracks model usage for cost and observability.</span></div>
+        <div class="metric"><strong>Critic agreement</strong><span>Measures alignment between the critic and human-labelled groundedness.</span></div>
+      </div>
+    </section>
+
+    <section id="current-results">
+      <div class="section-header">
+        <h2>Current Results</h2>
+      </div>
+      <div class="metric-grid">
+        <div class="metric"><strong>31/32</strong><span>Core cases passing every check.</span></div>
+        <div class="metric"><strong>96.9%</strong><span>Answer correctness.</span></div>
+        <div class="metric"><strong>100.0%</strong><span>Citation validity.</span></div>
+        <div class="metric"><strong>100.0%</strong><span>Retrieval hit rate.</span></div>
+        <div class="metric"><strong>1.0 / 1.0</strong><span>Escalation precision / recall.</span></div>
+        <div class="metric"><strong>0 objects</strong><span>PII leakage in responses, bundles and logs.</span></div>
+        <div class="metric"><strong>39 / 58 ms</strong><span>Latency p50 / p95 in mock mode.</span></div>
+        <div class="metric"><strong>0 / 0</strong><span>LLM calls / tokens per request in mock mode.</span></div>
+        <div class="metric"><strong>Pending</strong><span>Critic agreement is still pending human labels.</span></div>
+      </div>
+      <div class="callout">
+        <strong>Known failure in the report:</strong> <code>E-M4-03</code> failed because the answer was missing the phrase “payment method”. The report explicitly marks this a failure and does not hide it.<br />
+        <strong>Important:</strong> the evaluation report states that the numbers were measured with <code>MOCK_LLM=true</code>, and the README says the judged demo should run on real Ollama. Therefore, these metrics are not treated as equivalent to a live-model run.
+      </div>
+      <div class="card" style="margin-top:16px;">
+        <h3>Remaining evaluation actions</h3>
+        <ul class="bullet-list">
+          <li><strong>E-M4-03 retrieval fix made:</strong> past-due and failed-payment questions now retrieve up to five article sections so the composer can cite the payment-method recovery steps. The displayed 31/32 result is still the earlier run; rerun the core evaluation to verify the change and refresh the metrics.</li>
+          <li><strong>Complete critic agreement:</strong> have two reviewers independently label the 10 drafts in <code>eval/critic_sample.csv</code>, then rerun the report. Do not fill these labels from model output.</li>
+          <li><strong>Measure the live model:</strong> rerun the comparison with Ollama using <code>python eval/run_eval.py --compare --live</code>, and replace these mock metrics only with results from that run.</li>
+        </ul>
+        <p class="muted">These items require an answer-path change or new evaluation evidence; the current metrics above remain the checked-in mock-mode results.</p>
+      </div>
+    </section>
+
+    <section id="comparison">
+      <div class="section-header">
+        <h2>Configuration Comparison</h2>
+      </div>
+      <table>
+        <thead>
+          <tr>
+            <th>Comparison</th>
+            <th>Option A</th>
+            <th>Option B</th>
+            <th>Decision</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td>Embedding</td>
+            <td><code>sentence-transformers/all-MiniLM-L6-v2</code></td>
+            <td><code>BAAI/bge-small-en-v1.5</code></td>
+            <td>Chosen: <code>BAAI/bge-small-en-v1.5</code> — better core-case pass rate.</td>
+          </tr>
+          <tr>
+            <td>Retrieval top-k</td>
+            <td>3</td>
+            <td>5</td>
+            <td>Chosen: 3 — equal hit rate, equal answer correctness, shorter prompts and lower latency.</td>
+          </tr>
+          <tr>
+            <td>Critic threshold</td>
+            <td>0.60</td>
+            <td>0.70</td>
+            <td>Chosen: 0.70 — same F1 and same pass rate, so the stricter registry value is kept.</td>
+          </tr>
+        </tbody>
+      </table>
+      <div class="callout">
+        The current configuration in the repo is intentionally the one chosen in <code>eval/report.md</code>. The evaluation runner accepts <code>--embed-model</code> and <code>--top-k</code> flags, so the comparison is reproducible without code changes.
+      </div>
+    </section>
+
+    <section id="test-coverage">
+      <div class="section-header">
+        <h2>Test Coverage</h2>
+      </div>
+      <table>
+        <thead>
+          <tr>
+            <th>Requirement</th>
+            <th>Test file</th>
+            <th>What is proven</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td>PII redaction</td>
+            <td><code>tests/test_safety.py</code></td>
+            <td>Emails, cards, phones, passwords and keys are redacted and log-safe.</td>
+          </tr>
+          <tr>
+            <td>Secret detection</td>
+            <td><code>tests/test_safety.py</code></td>
+            <td>Requests for secrets, reset links and email-on-file are detected.</td>
+          </tr>
+          <tr>
+            <td>Cross-account access</td>
+            <td><code>tests/test_safety.py</code>, <code>tests/test_pipeline.py</code></td>
+            <td>Other-account requests are refused and the header remains the source of truth.</td>
+          </tr>
+          <tr>
+            <td>Promise detection</td>
+            <td><code>tests/test_safety.py</code></td>
+            <td>Unsafe refund or credit promises are flagged.</td>
+          </tr>
+          <tr>
+            <td>Log redaction</td>
+            <td><code>tests/test_safety.py</code></td>
+            <td>Log lines and lambda-recorded data are redacted.</td>
+          </tr>
+          <tr>
+            <td>Escalation reasons</td>
+            <td><code>tests/test_escalation.py</code></td>
+            <td>Each A.3 rule has a test and the route logic is checked.</td>
+          </tr>
+          <tr>
+            <td>Routing</td>
+            <td><code>tests/test_escalation.py</code></td>
+            <td>Queues and priorities are mapped to the expected human teams.</td>
+          </tr>
+          <tr>
+            <td>Handoff bundle</td>
+            <td><code>tests/test_escalation.py</code>, <code>tests/test_pipeline.py</code></td>
+            <td>Annex D bundle structure, evidence, unresolved questions and PII redaction are validated.</td>
+          </tr>
+          <tr>
+            <td>One-revision limit</td>
+            <td><code>tests/test_escalation.py</code></td>
+            <td>Weak first drafts are revised once, then escalated.</td>
+          </tr>
+          <tr>
+            <td>Pipeline outcomes</td>
+            <td><code>tests/test_pipeline.py</code></td>
+            <td>Answered, refused, clarified, not_found and escalated responses are exercised.</td>
+          </tr>
+          <tr>
+            <td>LLM retry/fallback</td>
+            <td><code>tests/test_llm.py</code></td>
+            <td>JSON validation failure and server failure both fall back safely.</td>
+          </tr>
+        </tbody>
+      </table>
+    </section>
+
+    <section id="codebase-map">
+      <div class="section-header">
+        <h2>Codebase Map</h2>
+      </div>
+      <div class="card">
+        <pre>app/
+ ├── safety.py
+ ├── escalation.py
+ ├── graph/nodes.py
+ └── llm.py
+
+eval/
+ ├── run_eval.py
+ ├── eval_set.jsonl
+ ├── probes_oos.jsonl
+ ├── probes_tone.jsonl
+ └── report.md
+
+tests/
+ ├── test_safety.py
+ ├── test_escalation.py
+ ├── test_pipeline.py
+ └── test_llm.py</pre>
+        <p><strong>What each file contributes:</strong> the core P4 elements are the deterministic safety checks, the policy gate, the critic step, and the measured evaluation. The UI demonstrates the flow visually, but the actual trust logic is in the Python modules above.</p>
+      </div>
+    </section>
+
+    <section id="judge">
+      <div class="section-header">
+        <h2>What I Should Say to a Judge</h2>
+      </div>
+      <div class="grid">
+        <div class="card">
+          <h3>10-second answer</h3>
+          <p><strong>“I worked on the trust layer of InsightDesk: safety, critic, escalation and evaluation.”</strong></p>
+        </div>
+        <div class="card">
+          <h3>30-second answer</h3>
+          <p><strong>“Our safety layer protects PII and secrets, enforces account identity from the header, and blocks unauthorized promises. The critic scores groundedness and coverage, and the policy gate decides whether to answer, revise once or escalate. Evaluation then runs the labelled scenarios and reports the exact metrics.”</strong></p>
+        </div>
+        <div class="card">
+          <h3>2-minute answer</h3>
+          <p><strong>“A request enters the pipeline. First, the safety pre-check redacts secrets and blocks another-account or secret requests. Then the classifier decides the intent. The system retrieves docs and tools, composes a draft, and the critic scores it. If the answer is weak or policy-risky, the code either revises once or escalates. For an escalation, the system creates a handoff bundle with evidence and unresolved questions. Finally, eval/run_eval.py runs the labelled cases and records the metrics in eval/report.md.”</strong></p>
+        </div>
+      </div>
+    </section>
+
+    <section id="judge-questions">
+      <div class="section-header">
+        <h2>Likely Judge Questions</h2>
+      </div>
+      <div class="card">
+        <ol class="bullet-list" style="padding-left:22px;">
+          <li><strong>Why not let the LLM decide escalation?</strong> Because the LLM can be wrong or manipulated; code is deterministic, auditable and policy-based.</li>
+          <li><strong>Why use regex for PII?</strong> Because it is fast, explainable and works before a model sees the message.</li>
+          <li><strong>Why one revision only?</strong> It prevents loops, reduces cost and gives a safe terminal rule.</li>
+          <li><strong>Why do we need a critic if we already have retrieval?</strong> Retrieval finds evidence, but the critic checks whether the answer is actually grounded and whether the question is supported.</li>
+          <li><strong>What if the critic itself is wrong?</strong> The final answer still depends on code checks, policy registry thresholds and a human handoff path when needed.</li>
+          <li><strong>How do you prevent cross-account leakage?</strong> By trusting only <code>X-Account-Id</code> and refusing any message that references another account or email.</li>
+          <li><strong>How do you test safety?</strong> With explicit tests in <code>tests/test_safety.py</code> and evaluation cases in the eval suite.</li>
+          <li><strong>How do you know the system is grounded?</strong> By checking retrieved evidence, citations and scored review in the critic step.</li>
+          <li><strong>Why store policy in a registry?</strong> So thresholds can change without changing Python logic; the system reads the registry each run.</li>
+          <li><strong>What is currently incomplete?</strong> The checked-in mock run has one answer-content miss (E-M4-03); retrieval was updated to include more failed-payment guidance, but that fix still needs an evaluation rerun. Critic agreement is pending independent human labels, and live Ollama evaluation remains to be run.</li>
+        </ol>
+      </div>
+    </section>
+
+    <section id="final-sentence">
+      <div class="section-header">
+        <h2>P4 in One Sentence</h2>
+      </div>
+      <div class="card">
+        <p><strong>P4 makes InsightDesk trustworthy by protecting sensitive data, checking generated answers, applying deterministic escalation policies, handing unresolved cases to humans with context, and measuring the system against reproducible tests.</strong></p>
+      </div>
+    </section>
+
+    <div class="footer">
+      Generated from the current InsightDesk repository implementation. No application code modified.
+    </div>
+  </div>
+</body>
+</html>
