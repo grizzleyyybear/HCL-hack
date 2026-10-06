@@ -24,7 +24,7 @@ def calls(monkeypatch):
     return counter
 
 
-# Build one chunk in the BUILD_PLAN 3.4 format.
+# Build one chunk in the retrieval chunk format.
 def chunk(source_id, text, level=1, doc_type="article", versions=(0, 9999), score=0.5, tags="",
           last_updated="2026-01-01", effective_from="", deprecated_on="", supersedes="", title=None, section="Steps"):
     return {"chunk_id": f"{source_id}::{section}::0", "text": text, "score": score,

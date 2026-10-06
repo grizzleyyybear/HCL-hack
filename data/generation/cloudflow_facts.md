@@ -55,7 +55,7 @@ available on Business and Enterprise only. 2FA is available on all plans.
 
 - Response time after a handoff: **24 hours** for Free and Pro, **4 hours** for Business and Enterprise.
 - Answers must be grounded in documentation (critic groundedness of at least 0.70) or handed to a human.
-- A customer contacting us **2 or more times** about the same issue is treated as repeated contact.
+- A customer contacting us **2 or more times** about the same issue within **30 days** is treated as repeated contact.
 - Refunds, credits, billing disputes, legal matters, security incidents and account deletion always go to a human.
 
 ## API
@@ -144,7 +144,7 @@ policy registry cites them:
 | --- | --- | --- |
 | POL-REFUND-001 | Refund policy | `## Refund window` (14 days), `## Eligibility` (paid invoices; Pro, Business, Enterprise), `## How refunds are processed` (billing team only) |
 | POL-LIMITS-001 | Plan limits policy | `## Plan limits` (the plan table), `## When limits are exceeded` |
-| POL-ESC-001 | Support escalation and response times | `## Answer quality` (groundedness at least 0.70; retrieval relevance at least 0.35), `## Response times` (24 h Free/Pro, 4 h Business/Enterprise), `## Repeated contact` (2 or more contacts), `## Always handled by a human` |
+| POL-ESC-001 | Support escalation and response times | `## Answer quality` (groundedness at least 0.70; retrieval relevance at least 0.65), `## Response times` (24 h Free/Pro, 4 h Business/Enterprise), `## Repeated contact` (2 or more contacts within 30 days), `## Always handled by a human` |
 
 Release notes (doc_type release_note, authority 2):
 

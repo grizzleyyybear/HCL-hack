@@ -39,7 +39,7 @@ KB-TRB-006,article,CF-500 internal errors,1,ALL,2026-07-01,,,,"LLM: claude-opus-
 KB-TRB-007,article,Webhook deliveries failing,1,ALL,2026-09-18,,,,"LLM: claude-opus-5-5 (Claude Code subagent), prompt kb-v1",Y,webhooks;webhooks-v1;webhooks-v2;signature;delivery-log
 KB-TRB-008,article,Workflows not running on schedule,1,ALL,2026-02-03,,,,"LLM: claude-opus-5-5 (Claude Code subagent), prompt kb-v1",Y,schedules;time-zones;daylight-saving;run-limits;suspended
 KB-TRB-009,article,Login problems and password resets,1,ALL,2026-08-04,,,,"LLM: claude-opus-5-5 (Claude Code subagent), prompt kb-v1",Y,login;password-reset;2fa;sso;security
-POL-ESC-001,policy,Support escalation and response times,1,ALL,2026-02-02,,,,"LLM: claude-opus-5-5 (Claude Code subagent), prompt kb-v1",Y,policy;escalation;handoff;response-times;sla;repeated-contact
+POL-ESC-001,policy,Support escalation and response times,1,ALL,2026-10-06,,,,"LLM: claude-opus-5-5 (Claude Code subagent), prompt kb-v1",Y,policy;escalation;handoff;response-times;sla;repeated-contact
 POL-LIMITS-001,policy,Plan limits policy,1,ALL,2026-01-05,,,,"LLM: claude-opus-5-5 (Claude Code subagent), prompt kb-v1",Y,policy;plan-limits;rate-limit;workflow-runs;seats;retention;CF-429
 POL-REFUND-001,policy,Refund policy,1,ALL,2025-12-15,,,,"LLM: claude-opus-5-5 (Claude Code subagent), prompt kb-v1",Y,policy;refund;refund-window;eligibility;billing
 RN-4.2-001,release_note,CloudFlow 4.2 release notes,2,4.2+,2026-03-10,2026-03-10,,,"LLM: claude-opus-5-5 (Claude Code subagent), prompt kb-v1",Y,release-note;4.2;run-history;export

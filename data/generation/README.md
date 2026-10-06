@@ -11,7 +11,7 @@ this folder. Do not edit `data/kb/` by hand: fix the batch file (or the brief) a
 | `prompts/_passthrough.txt` | One-line template (`$prompt`) that lets live mode send a whole prompt through `app.llm.call_json` |
 | `kb_batches/<batch>.json` | The generated output of a batch, in the batch file contract shape (see the end of the facts sheet) |
 | `kb_generation_log.json` | Per batch: model, temperature, prompt file, documents, valid count, LLM calls and tokens (live mode), validation errors |
-| `kb_check.txt` | The KB check: counts vs CLAUDE.md minimums, manifest coverage, seeded cases, policy numbers, register files |
+| `kb_check.txt` | The KB check: counts vs the guide's minimums, manifest coverage, seeded cases, policy numbers, register files |
 
 ## The two modes
 
@@ -52,3 +52,16 @@ each batch file and in every document's `provenance`. The same files can be rege
 The prompts were re-rendered after `data/public/` was created, so they now include a public-data guidance section;
 `gs_bil` and `policies_rn` were authored from the earlier render without that section (the other content agents
 read `data/public/` directly where their provenance says "tone/themes from data/public").
+
+## Revisions after generation
+
+- **2026-10-06 — POL-ESC-001 "Answer quality": retrieval relevance minimum 0.35 → 0.65.** After the embedding comparison
+  (eval/report.md) chose BAAI/bge-small-en-v1.5, the old 0.35 floor (calibrated on all-MiniLM-L6-v2) never fired. Measured on
+  1,050 public-data probes and the 32 core cases: 0.65 removes 62 of 128 off-domain answers and loses 0 of 19 correct in-scope
+  answers (the weakest scores 0.74). The change followed the documented rule-change path: edit the policy article (here the
+  `policies_rn` batch, last_updated 2026-10-06), regenerate/ingest it, update the registry row RETRIEVAL-MIN-01. The saved
+  prompts in prompts/ are left as they were sent, so they still show 0.35.
+- **2026-10-06 — POL-ESC-001 "Repeated contact": added the 30-day look-back window.** The history check in
+  `app/escalation.py` counted conversations from the last 30 days, but that number was written in the code. It now
+  comes from the new registry row ESC-REPEAT-02 (`repeat_contact_window_days <= 30`). The article states the window, so
+  the row has a cited source. Same rule-change path as above.

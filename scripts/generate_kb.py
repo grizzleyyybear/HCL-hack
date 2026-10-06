@@ -40,22 +40,22 @@ BATCH_PREFIXES = {
     "gs_bil": ("KB-GS-", "KB-BIL-"), "policies_rn": ("POL-", "RN-"), "api_trb": ("KB-API-", "KB-TRB-"),
     "adv": ("KB-ADV-",), "tickets": ("TKT-",), "community": ("COM-",),
 }
-# ID prefix -> (doc_type, authority_level), the ID scheme from CLAUDE.md.
+# ID prefix -> (doc_type, authority_level), our ID scheme (docs/knowledge_base.md).
 PREFIX_RULES = [("KB-", "article", 1), ("POL-", "policy", 1), ("RN-", "release_note", 2),
                 ("TKT-", "ticket", 4), ("COM-", "community", 5)]
 # Where each doc type is written.
 OUT_DIR = {"article": "articles", "policy": "articles", "release_note": "articles",
            "ticket": "tickets", "community": "community"}
-# Minimum article counts per category from CLAUDE.md (5/5/8/8/4 = 30); BUILD_PLAN targets are in the manifest.
+# Minimum article counts per category from the guide (5/5/8/8/4 = 30); our targets are in the manifest.
 CATEGORY_MINIMUMS = {"KB-GS-": 5, "KB-BIL-": 5, "KB-API-": 8, "KB-TRB-": 8, "KB-ADV-": 4}
 # Phrases each policy section must contain; they mirror the facts sheet and the policy_registry rows.
 POLICY_FACTS = [
     ("POL-REFUND-001", "Refund window", ["14 days"]),
     ("POL-REFUND-001", "Eligibility", ["paid", "Pro", "Business", "Enterprise"]),
     ("POL-REFUND-001", "How refunds are processed", ["billing team"]),
-    ("POL-ESC-001", "Answer quality", ["0.70", "0.35"]),
+    ("POL-ESC-001", "Answer quality", ["0.70", "0.65"]),
     ("POL-ESC-001", "Response times", ["24 hours", "4 hours", "Free", "Pro", "Business", "Enterprise"]),
-    ("POL-ESC-001", "Repeated contact", ["2 or more"]),
+    ("POL-ESC-001", "Repeated contact", ["2 or more", "30 days"]),
     ("POL-ESC-001", "Always handled by a human", ["refund", "credit", "dispute", "legal", "security", "deletion"]),
 ]
 LIVE_TEMPERATURE = "0.1 (set in app.llm)"
@@ -256,7 +256,7 @@ Rules (all mandatory):
 4. Policy numbers are identical everywhere: refund window 14 days from the charge date, paid invoices on Pro,
    Business or Enterprise only, refunds approved and issued by the billing team only (support never issues or
    promises one); plan limits exactly as in the plan table; handoff response times 24 hours (Free, Pro) and
-   4 hours (Business, Enterprise); groundedness at least 0.70; retrieval relevance at least 0.35; repeated
+   4 hours (Business, Enterprise); groundedness at least 0.70; retrieval relevance at least 0.65; repeated
    contact means 2 or more contacts about the same issue.
 5. Outdated tickets are deliberate. A ticket flagged "outdated" in the manifest must record the old advice
    exactly as described there (it is historical evidence that current documentation overrides). Never repeat
@@ -463,7 +463,7 @@ def plan_rows_match(text: str, columns: slice) -> bool:
     return True
 
 
-# The seeded version, conflict and safety cases from CLAUDE.md: (description, IDs needed, test).
+# The seeded version, conflict and safety cases we planned: (description, IDs needed, test).
 def seeded_checks(docs: dict) -> list[tuple[str, list[str], callable]]:
     def meta(sid): return docs[sid].meta
     def sec(sid, name): return sections(docs[sid].markdown or "").get(name, "")
@@ -546,7 +546,7 @@ def kb_check(docs: dict, manifest: dict, log: dict) -> str:
             out.append(f"  {batch}: {info['valid']}/{info['documents']} documents valid (model {info['model']})")
             for sid, errs in info["validation_errors"].items():
                 out.append(f"    INVALID {sid}: {'; '.join(errs)}")
-    out += ["", "Counts vs CLAUDE.md minimums (BUILD_PLAN targets in brackets)",
+    out += ["", "Counts vs the guide's minimums (our targets in brackets)",
             f"  articles: {count(len(articles) >= 30, len(articles), 30)}  [target 34]"]
     for prefix, need in CATEGORY_MINIMUMS.items():
         have = sum(d.meta.source_id.startswith(prefix) for d in articles)

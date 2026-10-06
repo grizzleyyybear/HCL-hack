@@ -114,6 +114,58 @@ def test_bad_uploads_are_422(client, filename, content, metadata, field):
         assert field in json.dumps(response.json()["detail"])
 
 
+# A minimal one-page text PDF (Helvetica, one line per entry), built by hand so the test needs no PDF writer.
+def make_pdf(lines):
+    stream = "BT /F1 12 Tf 72 720 Td 16 TL " + " ".join(f"({line}) Tj T*" for line in lines) + " ET"
+    objects = ["<< /Type /Catalog /Pages 2 0 R >>", "<< /Type /Pages /Kids [3 0 R] /Count 1 >>",
+               "<< /Type /Page /Parent 2 0 R /MediaBox [0 0 612 792] /Contents 4 0 R "
+               "/Resources << /Font << /F1 5 0 R >> >> >>",
+               f"<< /Length {len(stream)} >>\nstream\n{stream}\nendstream",
+               "<< /Type /Font /Subtype /Type1 /BaseFont /Helvetica >>"]
+    out, offsets = "%PDF-1.4\n", []
+    for number, body in enumerate(objects, 1):
+        offsets.append(len(out))
+        out += f"{number} 0 obj\n{body}\nendobj\n"
+    xref = len(out)
+    out += f"xref\n0 {len(objects) + 1}\n0000000000 65535 f \n" + "".join(f"{o:010d} 00000 n \n" for o in offsets)
+    return (out + f"trailer\n<< /Size {len(objects) + 1} /Root 1 0 R >>\nstartxref\n{xref}\n%%EOF\n").encode("latin-1")
+
+
+PDF_LINES = ["Configuring the Quokka relay", "Overview", "The Quokka relay forwards walrus events to the bus.",
+             "Steps", "1. Open Settings and choose Quokka relays.", "2. Click Save relay."]
+
+
+# A text PDF article is converted to Markdown sections, indexed, cited by its real headings, and both files kept.
+def test_pdf_article_is_parsed_into_sections_and_searchable(client, temp_env):
+    response = post(client, "relay.pdf", make_pdf(PDF_LINES),
+                    meta("JD-TEST-PDF", title="Configuring the Quokka relay"))
+    assert response.status_code == 200, response.text
+    assert response.json()["chunks_indexed"] == 2
+    results = retrieval.search("quokka relay walrus events", None, 3)
+    assert results[0]["meta"]["source_id"] == "JD-TEST-PDF"
+    assert {r["meta"]["section"] for r in results if r["meta"]["source_id"] == "JD-TEST-PDF"} == {"Overview", "Steps"}
+    stored = temp_env / "data" / "kb" / "ingested"
+    assert (stored / "JD-TEST-PDF.pdf").exists()
+    assert "## Steps\n1. Open Settings and choose Quokka relays." in (stored / "JD-TEST-PDF.md").read_text("utf-8")
+    row = {r["source_id"]: r for r in client.get("/sources").json()}["JD-TEST-PDF"]
+    assert row["file_path"] == "kb/ingested/JD-TEST-PDF.md"
+
+
+@pytest.mark.parametrize("content, message", [
+    (make_pdf([]), "no extractable text"),        # e.g. a scanned image: nothing to index
+    (b"%PDF-1.4 this is not really a pdf", "could not read the PDF"),
+])
+def test_unreadable_pdf_is_422(client, content, message):
+    response = post(client, "scan.pdf", content, meta("JD-TEST-SCAN"))
+    assert response.status_code == 422 and message in response.text
+
+
+def test_pdf_heading_rules():
+    assert retrieval._pdf_heading("Troubleshooting") and retrieval._pdf_heading("Applies to:")
+    assert not retrieval._pdf_heading("1. Open Settings") and not retrieval._pdf_heading("Click Save relay.")
+    assert not retrieval._pdf_heading("and then choose the workflow you want")
+
+
 # Write a temp source register (Annex B columns + tags) and the files of the rows listed in `with_files`.
 def write_register(data_dir, rows, with_files):
     data_dir.mkdir(parents=True, exist_ok=True)
@@ -141,6 +193,13 @@ def test_ingest_all_loads_once_then_skips_and_force_reloads(temp_env):
     count = retrieval._collection().count()
     second = ingest_kb.ingest_all()
     assert second["ingested"] == 0 and second["skipped"] == 3
+
+    # An edited file is re-indexed on the next startup even when its last_updated date did not change.
+    edited = temp_env / "data" / "kb" / "articles" / "KB-GS-002.md"
+    edited.write_text(ARTICLE + "\n\n## Notes\n\nAn extra section.\n", encoding="utf-8")
+    third = ingest_kb.ingest_all()
+    assert third["ingested"] == 1 and third["skipped"] == 2
+    count = retrieval._collection().count()
 
     forced = ingest_kb.ingest_all(force=True)
     assert forced["ingested"] == 3

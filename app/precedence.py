@@ -1,4 +1,4 @@
-"""Source Precedence Policy (Annex A.1/A.2) in plain code. Owner: A6 precedence.
+"""Source Precedence Policy (Annex A.1/A.2) in plain code. Area: knowledge and retrieval.
 
 Order: applicability -> supersession -> authority -> recency -> unresolved.
 Authority levels: 1 articles/policies, 2 release notes, 3 tool results (not chunks),

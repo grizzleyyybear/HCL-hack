@@ -9,7 +9,7 @@ CloudFlow support combines an AI support assistant with human specialists. This 
 The assistant answers only from CloudFlow documentation and from account data returned by CloudFlow's own tools.
 
 - An answer may be sent only if its groundedness score (how well every statement is supported by the cited documentation) is at least **0.70**. A draft that scores below 0.70 is revised once; if it still scores below 0.70, the conversation is handed to a person.
-- A document is used only if its retrieval relevance score is at least **0.35**. If no document reaches 0.35, the assistant says the topic is not covered and offers a handoff.
+- A document is used only if its retrieval relevance score is at least **0.65**. If no document reaches 0.65, the assistant says the topic is not covered and offers a handoff.
 
 ## Response times
 
@@ -26,7 +26,7 @@ The assistant tells the customer the response time for their plan and never prom
 
 ## Repeated contact
 
-A customer who has contacted support **2 or more** times about the same issue is a repeated contact. A repeated contact combined with strong negative sentiment, such as an angry message, is handed to a person instead of being answered automatically.
+A customer who has contacted support **2 or more** times about the same issue within **30 days** is a repeated contact. A repeated contact combined with strong negative sentiment, such as an angry message, is handed to a person instead of being answered automatically.
 
 ## Always handled by a human
 

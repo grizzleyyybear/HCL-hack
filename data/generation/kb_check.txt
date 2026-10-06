@@ -8,7 +8,7 @@ Batches
   tickets: 28/28 documents valid (model claude-opus-5-5 (Claude Code subagent))
   community: 6/6 documents valid (model claude-opus-5-5 (Claude Code subagent))
 
-Counts vs CLAUDE.md minimums (BUILD_PLAN targets in brackets)
+Counts vs the guide's minimums (our targets in brackets)
   articles: 34 / min 30  PASS  [target 34]
     KB-GS-   5 / min 5  PASS
     KB-BIL-  6 / min 5  PASS
@@ -45,9 +45,9 @@ Policy numbers match the facts sheet
   [PASS] POL-REFUND-001 '## Refund window' contains ['14 days']
   [PASS] POL-REFUND-001 '## Eligibility' contains ['paid', 'Pro', 'Business', 'Enterprise']
   [PASS] POL-REFUND-001 '## How refunds are processed' contains ['billing team']
-  [PASS] POL-ESC-001 '## Answer quality' contains ['0.70', '0.35']
+  [PASS] POL-ESC-001 '## Answer quality' contains ['0.70', '0.65']
   [PASS] POL-ESC-001 '## Response times' contains ['24 hours', '4 hours', 'Free', 'Pro', 'Business', 'Enterprise']
-  [PASS] POL-ESC-001 '## Repeated contact' contains ['2 or more']
+  [PASS] POL-ESC-001 '## Repeated contact' contains ['2 or more', '30 days']
   [PASS] POL-ESC-001 '## Always handled by a human' contains ['refund', 'credit', 'dispute', 'legal', 'security', 'deletion']
   [PASS] POL-LIMITS-001 '## Plan limits' table equals the facts plan table
   [PASS] KB-BIL-001 plan table equals the facts plan table
