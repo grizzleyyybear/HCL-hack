@@ -1,0 +1,20 @@
+Validation report for data/accounts (run on 2026-10-06)
+
+Checks run:
+- account_id matches ^A\d{4}$ and is not in A9000-A9999; invoice_id does not start with INV-J
+- plan, status, currency, support_tier and component status are in the allowed sets
+- every usage and invoice account_id exists in accounts
+- owner_email ends with @example.com; card_last4 is exactly 4 digits; no 13-19 digit card number in any cell
+- amount > 0; usage and limits are non-negative integers; failure_reason empty unless status = failed
+- past_due and suspended accounts have a failed invoice; Free accounts have no invoices
+- dates are valid YYYY-MM-DD, periods YYYY-MM, updated_at an ISO timestamp; no duplicate keys
+
+Rows checked:
+- plan_limits.csv: 4 rows
+- accounts.csv: 31 rows
+- usage.csv: 62 rows
+- invoices.csv: 56 rows
+- platform_status.csv: 4 rows
+- policy_registry.csv: not present (optional)
+
+Violations: 0

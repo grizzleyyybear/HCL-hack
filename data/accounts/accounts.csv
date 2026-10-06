@@ -1,0 +1,32 @@
+account_id,company_name,owner_email,plan,status,product_version,created_at
+A1001,Northwind Labs,priya.nair@example.com,Pro,active,4.3,2025-01-10
+A1002,Bluebird Ops,tom.becker@example.com,Pro,active,4.3,2025-02-11
+A1003,Cedar Analytics,lena.okafor@example.com,Pro,past_due,4.2,2025-03-01
+A1004,Delta Freight,raj.malhotra@example.com,Pro,active,4.4,2025-04-01
+A1005,Ember Health,sofia.lind@example.com,Business,active,4.3,2025-05-22
+A1006,Fjord Retail,erik.dahl@example.com,Pro,active,4.4,2025-06-21
+A1007,Granite Works,ana.costa@example.com,Pro,suspended,4.3,2024-07-01
+A1008,Harbor Legacy,vikram.shah@example.com,Pro,active,3.8,2024-08-17
+A1009,Iris Studio,mira.patel@example.com,Free,active,4.4,2026-01-05
+A1010,Kestrel Data Co,daniel.kowalski@example.com,Pro,active,4.4,2025-11-14
+A1011,Lumen Clinics,ananya.iyer@example.com,Business,active,4.3,2024-12-03
+A1013,Nimbus Freight,grace.mwangi@example.com,Enterprise,active,4.4,2024-02-20
+A1014,Orchid Learning,felipe.ramos@example.com,Pro,past_due,4.2,2025-08-04
+A1015,Pinecrest Legal Services,it-admin@example.com,Business,active,4.3,2025-01-27
+A1016,Quarry Point Media,noah.fischer@example.com,Free,cancelled,4.2,2025-10-27
+A1017,Redwood Robotics,kenji.watanabe@example.com,Enterprise,active,4.4,2024-06-12
+A1018,Saffron Retail Group,leila.haddad@example.com,Business,suspended,4.3,2024-11-08
+A1019,Tidewater Insurance,oliver.grant@example.com,Enterprise,past_due,4.3,2025-03-02
+A1020,Umber Games,zoe.martin@example.com,Pro,active,4.3,2025-09-25
+A1021,Vantage Dental,samir.qureshi@example.com,Free,active,3.8,2025-04-07
+A1022,Willow Creek Farms,hannah.olsen@example.com,Pro,cancelled,4.2,2024-09-16
+A1023,Xenon Biotech,arjun.menon@example.com,Business,active,4.4,2025-06-28
+A1024,Yarrow Consulting,claire.dubois@example.com,Pro,active,3.8,2024-03-21
+A1025,Zephyr Wind Energy,marcus.bell@example.com,Enterprise,suspended,4.2,2024-10-05
+A1026,Atlas Courier Network,divya.krishnan@example.com,Business,past_due,4.4,2025-07-03
+A1027,Beacon Nonprofit Alliance,info.beacon@example.com,Free,active,4.3,2026-07-11
+A1028,Cobalt Fintech,isabel.moreno@example.com,Enterprise,active,4.4,2025-02-18
+A1029,Driftwood Hotels,peter.lang@example.com,Business,cancelled,4.3,2024-05-23
+A1031,Fable and Quill Books,tomas.novak@example.com,Free,active,4.4,2026-09-02
+A1032,Glacier Water Utilities,ines.carvalho@example.com,Enterprise,cancelled,4.3,2023-11-09
+A1033,Helix Sports Analytics,jordan.reyes@example.com,Business,active,4.2,2025-12-12

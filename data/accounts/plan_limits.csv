@@ -1,0 +1,5 @@
+plan,api_rate_limit_per_min,monthly_workflow_runs,seats,support_tier,monthly_price
+Free,60,500,1,standard,0.0
+Pro,300,10000,5,standard,49.0
+Business,1000,50000,25,priority,199.0
+Enterprise,5000,500000,200,priority,999.0
