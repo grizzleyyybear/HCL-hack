@@ -8,34 +8,67 @@ INVOICE_COLUMNS = "invoice_id, amount, currency, charged_on, status, failure_rea
 
 
 # Return the account's invoices plus possible_duplicates (same amount and same charged_on).
-def get_invoices(account_id: str, status: str | None = None, date_from: str | None = None,
-                 date_to: str | None = None) -> dict:
+def get_invoices(
+    account_id: str,
+    status: str | None = None,
+    date_from: str | None = None,
+    date_to: str | None = None,
+) -> dict:
     account = lookup_account(account_id)
-    if "error" in account:
-        return account
-    sql = f"SELECT {INVOICE_COLUMNS} FROM invoices WHERE account_id = ?"
-    params = [account_id]
-    if status:
-        sql += " AND status = ?"
-        params.append(status)
-    if date_from:
-        sql += " AND charged_on >= ?"
-        params.append(str(date_from))
-    if date_to:
-        sql += " AND charged_on <= ?"
-        params.append(str(date_to))
-    with db.connect() as conn:
-        invoices = [dict(r) for r in conn.execute(sql + " ORDER BY charged_on DESC, invoice_id", params)]
 
-    # Group charges by (amount, charged_on); any group with 2+ invoices is a possible duplicate.
-    # Failed invoices are skipped because the customer was never actually charged.
-    groups: dict[tuple, list[str]] = {}
-    for inv in invoices:
-        if inv["status"] != "failed":
-            groups.setdefault((inv["amount"], inv["charged_on"]), []).append(inv["invoice_id"])
-    duplicates = [{"invoice_ids": ids, "amount": amount, "charged_on": charged_on}
-                  for (amount, charged_on), ids in groups.items() if len(ids) > 1]
-    return {"invoices": invoices, "possible_duplicates": duplicates}
+    if account.get("error"):
+        return account
+
+    query = (
+        f"SELECT {INVOICE_COLUMNS} "
+        "FROM invoices "
+        "WHERE account_id = ?"
+    )
+    parameters = [account_id]
+
+    if status is not None:
+        query += " AND status = ?"
+        parameters.append(status)
+
+    if date_from is not None:
+        query += " AND charged_on >= ?"
+        parameters.append(str(date_from))
+
+    if date_to is not None:
+        query += " AND charged_on <= ?"
+        parameters.append(str(date_to))
+
+    query += " ORDER BY charged_on DESC, invoice_id"
+
+    with db.connect() as conn:
+        rows = conn.execute(query, parameters)
+        invoices = [dict(row) for row in rows]
+
+    # Find invoices having the same amount and charge date.
+    # Failed invoices are ignored because they were not successfully charged.
+    invoice_groups: dict[tuple, list[str]] = {}
+
+    for invoice in invoices:
+        if invoice["status"] == "failed":
+            continue
+
+        key = (invoice["amount"], invoice["charged_on"])
+        invoice_groups.setdefault(key, []).append(invoice["invoice_id"])
+
+    possible_duplicates = []
+
+    for (amount, charged_on), invoice_ids in invoice_groups.items():
+        if len(invoice_ids) > 1:
+            possible_duplicates.append({
+                "invoice_ids": invoice_ids,
+                "amount": amount,
+                "charged_on": charged_on,
+            })
+
+    return {
+        "invoices": invoices,
+        "possible_duplicates": possible_duplicates,
+    }
 
 
 # Decide refund eligibility from policy_registry values; returns eligible, days, window, rule_id.
