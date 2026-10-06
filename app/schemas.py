@@ -1,8 +1,12 @@
 """Pydantic models. Field names here ARE the API contract from the guide: do not rename them."""
 import datetime
+import re
 from typing import Literal
 
 from pydantic import BaseModel, Field, field_validator
+
+# Accepted product_versions formats (see retrieval.parse_versions): ALL, 4.3, 3.x, 4.2+, 4.0-4.3.
+VERSIONS_FORMAT = re.compile(r"^\s*(?:all|\d+\.(?:\d+|x)\s*\+?(?:\s*-\s*\d+\.(?:\d+|x))?)\s*$", re.IGNORECASE)
 
 AnswerType = Literal["answered", "clarification_needed", "escalated", "not_found", "refused", "out_of_scope"]
 
@@ -35,6 +39,26 @@ class Draft(BaseModel):
     """Composer output: the answer text plus the chunk_ids it relies on (code checks they were retrieved)."""
     answer: str
     cited_chunk_ids: list[str] = Field(default_factory=list)
+
+
+STEP_LINE = re.compile(r"^\s*\d+[.)]\s", re.MULTILINE)
+ANNOUNCES_STEPS = re.compile(r"\b(?:these|the following|below)\s+steps\b", re.IGNORECASE)
+
+
+class LLMDraft(Draft):
+    """What the LLM composer must return. A 7B model sometimes writes only "...follow these steps:" and stops;
+    rejecting that triggers call_json's retry (with this error) and then the template fallback."""
+
+    @field_validator("answer")
+    @classmethod
+    def _steps_included(cls, value: str):
+        text = value.strip()
+        if not text:
+            raise ValueError("the answer is empty")
+        if (text.endswith(":") or ANNOUNCES_STEPS.search(text)) and not STEP_LINE.search(text):
+            raise ValueError("the answer announces steps but does not contain them; put every numbered step "
+                             "inside the answer string, separated by \n")
+        return value
 
 
 class Critique(BaseModel):
@@ -113,11 +137,11 @@ class SupportResponse(BaseModel):
 
 class SourceMeta(BaseModel):
     """Annex B source register fields; also the metadata JSON of POST /ingest. Accepts judge JD- IDs."""
-    source_id: str
+    source_id: str = Field(min_length=1)
     doc_type: Literal["article", "policy", "release_note", "ticket", "community"]
-    title: str
+    title: str = Field(min_length=1)
     authority_level: int = Field(ge=1, le=5)
-    product_versions: str
+    product_versions: str = Field(min_length=1)
     last_updated: str
     effective_from: str = ""
     deprecated_on: str = ""
@@ -134,3 +158,11 @@ class SourceMeta(BaseModel):
             return value
         datetime.date.fromisoformat(value)
         return value
+
+    # product_versions must be a format retrieval can parse: ALL, 4.3, 3.x, 4.2+ or 4.0-4.3 (else a clear 422).
+    @field_validator("product_versions")
+    @classmethod
+    def _check_versions(cls, value: str):
+        if not VERSIONS_FORMAT.match(value):
+            raise ValueError("use ALL, a version like 4.3, a major line like 3.x, a minimum like 4.2+ or a range like 4.0-4.3")
+        return value.strip()

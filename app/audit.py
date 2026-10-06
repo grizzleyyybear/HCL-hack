@@ -1,6 +1,6 @@
 """Audit trail: one record per /support call, keyed by an 8-character hex trace_id.
 
-W0 version (orchestrator) is fully usable by the pipeline. Owner A12 (api-platform)
+Area: API and orchestration.
 finishes the record fields in W4. Records are summaries, never chain-of-thought.
 """
 import contextlib
@@ -57,7 +57,7 @@ class Trace:
             "timestamp": datetime.datetime.now(datetime.timezone.utc).isoformat(timespec="seconds"),
             "route": [r["step"] for r in self.route],
             "step_ms": self.route,
-            "tools_invoked": [{"tool": t["tool"], "status": t["status"], "ms": t["ms"]} for t in self.tools],
+            "tools_invoked": [{k: t.get(k) for k in ("tool", "input", "output", "status", "ms")} for t in self.tools],
             "model": self.llm["model"],
             "llm_calls": self.llm["calls"],
             "tokens": {"prompt": self.llm["prompt_tokens"], "completion": self.llm["completion_tokens"]},
