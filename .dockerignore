@@ -2,6 +2,7 @@
 .venv
 .env
 .chroma
+.claude
 *.db
 *.db-journal
 data/raw
@@ -10,3 +11,6 @@ __pycache__
 *.pyc
 .pytest_cache
 graphify-out
+Dockerfile
+docker-compose.yml
+.dockerignore
