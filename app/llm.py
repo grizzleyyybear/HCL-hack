@@ -1,6 +1,6 @@
 """LLM client: JSON calls validated by Pydantic (one retry, then a safe fallback), plus MOCK_LLM mode.
 
-Owner: A10 llm-client.
+Area: API and orchestration.
 - call_json() talks to Ollama (default) or an OpenAI-compatible cloud API (LLM_PROVIDER=cloud,
   fallback only, disclosed in README). Output is validated with Pydantic; one retry with the
   validation error appended; then the caller's fallback. Connection errors also use the fallback.
@@ -29,23 +29,27 @@ from app.schemas import Critique, Draft, Intent
 PROMPTS = pathlib.Path(__file__).resolve().parent / "prompts"
 
 # Tags that wrap untrusted content in every prompt; stripped from variables so text cannot break out.
-_WRAPPER_TAGS = re.compile(r"</?\s*(documents|customer_message|draft)\s*>", re.IGNORECASE)
+_WRAPPER_TAGS = re.compile(r"</?\s*(documents|customer_message|draft|history)\s*>", re.IGNORECASE)
 
 
 # Fill a prompt template's $placeholders with the given variables (wrapper tags removed from values).
+# A placeholder the caller did not pass (e.g. $history on a first message) reads "(none)".
 def render(prompt_name: str, variables: dict) -> str:
-    template = (PROMPTS / f"{prompt_name}.txt").read_text(encoding="utf-8")
-    safe_values = {k: _WRAPPER_TAGS.sub("", str(v)) for k, v in variables.items()}
-    return string.Template(template).safe_substitute(safe_values)
+    template = string.Template((PROMPTS / f"{prompt_name}.txt").read_text(encoding="utf-8"))
+    values = {name: "(none)" for name in template.get_identifiers()}
+    values.update({k: _WRAPPER_TAGS.sub("", str(v)) for k, v in variables.items()})
+    return template.safe_substitute(values)
 
 
 # Send one prompt to Ollama asking for JSON; returns (text, usage dict).
+# keep_alive keeps the model loaded between requests (a cold load takes ~1 minute on a laptop GPU);
+# the long timeout covers 7B models that run partly on the CPU.
 def _ollama_chat(prompt: str) -> tuple[str, dict]:
     resp = requests.post(
         f"{settings.OLLAMA_BASE_URL}/api/chat",
         json={"model": settings.OLLAMA_MODEL, "messages": [{"role": "user", "content": prompt}],
-              "format": "json", "stream": False, "options": {"temperature": 0.1}},
-        timeout=120,
+              "format": "json", "stream": False, "keep_alive": "60m", "options": {"temperature": 0.1}},
+        timeout=300,
     )
     resp.raise_for_status()
     body = resp.json()
@@ -114,17 +118,24 @@ def call_json(prompt_name: str, variables: dict, schema: type[BaseModel],
     return fallback(), usage
 
 
-# Report LLM readiness for GET /health: "ok", "ok (mock)", "ok (cloud)" or "error".
+# Report LLM readiness for GET /health: "ok", "ok (mock)", "ok (cloud)", "error" or
+# "error: model <name> not pulled" (Ollama answers but the configured model is missing).
 def health() -> str:
     if settings.MOCK_LLM:
         return "ok (mock)"
     if settings.LLM_PROVIDER == "cloud":
         return "ok (cloud)" if os.getenv("CLOUD_API_KEY") else "error"
     try:
-        requests.get(f"{settings.OLLAMA_BASE_URL}/api/tags", timeout=3).raise_for_status()
-        return "ok"
-    except requests.RequestException:
+        resp = requests.get(f"{settings.OLLAMA_BASE_URL}/api/tags", timeout=3)
+        resp.raise_for_status()
+        models = resp.json().get("models") or []
+    except (requests.RequestException, ValueError, AttributeError):
         return "error"
+    model = settings.OLLAMA_MODEL
+    pulled = {m.get(key) for m in models if isinstance(m, dict) for key in ("name", "model")}
+    if model in pulled or f"{model}:latest" in pulled:
+        return "ok"
+    return f"error: model {model} not pulled"
 
 
 # --- Deterministic helpers: MOCK_LLM behaviour and safe fallbacks. ---------------------------------
@@ -134,14 +145,17 @@ def health() -> str:
 # CloudFlow domain vocabulary (from data/generation/cloudflow_facts.md). No match -> out of scope.
 _DOMAIN = re.compile(
     r"\b(?:cloudflow|workflow|workspace|run|running|connector|connection|integrat\w*|api|token|"
-    r"webhook|invoice|plan|pricing|price|billing|bill|billed|refund|charge|payment|pay|paid|"
-    r"subscription|money|credit|account|password|login|log ?in|sign ?in|seat|teammate|export|"
-    r"import|history|error|cf-\d{3}|salesforce|hubspot|slack|teams|jira|zendesk|stripe|"
+    r"webhook|invoice|plan|pricing|billing|bill|billed|refund|charge|payment|paid|"
+    r"subscription|credit|account|password|login|log ?in|sign ?in|seat|teammate|export|"
+    r"error|cf-\d{3}|salesforce|hubspot|slack|teams|jira|zendesk|stripe|"
     r"postgres\w*|sheets?|schedule|trigger|step|variable|sso|saml|2fa|retry|retries|"
-    r"limit|quota|usage|upgrade|downgrade|cancel\w*|version|dashboard|support|automation|"
-    r"admin|role|permission|outage|status|incident|429|rate)(?:s|es|ed|d|ing)?\b",
+    r"limit|quota|usage|upgrade|downgrade|cancel\w*|version|admin|role|permission|outage|incident|429)"
+    r"(?:s|es|ed|d|ing)?\b",
     re.IGNORECASE,
 )
+# First/second person words: a legal or "human" keyword only counts when someone is talking about their
+# own situation ("I'll sue", "get me a manager"), not in a general question ("what is a court of appeal").
+_PERSONAL = re.compile(r"\b(?:i|i'm|i've|i'll|me|my|mine|we|our|us|you|your)\b", re.IGNORECASE)
 
 # Creative or general-knowledge requests: always out of scope, even if a domain word appears.
 _CREATIVE = re.compile(r"\b(?:poem|joke|story|recipe|song|lyrics|haiku|limerick|essay)s?\b", re.IGNORECASE)
@@ -186,7 +200,7 @@ _SPECIFIC = re.compile(r"\b(?:cf-\d{3}|workflow|connector|api|token|webhook|invo
                        r"password|login|sso|2fa|plan|refund|charge\w*|429)s?\b", re.IGNORECASE)
 _VERSION = re.compile(r"\b[34]\.\d{1,2}\b")
 
-# Which tools each intent needs (code safety net mirrors CLAUDE.md "Rules for all tools").
+# Which tools each intent needs (code safety net for small models).
 _TOOLS = {
     "billing": ["get_invoices", "check_refund_eligibility"],
     "account": ["lookup_account", "get_usage", "get_plan_limits"],
@@ -207,7 +221,7 @@ def _type_and_subtype(message: str) -> tuple[str | None, str | None]:
         return "security", "compromise"
     if _DELETION.search(message):
         return "account", "deletion"
-    if _LEGAL.search(message):
+    if _LEGAL.search(message) and (_PERSONAL.search(message) or _DOMAIN.search(message)):
         return "complaint", "legal"
     # Billing disputes come before password resets: "can't log in AND charged twice" must reach billing.
     for pattern, subtype in _BILLING_SUBTYPES:
@@ -230,7 +244,7 @@ def _type_and_subtype(message: str) -> tuple[str | None, str | None]:
 def keyword_intent(message: str) -> Intent:
     text = message or ""
     intent_type, subtype = _type_and_subtype(text)
-    human = bool(_HUMAN.search(text))
+    human = bool(_HUMAN.search(text)) and bool(_PERSONAL.search(text) or _DOMAIN.search(text))
     strong_repeat = bool(_STRONG_REPEAT.search(text))
     repeated = strong_repeat or bool(_REPEAT.search(text))
     if _ANGRY.search(text) or _mostly_caps(text):
@@ -322,74 +336,173 @@ def _duplicate_ids(possible_duplicates) -> list[str]:
     return [i for i in dict.fromkeys(ids) if i]
 
 
-# Turn tool outputs into plain-English fact sentences, computed in code (never by the LLM).
-def tool_fact_lines(tool_results: list[dict]) -> list[str]:
+# Friendly wording for a tool that failed: "I wasn't able to check your invoices just now."
+_TOOL_ACTIONS = {"lookup_account": "look up your account", "get_usage": "check your usage",
+                 "get_plan_limits": "check your plan limits", "get_invoices": "check your invoices",
+                 "check_refund_eligibility": "check refund eligibility",
+                 "check_platform_status": "check our platform status", "send_password_reset": "send the password reset"}
+# Plain-English refund reasons from check_refund_eligibility "reasons" (the window reason is told with the days).
+_REFUND_REASONS = {"plan_not_eligible": "your plan isn't covered by the refund policy",
+                   "no_paid_invoice": "there's no paid invoice to refund",
+                   "invoice_not_paid": "that invoice wasn't paid"}
+# One row per usage-vs-limit check: keys, the tool's over-limit flag names, the three sentence shapes,
+# and whether the "within limit" sentence is worth saying in a short customer answer.
+_USAGE_CHECKS = [
+    ("api_calls_peak_per_min", "api_rate_limit_per_min", ["api_rate_over"],
+     "You've used {used} API calls per minute at peak this month, which is over {plan} limit of {limit}. "
+     "That's why some of your calls are getting 429 errors.",
+     "Your peak this month is {used} API calls per minute, within {plan} limit of {limit}.",
+     "{Plan} limit is {limit} API calls per minute.", True),
+    ("workflow_runs", "monthly_workflow_runs", ["workflow_runs_over", "runs_over"],
+     "You've used {used} workflow runs this month, which is over {plan} limit of {limit}.",
+     "You've used {used} of your {limit} workflow runs this month.",
+     "{Plan} limit is {limit} workflow runs a month.", True),
+    ("seats_used", "seats", ["seats_over"],
+     "You're using {used} seats, which is over {plan} limit of {limit}.",
+     "You're using {used} of your {limit} seats.",
+     "{Plan} limit is {limit} seats.", False),
+]
+_NUMBER_WORDS = {2: "two", 3: "three", 4: "four"}
+
+
+# "1 day" / "15 days": a count with its noun in the right form.
+def _count(n, noun: str) -> str:
+    return f"{n} {noun}" if n == 1 else f"{n} {noun}s"
+
+
+# Show an amount like 49.0 as "49.00 USD" (same value, money format).
+def _money(amount, currency=None) -> str:
+    value = f"{amount:.2f}" if isinstance(amount, float) else str(amount)
+    return f"{value} {currency}" if currency else value
+
+
+# Join IDs as "A and B" or "A, B and C".
+def _join(items: list[str]) -> str:
+    return items[0] if len(items) == 1 else ", ".join(items[:-1]) + " and " + items[-1]
+
+
+# Sentences comparing usage with the plan limits (numbers copied exactly from the tools).
+def _usage_lines(usage: dict, limits: dict, plan: str | None, brief: bool) -> list[str]:
+    plan_words = f"your {plan} plan's" if plan else "your plan's"
+    lines = []
+    for used_key, limit_key, flags, over, within, limit_only, always in _USAGE_CHECKS:
+        used, limit = usage.get(used_key), limits.get(limit_key)
+        words = {"used": used, "limit": limit, "plan": plan_words, "Plan": plan_words[0].upper() + plan_words[1:]}
+        if limit is None or (used is None and brief):
+            continue
+        if used is None:
+            lines.append(limit_only.format(**words))
+        elif _is_over(limits, flags, used, limit):
+            lines.append(over.format(**words))
+        elif used == limit:
+            lines.append(within.format(**words) + " That's right at your limit, but not over it.")
+        elif always or not brief:
+            lines.append(within.format(**words))
+    return lines
+
+
+# Sentences about invoices: failed payments, possible duplicates, else the most recent invoice.
+def _invoice_lines(invoices) -> list[str]:
+    rows = invoices.get("invoices", []) if isinstance(invoices, dict) else invoices
+    rows = [r for r in rows or [] if isinstance(r, dict)]
+    by_id = {r.get("invoice_id"): r for r in rows}
+    lines = []
+    for inv in rows:
+        if inv.get("status") == "failed":
+            reason = (inv.get("failure_reason") or "unknown reason").replace("_", " ")
+            lines.append(f"Your payment of {_money(inv.get('amount'), inv.get('currency'))} on {inv.get('charged_on')} "
+                         f"(invoice {inv.get('invoice_id')}) failed: {reason}.")
+    duplicates = invoices.get("possible_duplicates") if isinstance(invoices, dict) else None
+    for item in duplicates or []:
+        ids = _duplicate_ids([item])
+        if len(ids) < 2:
+            continue
+        first = by_id.get(ids[0], {})
+        amount = item.get("amount", first.get("amount")) if isinstance(item, dict) else first.get("amount")
+        date = (item.get("charged_on") if isinstance(item, dict) else None) or first.get("charged_on")
+        if amount is not None and date:
+            lines.append(f"I can see {_NUMBER_WORDS.get(len(ids), len(ids))} charges of "
+                         f"{_money(amount, first.get('currency'))} on {date} ({_join(ids)}), "
+                         "which looks like a duplicate charge.")
+        else:
+            lines.append(f"Invoices {_join(ids)} have the same amount and charge date, which looks like a duplicate charge.")
+    if not lines and rows:
+        latest = max(rows, key=lambda r: (r.get("charged_on") or "", r.get("invoice_id") or ""))
+        lines.append(f"Your most recent invoice is {latest.get('invoice_id')} for "
+                     f"{_money(latest.get('amount'), latest.get('currency'))}, charged on {latest.get('charged_on')} "
+                     f"({latest.get('status')}).")
+    elif not lines:
+        lines.append("I don't see any invoices on your account.")
+    return lines
+
+
+# One sentence on refund eligibility from check_refund_eligibility (never a promise: billing decides).
+def _refund_line(refund: dict) -> str:
+    days, window = refund.get("days_since_charge"), refund.get("window_days")
+    reasons = refund.get("reasons") or ([refund["reason"]] if refund.get("reason") else [])
+    why = [_REFUND_REASONS[r] for r in reasons if r in _REFUND_REASONS]
+    if days is not None and window is not None:
+        outside = "outside_refund_window" in reasons if "reasons" in refund else days > window
+        subject = f"Your charge on invoice {refund['invoice_id']}" if refund.get("invoice_id") else "Your charge"
+        line = f"{subject} was {_count(days, 'day')} ago, which is {'outside' if outside else 'within'} our {window}-day refund window"
+        if refund.get("eligible"):
+            line += ", so it meets our refund policy."
+        elif why:
+            line += f", {'and' if outside else 'but'} {' and '.join(why)}, so it doesn't meet our refund policy."
+        else:
+            line += ", so it doesn't meet our refund policy."
+    else:
+        line = "I couldn't match a charge to our refund policy" + (f" because {' and '.join(why)}." if why else ".")
+    return line + " Refunds are reviewed and issued only by our billing team, so I can't issue one myself."
+
+
+# Sentences about platform components that are not operational (or one line saying all is well).
+def _status_lines(status) -> list[str]:
+    rows = status if isinstance(status, list) else status.get("components") or [status]
+    bad = [r for r in rows if isinstance(r, dict) and r.get("status") not in (None, "operational")]
+    lines = []
+    for r in bad:
+        name = {"api": "API"}.get(r.get("component"), str(r.get("component", "")).replace("-", " "))
+        problem = "an outage" if r.get("status") == "outage" else "degraded performance"
+        incident = f" (incident {r['incident_id']})" if r.get("incident_id") else ""
+        lines.append(f"We're currently seeing {problem} on our {name} service{incident}.")
+    if rows and not bad:
+        lines.append("All CloudFlow systems are running normally right now.")
+    return lines
+
+
+# Turn tool outputs into natural fact sentences, computed in code (never by the LLM); numbers are exact.
+# brief=True (customer-facing MOCK answers) skips facts that would only be noise, e.g. "you're on Pro".
+def tool_fact_lines(tool_results: list[dict], brief: bool = False) -> list[str]:
     lines = []
     for call in tool_results or []:
         output = call.get("output")
-        if call.get("status") == "error" or (isinstance(output, dict) and "error" in output):
-            if call.get("tool") != "create_handoff":
-                lines.append(f"I couldn't check {call.get('tool', 'a tool')} right now.")
+        failed = call.get("status") == "error" or (isinstance(output, dict) and "error" in output)
+        if failed and call.get("tool") != "create_handoff":
+            lines.append(f"I wasn't able to {_TOOL_ACTIONS.get(call.get('tool'), 'check that')} just now.")
 
-    account = _tool_output(tool_results, "lookup_account")
-    if account:
-        lines.append(f"Your account is on the {account.get('plan')} plan (status: {account.get('status')}, "
-                     f"CloudFlow {account.get('product_version')}).")
+    account = _tool_output(tool_results, "lookup_account") or {}
+    if account and not brief:
+        lines.append(f"You're on the {account.get('plan')} plan, running CloudFlow {account.get('product_version')}.")
+    if account.get("status") and account["status"] != "active":
+        lines.append(f"Your account is currently {account['status'].replace('_', ' ')}.")
 
-    usage = _tool_output(tool_results, "get_usage") or {}
     limits = _tool_output(tool_results, "get_plan_limits")
     if isinstance(limits, dict):
-        usage = {**usage, **(limits.get("usage") or {})}
-        checks = [("api_calls_peak_per_min", "api_rate_limit_per_min", "API calls per minute (peak)",
-                   ["api_rate_over"]),
-                  ("workflow_runs", "monthly_workflow_runs", "workflow runs this month",
-                   ["runs_over", "workflow_runs_over"]),
-                  ("seats_used", "seats", "seats", ["seats_over"])]
-        for used_key, limit_key, label, flags in checks:
-            used, limit = usage.get(used_key), limits.get(limit_key)
-            if limit is None:
-                continue
-            if used is None:
-                lines.append(f"Your plan allows {limit} {label}.")
-            elif _is_over(limits, flags, used, limit):
-                lines.append(f"Your usage is {used} {label}, which is over your plan limit of {limit}.")
-            else:
-                lines.append(f"Your usage is {used} {label}, within your plan limit of {limit}.")
+        usage = {**(_tool_output(tool_results, "get_usage") or {}), **(limits.get("usage") or {})}
+        lines.extend(_usage_lines(usage, limits, limits.get("plan") or account.get("plan"), brief))
 
     invoices = _tool_output(tool_results, "get_invoices")
     if invoices is not None:
-        rows = invoices.get("invoices", []) if isinstance(invoices, dict) else invoices
-        lines.append(f"I can see {len(rows)} invoice(s) on your account.")
-        for inv in rows:
-            if inv.get("status") == "failed":
-                lines.append(f"Invoice {inv.get('invoice_id')} for {inv.get('amount')} {inv.get('currency', '')} "
-                             f"on {inv.get('charged_on')} failed (reason: {inv.get('failure_reason') or 'unknown'}).")
-        dupes = _duplicate_ids(invoices.get("possible_duplicates") if isinstance(invoices, dict) else None)
-        if dupes:
-            lines.append(f"Invoices {', '.join(dupes)} have the same amount and charge date, "
-                         "so they look like a possible duplicate charge.")
+        lines.extend(_invoice_lines(invoices))
 
     refund = _tool_output(tool_results, "check_refund_eligibility")
     if refund:
-        subject = f"Invoice {refund['invoice_id']}" if refund.get("invoice_id") else "The invoice"
-        days, window = refund.get("days_since_charge"), refund.get("window_days")
-        if days is not None and window is not None:
-            where = "within" if days <= window else "outside"
-            subject += f" was charged {days} days ago, {where} the {window}-day refund window,"
-        verdict = "meets" if refund.get("eligible") else "does not meet"
-        reason = f" ({refund['reason']})" if refund.get("reason") and not refund.get("eligible") else ""
-        lines.append(f"{subject} and {verdict} the refund policy{reason} (rule {refund.get('rule_id', 'n/a')}). "
-                     "Refunds are reviewed and issued only by our billing team.")
+        lines.append(_refund_line(refund))
 
     status = _tool_output(tool_results, "check_platform_status")
     if status is not None:
-        rows = status if isinstance(status, list) else status.get("components") or [status]
-        bad = [r for r in rows if isinstance(r, dict) and r.get("status") not in (None, "operational")]
-        for r in bad:
-            incident = f" (incident {r['incident_id']})" if r.get("incident_id") else ""
-            lines.append(f"Platform status: {r.get('component')} is currently {r.get('status')}{incident}.")
-        if rows and not bad:
-            lines.append("All CloudFlow platform components are currently operational.")
+        lines.extend(_status_lines(status))
 
     reset = _tool_output(tool_results, "send_password_reset")
     if reset and reset.get("status") == "reset_email_sent":
@@ -399,24 +512,48 @@ def tool_fact_lines(tool_results: list[dict]) -> list[str]:
 
 _NUMBERED = re.compile(r"^\s*\d+[.)]\s", re.MULTILINE)
 _PROCEDURE_HEADING = re.compile(r"steps|fix|resolution|how to|\bupdat|\bchang|\bresolv|\breconnect", re.IGNORECASE)
+# Source IDs never appear in answer text (the UI lists the sources separately).
+_SOURCE_IDS = re.compile(r"\s*\((?:KB|POL|RN|TKT|COM|JD)-[\w.-]*\w\)|\b(?:KB|POL|RN|TKT|COM|JD)-[\w.-]*\w")
+# Titles or headings that mark a troubleshooting article ("Salesforce step fails with CF-503").
+_TROUBLE_DOC = re.compile(r"\bCF-\d{3}\b|error|fail|not working|problem|troubleshoot|fix|resolv", re.IGNORECASE)
+# Headings whose first sentence explains a cause, so it can open a troubleshooting answer.
+_CAUSE_HEADING = re.compile(r"overview|cause|mean|symptom|why|what", re.IGNORECASE)
 
 
-# Pull the useful part of a chunk: up to 8 numbered steps, else its first two sentences.
-# Chunk text looks like "Title / ## Section / body"; the title, headings and table rows are skipped.
-def _key_text(text: str, title: str = "") -> str:
-    lines = [ln.strip().replace("**", "") for ln in text.splitlines()]
-    lines = [ln.lstrip("-* ") for ln in lines
-             if ln and ln != title and not ln.startswith("#") and not ln.startswith("|")]
-    steps = [ln for ln in lines if _NUMBERED.match(ln)]
-    if steps:
-        return "\n".join(steps[:8])
-    sentences = re.split(r"(?<=[.!?])\s+", " ".join(lines))
-    return " ".join(sentences[:2])[:500]
+# Readable body lines of a chunk: no title, headings, table rows, bold markers, bullets or source IDs.
+def _clean_lines(chunk: dict) -> list[str]:
+    title = chunk["meta"].get("title", "")
+    lines = [ln.strip().replace("**", "") for ln in chunk.get("text", "").splitlines()]
+    lines = [_SOURCE_IDS.sub("", ln.lstrip("-* ")) for ln in lines
+             if ln and ln != title and not ln.startswith(("#", "|"))]
+    return [re.sub(r"\s+([.,;:])", r"\1", ln).strip() for ln in lines]
+
+
+# The numbered steps of a chunk (at most 8).
+def _steps(chunk: dict) -> list[str]:
+    return [ln for ln in _clean_lines(chunk) if _NUMBERED.match(ln)][:8]
+
+
+# The first n prose sentences of a chunk (numbered steps left out).
+# A leading fragment (lowercase start, left over from the ~800-character chunk split) is skipped.
+def _sentences(chunk: dict, n: int) -> str:
+    prose = " ".join(ln for ln in _clean_lines(chunk) if not _NUMBERED.match(ln))
+    sentences = re.split(r"(?<=[.!?])\s+", prose)
+    if sentences and sentences[0][:1].islower():
+        sentences = sentences[1:]
+    return " ".join(sentences[:n]).strip()[:500]
 
 
 # True when a chunk holds instructions: a Steps/Fix/Resolution heading or a numbered list.
 def _is_procedure(chunk: dict) -> bool:
     return bool(_PROCEDURE_HEADING.search(chunk["meta"].get("section", "")) or _NUMBERED.search(chunk.get("text", "")))
+
+
+# True when a chunk comes from a troubleshooting article (KB-TRB-*, or an error/fix title or heading).
+def _is_troubleshooting(chunk: dict) -> bool:
+    meta = chunk["meta"]
+    return meta.get("source_id", "").startswith("KB-TRB") or bool(
+        _TROUBLE_DOC.search(f"{meta.get('title', '')} {meta.get('section', '')}"))
 
 
 # True when a section is written for another major version, e.g. "Steps in CloudFlow 3.x" for a 4.3 account.
@@ -440,23 +577,56 @@ def _choose_chunks(chunks: list[dict], tool_results: list[dict]) -> list[dict]:
     best = pool[0]["meta"].get("source_id")
     same_source = sorted((c for c in pool if c["meta"].get("source_id") == best),
                          key=lambda c: not _is_procedure(c))  # stable: keeps score order otherwise
-    return (same_source + [c for c in pool if c["meta"].get("source_id") != best])[:2]
+    ranked = same_source + [c for c in pool if c["meta"].get("source_id") != best]
+    # One piece per section: a long section split into ::0 and ::1 would only repeat itself.
+    sections = {}
+    for c in ranked:
+        sections.setdefault((c["meta"].get("source_id"), c["meta"].get("section")), c)
+    return list(sections.values())[:2]
 
 
-# Build a cited draft by quoting the chosen chunks and stating tool facts.
+# Opening line for how-to steps: "Here are the steps for exporting workflow run history:".
+def _how_to_lead(title: str) -> str:
+    first_word = title.split(" ", 1)[0]
+    if first_word.lower().endswith("ing") and len(first_word) > 4:
+        return f"Here are the steps for {title[0].lower()}{title[1:]}:"
+    return "Here's what to do:"
+
+
+# The documentation part of the answer, phrased like a support agent (no titles, IDs or section names):
+# how-to -> lead + steps + one extra sentence; troubleshooting -> cause sentence + "Here's how to fix it:" + steps;
+# no steps -> the key sentences.
+def _doc_answer(chosen: list[dict]) -> str:
+    procedure = next((c for c in chosen if _is_procedure(c)), None)
+    rest = [c for c in chosen if c is not procedure]
+    if procedure is None:
+        return " ".join(p for p in (_sentences(rest[0], 2), _sentences(rest[1], 1) if len(rest) > 1 else "") if p)
+    body = "\n".join(_steps(procedure)) or _sentences(procedure, 2)
+    extra = _sentences(rest[0], 1) if rest else ""
+    after = f"\n\n{extra}" if extra else ""
+    if _is_troubleshooting(procedure):
+        if extra and _CAUSE_HEADING.search(rest[0]["meta"].get("section", "")):
+            return f"{extra} Here's how to fix it:\n{body}"  # the overview sentence explains the cause
+        return f"Here's how to fix it:\n{body}{after}"
+    return f"{_how_to_lead(procedure['meta'].get('title', ''))}\n{body}{after}"
+
+
+# A friendly line for an upcoming change, without source IDs.
+def _heads_up(change: str) -> str:
+    text = _SOURCE_IDS.sub("", change).replace(" stops applying on ", " is being retired on ").strip().rstrip(".")
+    return f"Heads-up: {text}, so it's worth planning ahead."
+
+
+# Build a cited MOCK/fallback answer that reads like a support agent: account facts first, then the
+# documented answer, then platform status and any upcoming changes. Citations are the chosen chunk_ids.
 def template_compose(chunks: list[dict], tool_results: list[dict], upcoming_changes: list[str]) -> Draft:
     chosen = _choose_chunks(chunks, tool_results)
-    parts = []
-    for c in chosen:
-        m = c["meta"]
-        title = m.get("title") or m.get("source_id")
-        parts.append(f'According to "{title}" ({m.get("source_id")}, section "{m.get("section")}"):\n'
-                     f'{_key_text(c.get("text", ""), title)}')
-    if not chosen:
-        parts.append("I couldn't find this in our documentation.")
-    parts.extend(tool_fact_lines(tool_results))
-    parts.extend(f"Upcoming change: {change}" for change in upcoming_changes or [])
-    return Draft(answer="\n\n".join(parts), cited_chunk_ids=[c["chunk_id"] for c in chosen])
+    calls = tool_results or []
+    facts = " ".join(tool_fact_lines([t for t in calls if t.get("tool") != "check_platform_status"], brief=True))
+    status = " ".join(tool_fact_lines([t for t in calls if t.get("tool") == "check_platform_status"], brief=True))
+    docs = _doc_answer(chosen) if chosen else ("" if facts else "I couldn't find this in our documentation.")
+    parts = [facts, docs, status] + [_heads_up(c) for c in upcoming_changes or []]
+    return Draft(answer="\n\n".join(p for p in parts if p), cited_chunk_ids=[c["chunk_id"] for c in chosen])
 
 
 # Common words and template connectives that are not factual claims (ignored by the overlap score).
@@ -466,7 +636,7 @@ could does doing done down during each either else even every from further have 
 itself just more most much must need only other over same section should since some such than that
 their them then there these they this those through under until very want were what when where which
 while will with within would your yours you're please thank thanks help note following via
-couldn't documentation find upcoming change
+couldn't documentation find upcoming change here's heads-up ahead planning worth it's
 """.split())
 _PROMISES = re.compile(
     r"refund (?:has|have) been (?:issued|processed|approved|sent)|(?:i|we)(?: have|'ve| will|'ll) "
