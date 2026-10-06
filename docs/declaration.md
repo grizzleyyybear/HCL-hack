@@ -12,9 +12,9 @@ We, the undersigned members of the team, declare that:
 5. **No real personal data.** All accounts, companies, people, emails (`@example.com` only), invoices and knowledge-base documents are synthetic. Raw public downloads are kept out of the repository (`data/raw/` is gitignored), and only anonymised, paraphrased or structural derivatives are committed.
 6. **No hard-coded answers.** No answer to a demo or test request is hard-coded. Account facts, usage, refund eligibility and platform status come from deterministic tools over SQLite and the policy registry.
 
-| Member | Name | Signature | Date |
+| Role | Name | Signature | Date |
 | --- | --- | --- | --- |
-| Member 1 | | | |
-| Member 2 | | | |
-| Member 3 | | | |
-| Member 4 | | | |
+| P1 · API and orchestration | Mrinal Sharma | | |
+| P2 · Knowledge and retrieval | Dev Singh | | |
+| P3 · Data and tools | Abhinav | | |
+| P4 · Safety, critic and eval | Bhavesh | | |

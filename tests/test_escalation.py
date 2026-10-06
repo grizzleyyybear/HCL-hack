@@ -287,3 +287,25 @@ def test_no_data_errors_are_not_tool_failures():
     assert not _tool_failed({"tool": "check_refund_eligibility", "status": "error", "output": {"error": "invoice_not_found"}})
     assert _tool_failed({"tool": "get_plan_limits", "status": "error", "output": {"error": "plan_not_found"}})
     assert _tool_failed({"tool": "get_invoices", "status": "error", "output": {"error": "OperationalError: database is locked"}})
+
+
+# ---------- review fixes (2026-10-06) ----------
+
+# A security how-to with no subtype ("How do I enable 2FA?") is answered, not an urgent security incident.
+def test_security_question_without_subtype_is_not_escalated():
+    assert run_decide(make_intent(type="security", subtype=None)) == ("answer", [])
+    assert run_decide(make_intent(type="security", subtype="compromise"))[0] == "escalate"
+
+
+# When the critic reports a promise or unauthorised action, the draft is revised once even if the regex missed it.
+def test_critic_policy_risk_triggers_one_revision():
+    flagged = Critique(groundedness=0.95, coverage="complete", policy_risk="promise_made", decision="answer")
+    assert run_decide(critique=flagged) == ("revise", [])
+    assert run_decide(critique=flagged, revisions=1) == ("escalate", ["promise_made"])  # still flagged after revising
+
+
+# Common promise phrasings are caught after the revision, so they never reach the customer.
+@pytest.mark.parametrize("answer", ["We will refund you the duplicate charge.", "A refund will be issued to your card.",
+                                    "You will receive a full refund.", "I've processed your refund."])
+def test_promise_after_revision_escalates(answer):
+    assert run_decide(answer=answer, revisions=1) == ("escalate", ["promise_made"])

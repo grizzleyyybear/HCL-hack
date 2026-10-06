@@ -6,7 +6,7 @@ from typing import Literal
 from pydantic import BaseModel, Field, field_validator
 
 # Accepted product_versions formats (see retrieval.parse_versions): ALL, 4.3, 3.x, 4.2+, 4.0-4.3.
-VERSIONS_FORMAT = re.compile(r"^\s*(?:all|\d+\.(?:\d+|x)\s*\+?(?:\s*-\s*\d+\.(?:\d+|x))?)\s*$", re.IGNORECASE)
+VERSIONS_FORMAT = re.compile(r"^\s*(?:all|\d+\.(?:\d+|x)\s*\+?(?:\s*[-\u2013]\s*\d+\.(?:\d+|x))?)\s*$", re.IGNORECASE)
 
 AnswerType = Literal["answered", "clarification_needed", "escalated", "not_found", "refused", "out_of_scope"]
 
@@ -18,6 +18,14 @@ class SupportRequest(BaseModel):
     channel: str | None = None
     product_version: str | None = None
     as_of_date: datetime.date | None = None
+
+    # A sane date window keeps date arithmetic (look-back windows) from overflowing on "0001-01-01".
+    @field_validator("as_of_date")
+    @classmethod
+    def _sane_date(cls, value):
+        if value is not None and not datetime.date(2000, 1, 1) <= value <= datetime.date(2100, 12, 31):
+            raise ValueError("as_of_date must be between 2000-01-01 and 2100-12-31")
+        return value
 
 
 class Intent(BaseModel):
@@ -149,6 +157,18 @@ class SourceMeta(BaseModel):
     provenance: str = ""
     synthetic: str = "Y"
     tags: str = ""  # extra column (allowed): semicolon-separated topic keys, e.g. "salesforce;CF-503"
+
+    # Common JSON shapes for optional fields: null -> "", a list of tags -> "a;b", true/false -> "Y"/"N".
+    @field_validator("effective_from", "deprecated_on", "supersedes", "provenance", "synthetic", "tags", mode="before")
+    @classmethod
+    def _plain_text(cls, value):
+        if value is None:
+            return ""
+        if isinstance(value, bool):
+            return "Y" if value else "N"
+        if isinstance(value, (list, tuple)):
+            return ";".join(str(v).strip() for v in value)
+        return str(value)
 
     # Dates must be YYYY-MM-DD; optional date fields may be empty.
     @field_validator("last_updated", "effective_from", "deprecated_on")

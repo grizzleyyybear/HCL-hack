@@ -14,7 +14,7 @@ import datetime
 import json
 import re
 
-from app import llm, retrieval
+from app import db, llm, retrieval
 from app.schemas import Conflict, DisagreementResult, Disagreements
 
 DOC_LEVELS = (1, 2)    # articles, policies, release notes
@@ -48,8 +48,10 @@ STOPWORDS = {"the", "and", "for", "with", "you", "your", "this", "that", "from",
 #          "unresolved": [(source_id, source_id)], "usage": {llm usage of the disagreement check}}.
 def apply_precedence(chunks: list[dict], customer_version: str | None, as_of_date: datetime.date) -> dict:
     applicable, upcoming, conflicts = applicability(chunks, customer_version, as_of_date)
-    applicable, found = supersession(applicable)
+    before = applicable
+    applicable, found = supersession(applicable, customer_version, as_of_date)
     conflicts += found
+    applicable += _replacements(found, before, applicable, customer_version, as_of_date)
     # Steps 3-5 share one batched disagreement check over sources that share a topic.
     pairs = topic_pairs(applicable)
     verdicts, usage = check_disagreements(pairs)
@@ -66,13 +68,13 @@ def apply_precedence(chunks: list[dict], customer_version: str | None, as_of_dat
 # Step 1: keep chunks that cover the customer's version and are in effect on as_of_date.
 # Future deprecations become upcoming changes; past deprecations are dropped as conflicts.
 def applicability(chunks: list[dict], customer_version: str | None, as_of_date) -> tuple[list, list, list]:
-    code = _customer_code(customer_version)
+    wanted = _customer_range(customer_version)
     today = str(as_of_date)
     kept, upcoming, conflicts = [], [], []
     for chunk in chunks:
         meta = chunk["meta"]
         low, high = int(meta.get("version_min") or 0), int(meta.get("version_max") or 9999)
-        if code is not None and not low <= code <= high:
+        if wanted is not None and not (low <= wanted[1] and high >= wanted[0]):  # versions must overlap
             continue
         if meta.get("effective_from") and meta["effective_from"] > today:
             continue
@@ -92,8 +94,9 @@ def applicability(chunks: list[dict], customer_version: str | None, as_of_date) 
 # Also drop tickets/posts on the superseded article's subject (its title words) resolved before the
 # replacement took effect: they describe the old procedure.
 # Step 1 already removed sources not yet in effect, so every superseding source here is in effect.
-def supersession(chunks: list[dict]) -> tuple[list, list]:
-    replaced_by = {}  # old id -> (new id, date the new one took effect)
+def supersession(chunks: list[dict], customer_version: str | None = None, as_of_date=None) -> tuple[list, list]:
+    # Supersessions in effect come from the whole source register, not only from what this search returned.
+    replaced_by = _registry_supersessions(customer_version, as_of_date) if as_of_date else {}  # old -> (new, since)
     for chunk in chunks:
         meta = chunk["meta"]
         for old_id in (meta.get("supersedes") or "").split(";"):
@@ -203,12 +206,17 @@ def _warns_against(doc: str, advice: str) -> bool:
 # True when the other text gives a figure the doc calls out of date, or gives figures for a unit
 # the doc also quantifies with none in common (e.g. "120 calls" vs "300 calls").
 def _numbers_clash(doc: str, other: str) -> bool:
-    doc_figures = _figures(doc)
     outdated = {n.replace(",", "") for line in OUTDATED.findall(doc) for n in re.findall(r"\d[\d,]*", line)}
+    doc_figures = {unit: numbers - outdated for unit, numbers in _figures(doc).items()}
     for unit, numbers in _figures(other).items():
-        if numbers & outdated or (doc_figures.get(unit) and not numbers & doc_figures[unit]):
+        if numbers & outdated:
+            return True
+        if unit not in TIME_UNITS and doc_figures.get(unit) and not numbers & doc_figures[unit]:
             return True
     return False
+
+
+TIME_UNITS = {"day", "hour"}
 
 
 # Numbers written next to a unit, e.g. "120 API calls, 7 days" -> {"call": {"120"}, "day": {"7"}}.
@@ -284,11 +292,52 @@ def _announcer(dead: dict, chunks: list[dict]) -> str:
     return "as_of_date"
 
 
-# Customer version "4.3" -> 403; None when unknown or unparseable (then no version filter).
-def _customer_code(version: str | None) -> int | None:
+# Customer version as a range: "4.3" -> (403, 403), "4.x" -> (400, 499); None when unknown or unparseable.
+def _customer_range(version: str | None) -> tuple[int, int] | None:
     if not version:
         return None
     try:
-        return retrieval.version_code(version)
+        return retrieval.parse_versions(version)
     except ValueError:
         return None
+
+
+# {old id: (new id, effective date)} for every source in the register that supersedes another, is in effect
+# on as_of_date and covers the customer's version. Empty when the sources table is not there yet.
+def _registry_supersessions(customer_version: str | None, as_of_date) -> dict:
+    wanted, today, found = _customer_range(customer_version), str(as_of_date), {}
+    try:
+        with db.connect() as conn:
+            rows = conn.execute("SELECT source_id, supersedes, product_versions, effective_from, last_updated "
+                                "FROM sources WHERE supersedes IS NOT NULL AND supersedes != ''").fetchall()
+    except Exception:  # noqa: BLE001 - no sources table (fresh DB, unit tests)
+        return found
+    for row in rows:
+        since = row["effective_from"] or row["last_updated"] or ""
+        try:
+            low, high = retrieval.parse_versions(row["product_versions"])
+        except ValueError:
+            continue
+        if since > today or (wanted is not None and not (low <= wanted[1] and high >= wanted[0])):
+            continue
+        for old_id in row["supersedes"].split(";"):
+            if old_id.strip() and old_id.strip() != row["source_id"]:
+                found.setdefault(old_id.strip(), (row["source_id"], since))
+    return found
+
+
+# A superseded source that was retrieved without its replacement would leave a gap: bring in the replacement's
+# chunks (if they apply to this customer) with the score of the source they replace.
+def _replacements(conflicts: list, before: list, kept: list, customer_version, as_of_date) -> list:
+    present = {c["meta"]["source_id"] for c in kept}
+    added = []
+    for conflict in conflicts:
+        if conflict.rule != "supersession" or conflict.winner in present:
+            continue
+        present.add(conflict.winner)
+        scores = [float(c.get("score") or 0) for c in before if c["meta"]["source_id"] == conflict.loser]
+        fresh, _, _ = applicability(retrieval.chunks_of(conflict.winner), customer_version, as_of_date)
+        for chunk in fresh:
+            chunk["score"] = max(scores, default=0.0)
+        added += fresh
+    return added

@@ -4,6 +4,7 @@ The seven Annex C tables are created exactly as the guide defines them (judges l
 their own CSVs into them). We add sources, audit_log, conversations, messages, counters.
 """
 import datetime
+import re
 import sqlite3
 
 from app.config import settings
@@ -73,13 +74,22 @@ def next_id(prefix: str) -> str:
 def get_policy(parameter: str, plan: str | None = None, as_of_date=None) -> tuple[str, str]:
     as_of = str(as_of_date or datetime.date.today())
     with connect() as conn:
-        rows = conn.execute(
-            "SELECT rule_id, value, scope_plans FROM policy_registry "
-            "WHERE parameter = ? AND effective_from <= ? ORDER BY effective_from DESC",
-            (parameter, as_of),
-        ).fetchall()
-    for row in rows:
-        scope = (row["scope_plans"] or "").strip()
-        if scope == "ALL" or (plan and plan in [p.strip() for p in scope.split(";")]):
+        rows = conn.execute("SELECT rowid, rule_id, value, scope_plans, effective_from FROM policy_registry "
+                            "WHERE parameter = ?", (parameter,)).fetchall()
+    in_effect = [r for r in rows if r["effective_from"] <= as_of]
+    if rows and not in_effect:  # a date before the first rule: use the earliest rules rather than fail the request
+        first = min(r["effective_from"] for r in rows)
+        in_effect = [r for r in rows if r["effective_from"] == first]
+    # Newest date first; on the same date a plan-specific row beats "ALL", then the most recently written row wins.
+    in_effect.sort(key=lambda r: (r["effective_from"], "all" not in plan_list(r["scope_plans"]), r["rowid"]),
+                   reverse=True)
+    for row in in_effect:
+        scope = plan_list(row["scope_plans"])
+        if "all" in scope or (plan and plan.lower() in scope):
             return row["value"], row["rule_id"]
     raise KeyError(f"no policy_registry row for {parameter!r} (plan={plan}, as_of={as_of})")
+
+
+# Plans in a registry list written with ";" or "," in any case ("Free;Pro", "Pro, Business", "ALL"), lowercased.
+def plan_list(value: str | None) -> list[str]:
+    return [p.strip().lower() for p in re.split(r"[;,]", value or "") if p.strip()]

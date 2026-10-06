@@ -208,3 +208,68 @@ def test_ingest_all_loads_once_then_skips_and_force_reloads(temp_env):
 
 def test_ingest_all_without_register_is_not_an_error(temp_env):
     assert ingest_kb.ingest_all() == {"ingested": 0, "skipped": 0, "missing_files": [], "invalid_rows": []}
+
+
+# ---------------------------------------------------------------- review fixes (2026-10-06)
+
+NEW_ARTICLE = "# Rotating zephyr keys (new)\n\n## Steps\n1. Open Admin, then Zephyr keys.\n2. Select Rotate and confirm.\n"
+OLD_ARTICLE = "# Rotating zephyr keys (old)\n\n## Steps\n1. Email support and wait for a new zephyr key.\n"
+
+
+# A superseded article retrieved WITHOUT its replacement is dropped and the replacement is brought in.
+def test_supersession_uses_the_register_and_brings_the_replacement(client):
+    from app import precedence
+    assert post(client, "old.md", OLD_ARTICLE, meta("JD-OLD", title="Rotating zephyr keys (old)",
+                                                    last_updated="2025-01-10")).status_code == 200
+    assert post(client, "new.md", NEW_ARTICLE, meta("JD-NEW", title="Rotating zephyr keys (new)", supersedes="JD-OLD",
+                                                    effective_from="2026-03-01")).status_code == 200
+    retrieved = [{**c, "score": 0.8} for c in retrieval.chunks_of("JD-OLD")]  # the search found only the old one
+    result = precedence.apply_precedence(retrieved, "4.3", __import__("datetime").date(2026, 10, 6))
+    ids = {c["meta"]["source_id"] for c in result["applicable"]}
+    assert ids == {"JD-NEW"} and any(c.loser == "JD-OLD" and c.rule == "supersession" for c in result["conflicts"])
+
+
+# A customer version written as a major line ("4.x") still finds 4.2+ articles.
+def test_major_line_customer_version_overlaps(client):
+    post(client, "a.md", ARTICLE, meta("JD-VER", title="Zephyr relay", product_versions="4.2+"))
+    assert "JD-VER" in {c["meta"]["source_id"] for c in retrieval.search("zephyr lantern relay", "4.x", 3)}
+    assert "JD-VER" not in {c["meta"]["source_id"] for c in retrieval.search("zephyr lantern relay", "3.x", 3)}
+
+
+# A UTF-8 byte-order mark (PowerShell's UTF8 encoding) does not hide the first heading, and a BOM ticket loads.
+def test_bom_does_not_change_the_first_section(client):
+    assert post(client, "bom.md", b"\xef\xbb\xbf## Steps\n1. Open the quokka panel.\n", meta("JD-BOM")).status_code == 200
+    assert {c["meta"]["section"] for c in retrieval.chunks_of("JD-BOM")} == {"Steps"}
+    ticket = b"\xef\xbb\xbf" + json.dumps(TICKET).encode()
+    assert post(client, "t.json", ticket, meta("JD-BOMT", doc_type="ticket")).status_code == 200
+
+
+# In a single-font PDF, a line that only continues a sentence is not a heading.
+def test_pdf_wrapped_line_is_not_a_heading(client, temp_env):
+    lines = ["Overview", "The quokka relay forwards walrus events in the current plan window, including",
+             "Business and Enterprise", "workspaces.", "Steps", "1. Open Settings."]
+    assert post(client, "w.pdf", make_pdf(lines), meta("JD-WRAP", title="Quokka relay")).status_code == 200
+    markdown = (temp_env / "data" / "kb" / "ingested" / "JD-WRAP.md").read_text("utf-8")
+    assert "## Business and Enterprise" not in markdown and "## Steps" in markdown
+
+
+# A register row edited without touching the file (e.g. a new deprecated_on) is re-indexed; a row removed
+# from the register is removed from the index, while live uploads stay.
+def test_startup_ingest_follows_register_edits_and_removals(temp_env):
+    rows = [meta("KB-GS-001"), meta("KB-GS-002")]
+    write_register(temp_env / "data", rows, with_files={"KB-GS-001", "KB-GS-002"})
+    assert ingest_kb.ingest_all()["ingested"] == 2
+    write_register(temp_env / "data", [meta("KB-GS-001", deprecated_on="2026-10-01")], with_files={"KB-GS-001"})
+    second = ingest_kb.ingest_all()
+    assert second["ingested"] == 1 and second["removed"] == ["KB-GS-002"]
+    assert {c["meta"]["deprecated_on"] for c in retrieval.chunks_of("KB-GS-001")} == {"2026-10-01"}
+    assert retrieval.chunks_of("KB-GS-002") == []
+
+
+# Metadata JSON with null optional fields, a list of tags or a boolean "synthetic" is accepted (not a 422).
+def test_ingest_metadata_accepts_common_json_shapes(client):
+    metadata = meta("JD-SHAPES", effective_from=None, deprecated_on=None, supersedes=None,
+                    tags=["zephyr", "relay"], synthetic=False, product_versions="4.0–4.3")
+    assert post(client, "a.md", ARTICLE, metadata).status_code == 200
+    row = {r["source_id"]: r for r in client.get("/sources").json()}["JD-SHAPES"]
+    assert row["tags"] == "zephyr;relay" and row["synthetic"] == "N" and row["effective_from"] == ""

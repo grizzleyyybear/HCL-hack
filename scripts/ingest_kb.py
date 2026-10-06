@@ -49,11 +49,11 @@ def ingest_all(force: bool = False) -> dict:
                 summary["missing_files"].append(path.as_posix())
 
     # Incremental: only documents that are new, whose file text changed (content hash on the chunks), or whose
-    # register last_updated changed are (re-)ingested; restarts with an unchanged KB skip everything.
-    indexed, stored = _indexed_hashes(), _stored_versions()
+    # register row changed (dates, versions, supersedes, ...) are (re-)ingested; an unchanged KB skips everything.
+    indexed, stored = _indexed_hashes(), _stored_rows()
     todo = found if force else [(meta, path) for meta, path in found
                                 if indexed.get(meta.source_id) != retrieval.content_hash(_read(data_dir / path))
-                                or stored.get(meta.source_id) != meta.last_updated]
+                                or stored.get(meta.source_id) != _register_fields(meta)]
     summary["skipped"] = len(found) - len(todo)
 
     for meta, path in todo:
@@ -64,12 +64,30 @@ def ingest_all(force: bool = False) -> dict:
             continue
         retrieval.upsert_source(meta, path.as_posix())
         summary["ingested"] += 1
+    summary["removed"] = _remove_stale({meta.source_id for meta, _ in found})
     return summary
+
+
+# Remove sources that left the register (chunks and sources row). Live uploads (kb/ingested/) are kept.
+def _remove_stale(register_ids: set) -> list[str]:
+    with db.connect() as conn:
+        stale = [row["source_id"] for row in conn.execute("SELECT source_id, file_path FROM sources")
+                 if row["source_id"] not in register_ids and not (row["file_path"] or "").startswith("kb/ingested/")]
+        for source_id in stale:
+            conn.execute("DELETE FROM sources WHERE source_id = ?", (source_id,))
+    for source_id in stale:
+        retrieval._collection().delete(where={"source_id": source_id})
+    return stale
+
+
+# The register fields of one source, as stored in the sources table (to spot an edited register row).
+def _register_fields(meta: SourceMeta) -> dict:
+    return {k: str(v) for k, v in meta.model_dump().items()}
 
 
 # A KB file as text (one place, so the hash check and the ingest read it the same way).
 def _read(path: pathlib.Path) -> str:
-    return path.read_text(encoding="utf-8")
+    return path.read_text(encoding="utf-8-sig")  # a BOM must not hide the first heading
 
 
 # {source_id: content_hash} for every source with chunks in Chroma (older chunks without a hash map to None).
@@ -77,10 +95,12 @@ def _indexed_hashes() -> dict:
     return {m["source_id"]: m.get("content_hash") for m in retrieval._collection().get(include=["metadatas"])["metadatas"]}
 
 
-# The last_updated date stored for each source in the sources table, to spot edited documents.
-def _stored_versions() -> dict:
+# The register fields stored for each source in the sources table, to spot an edited register row.
+def _stored_rows() -> dict:
+    fields = list(SourceMeta.model_fields)
     with db.connect() as conn:
-        return {row["source_id"]: row["last_updated"] for row in conn.execute("SELECT source_id, last_updated FROM sources")}
+        return {row["source_id"]: {f: str(row[f] if row[f] is not None else "") for f in fields}
+                for row in conn.execute(f"SELECT {', '.join(fields)} FROM sources")}
 
 
 if __name__ == "__main__":

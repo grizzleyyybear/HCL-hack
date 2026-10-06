@@ -1,6 +1,6 @@
 # InsightDesk evaluation report
 
-Generated 2026-10-06 16:33 by `python eval/run_eval.py --compare`. Full per-case results: `eval/results/*.json`.
+Generated 2026-10-06 20:41 by `python eval/run_eval.py --compare`. Full per-case results: `eval/results/*.json`.
 
 > **These numbers were measured with `MOCK_LLM=true`.** Ollama was not installed on the build machine, so classify, compose and critic used the deterministic fallbacks in `app/llm.py` (keyword intent rules, a template composer that quotes the chosen chunks and states tool facts, and a word-overlap critic). Retrieval, precedence, tools, escalation, safety and audit are the real code paths. The demo and judged runs use Ollama `qwen2.5:7b-instruct`; rerun the same comparisons with `python eval/run_eval.py --compare --live`. Token counts are 0 in mock mode, and latency excludes LLM time.
 
@@ -32,12 +32,12 @@ Generated 2026-10-06 16:33 by `python eval/run_eval.py --compare`. Full per-case
 | Upcoming deprecation flagged | 100.0% | date in answer + audit upcoming_changes |
 | Live ingest (R12) | 100.0% | JD-EVAL-001 via POST /ingest, then answered |
 | Out-of-scope probes | 100.0% | 20 MS MARCO queries |
-| Tone probes escalated | 100.0% | 15 angry / repeat-contact messages; escalation reasons exact set 33.3% (information only) |
+| Tone probes escalated | 86.7% | 15 angry / repeat-contact messages; escalation reasons exact set 33.3% (information only) |
 | PII leakage | 0 objects, 0 log lines | target 0; 67 requests scanned |
-| Latency p50 / p95 | 54 / 75 ms | from audit records, all sets |
+| Latency p50 / p95 | 64 / 105 ms | from audit records, all sets |
 | LLM calls / tokens per request | 0 / 0 prompt + 0 completion | 0 in mock mode |
 | Mean critic groundedness | 0.995 | core cases with a critic score |
-| Full run time | 19.0 s | setup + KB ingest 13.9 s, cases 5.1 s |
+| Full run time | 21.3 s | setup + KB ingest 15.2 s, cases 6.1 s |
 
 ## Live run on the local model
 
@@ -54,7 +54,7 @@ Same 32 core cases and the same code with `MOCK_LLM=false`: Ollama `qwen2.5-code
 | Tool exactness | 100.0% | 100.0% |
 | PII leakage (objects / log lines) | 0 / 0 | 0 / 0 |
 | Mean critic groundedness | 0.886 | 0.995 |
-| Latency p50 / p95 (ms) | 50628 / 83919 | 54 / 75 |
+| Latency p50 / p95 (ms) | 50628 / 83919 | 64 / 105 |
 | LLM calls / tokens per request | 3.31 / 3464.3 + 277.0 | 0 / 0 (mock) |
 
 **Live cases that did not pass every check:**
@@ -138,20 +138,22 @@ Same 32 core cases and the same code with `MOCK_LLM=false`: Ollama `qwen2.5-code
 | TONE-03 | tone | must_escalate | escalated | escalated | pass | escalation_reasons: expected ['billing_dispute', 'explicit_human_request', 'repeated_contact'], got ['repeated_contact'] |
 | TONE-04 | tone | must_escalate | escalated | escalated | pass | escalation_reasons: expected ['billing_dispute', 'repeated_contact'], got ['billing_dispute'] |
 | TONE-05 | tone | must_escalate | escalated | escalated | pass | escalation_reasons: expected ['explicit_human_request', 'repeated_contact'], got ['explicit_human_request'] |
-| TONE-06 | tone | must_escalate | escalated | escalated | pass | escalation_reasons: expected ['explicit_human_request', 'repeated_contact'], got ['explicit_human_request'] |
+| TONE-06 | tone | must_escalate | escalated | answered | FAIL | answer_type: expected escalated, got answered; escalation_reasons: expected ['explicit_human_request', 'repeated_contact'], got [] |
 | TONE-07 | tone | must_escalate | escalated | escalated | pass |  |
 | TONE-08 | tone | must_escalate | escalated | escalated | pass | escalation_reasons: expected ['billing_dispute', 'explicit_human_request', 'repeated_contact'], got ['explicit_human_request', 'repeated_contact'] |
 | TONE-09 | tone | must_escalate | escalated | escalated | pass |  |
 | TONE-10 | tone | must_escalate | escalated | escalated | pass | escalation_reasons: expected ['billing_dispute', 'explicit_human_request', 'repeated_contact'], got ['explicit_human_request'] |
 | TONE-11 | tone | must_escalate | escalated | escalated | pass | escalation_reasons: expected ['billing_dispute', 'explicit_human_request', 'repeated_contact'], got ['billing_dispute', 'explicit_human_request'] |
-| TONE-12 | tone | must_escalate | escalated | escalated | pass | escalation_reasons: expected ['explicit_human_request', 'repeated_contact'], got ['explicit_human_request'] |
+| TONE-12 | tone | must_escalate | escalated | answered | FAIL | answer_type: expected escalated, got answered; escalation_reasons: expected ['explicit_human_request', 'repeated_contact'], got [] |
 | TONE-13 | tone | must_escalate | escalated | escalated | pass |  |
 | TONE-14 | tone | must_escalate | escalated | escalated | pass |  |
 | TONE-15 | tone | must_escalate | escalated | escalated | pass | escalation_reasons: expected ['explicit_human_request', 'repeated_contact'], got ['explicit_human_request'] |
 
-## Failures (1)
+## Failures (3)
 
 - **E-M4-03** (account_billing_tools): answer missing ['payment method']
+- **TONE-06** (must_escalate): answer_type: expected escalated, got answered
+- **TONE-12** (must_escalate): answer_type: expected escalated, got answered
 
 Failures are reported as observed; labels and system behaviour were not changed to make them pass.
 
@@ -167,8 +169,8 @@ Zero hits.
 
 | Model | Retrieval hit rate | Top-1 hit | Core cases passing every check | Answer correctness | Conflict match (lenient) | OOS probes correct (answered) | Best score: in-scope min / off-topic max | Retrieve step mean | KB ingest + setup |
 | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- |
-| `sentence-transformers/all-MiniLM-L6-v2` | 100.0% | 80.0% | 27/32 | 84.4% | 100.0% | 100.0% (0) | 0.4901 / n/a | 21.1 ms | 14.6 s |
-| `BAAI/bge-small-en-v1.5` | 100.0% | 80.0% | 31/32 | 96.9% | 100.0% | 100.0% (0) | 0.7399 / n/a | 31.9 ms | 18.3 s |
+| `sentence-transformers/all-MiniLM-L6-v2` | 100.0% | 80.0% | 27/32 | 84.4% | 100.0% | 100.0% (0) | 0.4901 / n/a | 25.3 ms | 17.5 s |
+| `BAAI/bge-small-en-v1.5` | 100.0% | 80.0% | 31/32 | 96.9% | 100.0% | 100.0% (0) | 0.7399 / n/a | 37.1 ms | 20.7 s |
 
 Cases whose pass/fail differs: E-M1-02 (fails with MiniLM), E-M1-03 (fails with MiniLM), E-M2-03 (fails with MiniLM), E-M2-07 (fails with MiniLM).
 
@@ -177,8 +179,8 @@ Cases whose pass/fail differs: E-M1-02 (fails with MiniLM), E-M1-03 (fails with 
 
 | top-k | Retrieval hit rate | Core cases passing every check | Answer correctness | Conflict match (lenient) | Mean groundedness | Citation validity | p50 / p95 latency |
 | --- | --- | --- | --- | --- | --- | --- | --- |
-| 3 | 100.0% | 31/32 | 96.9% | 100.0% | 0.995 | 100.0% | 54 / 75 ms |
-| 5 | 100.0% | 31/32 | 96.9% | 100.0% | 0.995 | 100.0% | 59 / 137 ms |
+| 3 | 100.0% | 31/32 | 96.9% | 100.0% | 0.995 | 100.0% | 64 / 105 ms |
+| 5 | 100.0% | 31/32 | 96.9% | 100.0% | 0.995 | 100.0% | 67 / 113 ms |
 
 Cases whose pass/fail differs: none.
 

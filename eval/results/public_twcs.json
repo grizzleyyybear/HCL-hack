@@ -22,8 +22,8 @@
       "platform_status": 4
     },
     "kb_sources": 73,
-    "setup_s": 37.3,
-    "total_runtime_s": 128.8,
+    "setup_s": 29.1,
+    "total_runtime_s": 117.3,
     "log_lines_flagged_by_redact": 0,
     "in_scope_score_floor": 0.7399
   },
@@ -31,12 +31,12 @@
   "probe_file": "data/raw/probes/twcs_300.jsonl (gitignored, not committed)",
   "description": "300 inbound tweets to other brands (250 thread openers + 50 with PII-like text), scrubbed",
   "requests": 300,
-  "runtime_s": 29.1,
+  "runtime_s": 28.2,
   "answer_types": {
-    "out_of_scope": 195,
-    "not_found": 48,
+    "out_of_scope": 198,
+    "not_found": 49,
     "answered": 30,
-    "escalated": 27
+    "escalated": 23
   },
   "verdicts": {
     "acceptable": 270,
@@ -90,7 +90,7 @@
     "for_review": [
       {
         "id": "TW-023",
-        "trace_id": "d9bef743",
+        "trace_id": "39848b57",
         "verdict": "answered_review",
         "cited": [
           "KB-GS-004",
@@ -104,7 +104,7 @@
       },
       {
         "id": "TW-025",
-        "trace_id": "8dbcd4a2",
+        "trace_id": "630a39b4",
         "verdict": "answered_review",
         "cited": [
           "KB-GS-004",
@@ -118,7 +118,7 @@
       },
       {
         "id": "TW-028",
-        "trace_id": "7a0dae42",
+        "trace_id": "f38669a0",
         "verdict": "answered_review",
         "cited": [
           "KB-BIL-002"
@@ -131,7 +131,7 @@
       },
       {
         "id": "TW-032",
-        "trace_id": "710a7d78",
+        "trace_id": "58e1d421",
         "verdict": "answered_review",
         "cited": [
           "TKT-2025-0610"
@@ -144,7 +144,7 @@
       },
       {
         "id": "TW-046",
-        "trace_id": "976dd7b9",
+        "trace_id": "cc41af02",
         "verdict": "answered_review",
         "cited": [
           "KB-TRB-009",
@@ -158,7 +158,7 @@
       },
       {
         "id": "TW-047",
-        "trace_id": "2ca38642",
+        "trace_id": "b7057850",
         "verdict": "invented_off_topic",
         "cited": [
           "KB-BIL-002",
@@ -170,7 +170,7 @@
       },
       {
         "id": "TW-048",
-        "trace_id": "23dda3dc",
+        "trace_id": "2a8ebeec",
         "verdict": "invented_off_topic",
         "cited": [
           "KB-BIL-006"
@@ -181,7 +181,7 @@
       },
       {
         "id": "TW-057",
-        "trace_id": "fae5aa9c",
+        "trace_id": "6db19236",
         "verdict": "answered_review",
         "cited": [
           "KB-TRB-009",
@@ -196,7 +196,7 @@
       },
       {
         "id": "TW-058",
-        "trace_id": "cfe8c322",
+        "trace_id": "420d8db5",
         "verdict": "answered_review",
         "cited": [
           "KB-BIL-004",
@@ -211,7 +211,7 @@
       },
       {
         "id": "TW-067",
-        "trace_id": "e009ed9a",
+        "trace_id": "d130bf38",
         "verdict": "invented_off_topic",
         "cited": [
           "KB-TRB-009",
@@ -223,7 +223,7 @@
       },
       {
         "id": "TW-070",
-        "trace_id": "79918bbc",
+        "trace_id": "bbd62ba2",
         "verdict": "answered_review",
         "cited": [
           "KB-GS-004",
@@ -237,7 +237,7 @@
       },
       {
         "id": "TW-115",
-        "trace_id": "8c221c2a",
+        "trace_id": "4c843a1a",
         "verdict": "answered_review",
         "cited": [
           "KB-BIL-003",
@@ -251,7 +251,7 @@
       },
       {
         "id": "TW-158",
-        "trace_id": "c90ddd90",
+        "trace_id": "bc051e22",
         "verdict": "invented_off_topic",
         "cited": [
           "TKT-2025-0733"
@@ -262,7 +262,7 @@
       },
       {
         "id": "TW-161",
-        "trace_id": "69f2ac3e",
+        "trace_id": "8411e774",
         "verdict": "answered_review",
         "cited": [
           "KB-BIL-004",
@@ -276,7 +276,7 @@
       },
       {
         "id": "TW-181",
-        "trace_id": "521d6af7",
+        "trace_id": "e46bf02d",
         "verdict": "answered_review",
         "cited": [
           "KB-BIL-006"
@@ -289,7 +289,7 @@
       },
       {
         "id": "TW-192",
-        "trace_id": "51b2815a",
+        "trace_id": "6afd9fbd",
         "verdict": "invented_off_topic",
         "cited": [
           "POL-ESC-001",
@@ -301,7 +301,7 @@
       },
       {
         "id": "TW-197",
-        "trace_id": "e0cd2045",
+        "trace_id": "e09aafdf",
         "verdict": "answered_review",
         "cited": [
           "KB-TRB-009"
@@ -314,7 +314,7 @@
       },
       {
         "id": "TW-210",
-        "trace_id": "f3b7be4e",
+        "trace_id": "2a5cbe22",
         "verdict": "answered_review",
         "cited": [
           "TKT-2024-0811"
@@ -327,7 +327,7 @@
       },
       {
         "id": "TW-211",
-        "trace_id": "3e6d5730",
+        "trace_id": "a1dd6a2b",
         "verdict": "answered_review",
         "cited": [
           "KB-BIL-005",
@@ -341,7 +341,7 @@
       },
       {
         "id": "TW-213",
-        "trace_id": "7991391d",
+        "trace_id": "0f71da4d",
         "verdict": "invented_off_topic",
         "cited": [
           "KB-TRB-003"
@@ -352,7 +352,7 @@
       },
       {
         "id": "TW-218",
-        "trace_id": "56125cec",
+        "trace_id": "894cf156",
         "verdict": "answered_review",
         "cited": [
           "TKT-2025-0610",
@@ -366,7 +366,7 @@
       },
       {
         "id": "TW-222",
-        "trace_id": "7659c9bb",
+        "trace_id": "46fea95d",
         "verdict": "answered_review",
         "cited": [
           "KB-BIL-004",
@@ -380,7 +380,7 @@
       },
       {
         "id": "TW-225",
-        "trace_id": "ef3daa08",
+        "trace_id": "6349720a",
         "verdict": "invented_off_topic",
         "cited": [
           "KB-TRB-001",
@@ -392,7 +392,7 @@
       },
       {
         "id": "TW-241",
-        "trace_id": "1c1f487d",
+        "trace_id": "faa4c440",
         "verdict": "invented_invalid_citation",
         "cited": [],
         "topics": [],
@@ -401,7 +401,7 @@
       },
       {
         "id": "TW-253",
-        "trace_id": "c845adf1",
+        "trace_id": "47326378",
         "verdict": "answered_review",
         "cited": [
           "KB-TRB-001",
@@ -415,7 +415,7 @@
       },
       {
         "id": "TW-260",
-        "trace_id": "38ab4708",
+        "trace_id": "8876d018",
         "verdict": "answered_review",
         "cited": [
           "KB-BIL-006",
@@ -429,7 +429,7 @@
       },
       {
         "id": "TW-262",
-        "trace_id": "8b019abe",
+        "trace_id": "eb681072",
         "verdict": "invented_off_topic",
         "cited": [
           "KB-TRB-001",
@@ -441,7 +441,7 @@
       },
       {
         "id": "TW-266",
-        "trace_id": "be323594",
+        "trace_id": "eb023dd3",
         "verdict": "answered_review",
         "cited": [
           "TKT-2025-0733",
@@ -455,7 +455,7 @@
       },
       {
         "id": "TW-273",
-        "trace_id": "8f8ac2d9",
+        "trace_id": "be587414",
         "verdict": "invented_off_topic",
         "cited": [
           "KB-GS-004",
@@ -467,7 +467,7 @@
       },
       {
         "id": "TW-286",
-        "trace_id": "e9b4af1c",
+        "trace_id": "a7d5a67c",
         "verdict": "invented_off_topic",
         "cited": [
           "TKT-2025-0846"
@@ -485,9 +485,9 @@
     "reviewed_generic_below_floor": 3
   },
   "tools_fired": {
-    "lookup_account": 105,
-    "get_invoices": 33,
-    "create_handoff": 27,
+    "lookup_account": 102,
+    "get_invoices": 31,
+    "create_handoff": 23,
     "check_refund_eligibility": 22,
     "check_platform_status": 7,
     "get_usage": 6,
@@ -495,27 +495,26 @@
     "send_password_reset": 2
   },
   "escalation": {
-    "count": 27,
-    "rate": 9.0,
+    "count": 23,
+    "rate": 7.7,
     "reasons": {
-      "kb_gap_needs_outcome": 14,
+      "kb_gap_needs_outcome": 12,
       "billing_dispute": 9,
-      "explicit_human_request": 4,
       "repeated_contact": 4,
       "security_incident": 2,
       "low_groundedness": 2
     },
     "queues": {
-      "technical": 16,
+      "technical": 12,
       "billing": 9,
       "security": 2
     }
   },
   "intent_types": {
-    "out_of_scope": 195,
-    "how_to": 55,
+    "out_of_scope": 198,
+    "how_to": 54,
     "billing": 22,
-    "complaint": 11,
+    "complaint": 9,
     "troubleshooting": 7,
     "account": 6,
     "security": 4
@@ -531,1210 +530,1210 @@
     "log_echo_ids": []
   },
   "latency_ms": {
-    "p50": 60,
-    "p95": 125,
-    "max": 160
+    "p50": 57,
+    "p95": 101,
+    "max": 112
   },
   "errors": [],
   "trace_ids": {
     "TW-001": [
-      "b025b014",
+      "53a137af",
       "out_of_scope"
     ],
     "TW-002": [
-      "609365fa",
+      "d2f3fd65",
       "out_of_scope"
     ],
     "TW-003": [
-      "1d6fa894",
+      "0bfc3329",
       "out_of_scope"
     ],
     "TW-004": [
-      "2c55e281",
+      "af19f4ad",
       "out_of_scope"
     ],
     "TW-005": [
-      "4cdc074b",
+      "0fc12248",
       "out_of_scope"
     ],
     "TW-006": [
-      "7d59cdae",
+      "008a56ff",
       "out_of_scope"
     ],
     "TW-007": [
-      "53d02341",
+      "b5629c07",
       "out_of_scope"
     ],
     "TW-008": [
-      "82ad2bb5",
+      "c77d4c82",
       "out_of_scope"
     ],
     "TW-009": [
-      "87946f3a",
+      "207057f4",
       "out_of_scope"
     ],
     "TW-010": [
-      "ffab1026",
+      "9692c1ec",
       "not_found"
     ],
     "TW-011": [
-      "69450d2a",
+      "e5ea0215",
       "not_found"
     ],
     "TW-012": [
-      "a00c131b",
+      "8124d5e7",
       "out_of_scope"
     ],
     "TW-013": [
-      "121a209a",
+      "391b7c5c",
       "not_found"
     ],
     "TW-014": [
-      "03a33145",
+      "1a63de6f",
       "out_of_scope"
     ],
     "TW-015": [
-      "49f361f5",
+      "60183737",
       "out_of_scope"
     ],
     "TW-016": [
-      "12f64df3",
+      "f3b1b509",
       "out_of_scope"
     ],
     "TW-017": [
-      "abdb9479",
+      "41d4ebcb",
       "out_of_scope"
     ],
     "TW-018": [
-      "9c972997",
+      "85e7b497",
       "out_of_scope"
     ],
     "TW-019": [
-      "87cbf02a",
+      "665c0159",
       "out_of_scope"
     ],
     "TW-020": [
-      "aa8aef2e",
+      "8050d60c",
       "out_of_scope"
     ],
     "TW-021": [
-      "6faa6547",
+      "e9ebd462",
       "out_of_scope"
     ],
     "TW-022": [
-      "372935a5",
+      "bd659f25",
       "out_of_scope"
     ],
     "TW-023": [
-      "d9bef743",
+      "39848b57",
       "answered"
     ],
     "TW-024": [
-      "8a2957c8",
+      "b51dc556",
       "out_of_scope"
     ],
     "TW-025": [
-      "8dbcd4a2",
+      "630a39b4",
       "answered"
     ],
     "TW-026": [
-      "1c2b8f2e",
+      "ad780a4d",
       "not_found"
     ],
     "TW-027": [
-      "351b79d0",
+      "01668e4c",
       "out_of_scope"
     ],
     "TW-028": [
-      "7a0dae42",
+      "f38669a0",
       "answered"
     ],
     "TW-029": [
-      "e8e0f017",
+      "a1f85f6c",
       "not_found"
     ],
     "TW-030": [
-      "8fcaef3d",
+      "c4ef107d",
       "out_of_scope"
     ],
     "TW-031": [
-      "f73230be",
+      "c96324b6",
       "out_of_scope"
     ],
     "TW-032": [
-      "710a7d78",
+      "58e1d421",
       "answered"
     ],
     "TW-033": [
-      "ed5934d2",
+      "efdaf722",
       "not_found"
     ],
     "TW-034": [
-      "c8d556c0",
+      "22b1659d",
       "not_found"
     ],
     "TW-035": [
-      "4faf91ed",
+      "bae94d81",
       "not_found"
     ],
     "TW-036": [
-      "ddc32650",
+      "90c17d94",
       "out_of_scope"
     ],
     "TW-037": [
-      "84b2199c",
+      "93890cb0",
       "out_of_scope"
     ],
     "TW-038": [
-      "6f9c38a6",
+      "9b50af88",
       "out_of_scope"
     ],
     "TW-039": [
-      "7a083647",
+      "a2a3b775",
       "out_of_scope"
     ],
     "TW-040": [
-      "729874b9",
+      "2139d557",
       "out_of_scope"
     ],
     "TW-041": [
-      "7c8c6a0c",
+      "1a6a2d7d",
       "out_of_scope"
     ],
     "TW-042": [
-      "aa7efe04",
+      "f164db3f",
       "escalated"
     ],
     "TW-043": [
-      "ae0119e6",
+      "d963ee22",
       "out_of_scope"
     ],
     "TW-044": [
-      "767e009c",
+      "fab92c12",
       "out_of_scope"
     ],
     "TW-045": [
-      "b59b51e5",
+      "8fd95651",
       "out_of_scope"
     ],
     "TW-046": [
-      "976dd7b9",
+      "cc41af02",
       "answered"
     ],
     "TW-047": [
-      "2ca38642",
+      "b7057850",
       "answered"
     ],
     "TW-048": [
-      "23dda3dc",
+      "2a8ebeec",
       "answered"
     ],
     "TW-049": [
-      "6d4f60e6",
+      "96fdb497",
       "out_of_scope"
     ],
     "TW-050": [
-      "4a1b756d",
+      "973b2424",
       "out_of_scope"
     ],
     "TW-051": [
-      "6d4d80f2",
+      "6bf656e2",
       "out_of_scope"
     ],
     "TW-052": [
-      "a0e449c7",
+      "d1a97706",
       "out_of_scope"
     ],
     "TW-053": [
-      "cf6f6461",
+      "f11e82f8",
       "out_of_scope"
     ],
     "TW-054": [
-      "e9da6a69",
+      "73b67a1f",
       "out_of_scope"
     ],
     "TW-055": [
-      "6302f26d",
+      "271ba2b2",
       "out_of_scope"
     ],
     "TW-056": [
-      "073b0a1f",
+      "961f578c",
       "out_of_scope"
     ],
     "TW-057": [
-      "fae5aa9c",
+      "6db19236",
       "answered"
     ],
     "TW-058": [
-      "cfe8c322",
+      "420d8db5",
       "answered"
     ],
     "TW-059": [
-      "fa9fcea2",
+      "59dabfe8",
       "escalated"
     ],
     "TW-060": [
-      "accb92a7",
+      "e615d5bc",
       "out_of_scope"
     ],
     "TW-061": [
-      "ee31dc74",
+      "be86eb9b",
       "out_of_scope"
     ],
     "TW-062": [
-      "ec0ab2c6",
+      "c4908b38",
       "escalated"
     ],
     "TW-063": [
-      "0d0d7448",
+      "8c0a9f96",
       "out_of_scope"
     ],
     "TW-064": [
-      "81ffa8ce",
+      "2502fee4",
       "not_found"
     ],
     "TW-065": [
-      "6cb62898",
+      "fd2f12b0",
       "out_of_scope"
     ],
     "TW-066": [
-      "28ac5cff",
+      "1a986803",
       "escalated"
     ],
     "TW-067": [
-      "e009ed9a",
+      "d130bf38",
       "answered"
     ],
     "TW-068": [
-      "0a64247b",
+      "0087e206",
       "not_found"
     ],
     "TW-069": [
-      "2135301f",
+      "aa43cff3",
       "not_found"
     ],
     "TW-070": [
-      "79918bbc",
+      "bbd62ba2",
       "answered"
     ],
     "TW-071": [
-      "83ef3e03",
+      "05198a55",
       "not_found"
     ],
     "TW-072": [
-      "54e7d8b7",
+      "8a6c0ac7",
       "out_of_scope"
     ],
     "TW-073": [
-      "7a286e9b",
+      "f037918b",
       "escalated"
     ],
     "TW-074": [
-      "847e4fe3",
+      "831f5d26",
       "out_of_scope"
     ],
     "TW-075": [
-      "e7abba61",
+      "d164baba",
       "out_of_scope"
     ],
     "TW-076": [
-      "b306a2a5",
+      "a34e4729",
       "out_of_scope"
     ],
     "TW-077": [
-      "fdc26f52",
+      "10c3c03a",
       "out_of_scope"
     ],
     "TW-078": [
-      "7640428a",
+      "02db1e35",
       "out_of_scope"
     ],
     "TW-079": [
-      "7ae300d1",
+      "0247a425",
       "out_of_scope"
     ],
     "TW-080": [
-      "81edc234",
+      "8f7eae9d",
       "out_of_scope"
     ],
     "TW-081": [
-      "10aee800",
+      "1c43f18c",
       "not_found"
     ],
     "TW-082": [
-      "0b4fd944",
+      "8324f498",
       "out_of_scope"
     ],
     "TW-083": [
-      "8737fe04",
-      "escalated"
+      "3354a90e",
+      "out_of_scope"
     ],
     "TW-084": [
-      "e90e8fbb",
+      "c9c79111",
       "not_found"
     ],
     "TW-085": [
-      "eafe8745",
+      "ef99937f",
       "out_of_scope"
     ],
     "TW-086": [
-      "7ad777a0",
+      "8e73923b",
       "escalated"
     ],
     "TW-087": [
-      "7e6cbc1c",
+      "7b24005f",
       "out_of_scope"
     ],
     "TW-088": [
-      "36dad8f1",
+      "de5a8aea",
       "not_found"
     ],
     "TW-089": [
-      "e8ca9897",
+      "4f3d89c8",
       "out_of_scope"
     ],
     "TW-090": [
-      "f6c846c3",
+      "f1cab9c8",
       "out_of_scope"
     ],
     "TW-091": [
-      "dbab0075",
+      "f0c3a7e0",
       "not_found"
     ],
     "TW-092": [
-      "26491b83",
+      "b4e8a78b",
       "out_of_scope"
     ],
     "TW-093": [
-      "931a22b1",
+      "e7edf9b6",
       "not_found"
     ],
     "TW-094": [
-      "b2ae38fe",
+      "bcd4c744",
       "not_found"
     ],
     "TW-095": [
-      "76b1ae68",
+      "313cc89d",
       "out_of_scope"
     ],
     "TW-096": [
-      "5809c6a1",
+      "744c0d94",
       "out_of_scope"
     ],
     "TW-097": [
-      "ea50f916",
+      "127504e7",
       "not_found"
     ],
     "TW-098": [
-      "78cee76b",
+      "5094e511",
       "out_of_scope"
     ],
     "TW-099": [
-      "240975d6",
+      "d2ee5243",
       "escalated"
     ],
     "TW-100": [
-      "deff1305",
+      "329ab13d",
       "not_found"
     ],
     "TW-101": [
-      "d2b2f415",
+      "0666e3fe",
       "not_found"
     ],
     "TW-102": [
-      "2b55eadf",
+      "29f1f536",
       "out_of_scope"
     ],
     "TW-103": [
-      "e07985be",
+      "4438bb28",
       "out_of_scope"
     ],
     "TW-104": [
-      "d21a940e",
+      "28806d4a",
       "out_of_scope"
     ],
     "TW-105": [
-      "b463f199",
+      "f5dfec16",
       "out_of_scope"
     ],
     "TW-106": [
-      "4a182393",
+      "de397702",
       "out_of_scope"
     ],
     "TW-107": [
-      "cac3a6d6",
+      "0fd97e2a",
       "out_of_scope"
     ],
     "TW-108": [
-      "7b62da5f",
+      "a5e364fd",
       "out_of_scope"
     ],
     "TW-109": [
-      "8ec92fe1",
+      "2267dab5",
       "out_of_scope"
     ],
     "TW-110": [
-      "a8fa4c78",
+      "4072ce48",
       "escalated"
     ],
     "TW-111": [
-      "80b8d312",
+      "9719f903",
       "not_found"
     ],
     "TW-112": [
-      "56c72faa",
+      "05d67c7d",
       "out_of_scope"
     ],
     "TW-113": [
-      "18270dfd",
+      "f500f381",
       "out_of_scope"
     ],
     "TW-114": [
-      "ced07a7b",
+      "6f3ee08f",
       "not_found"
     ],
     "TW-115": [
-      "8c221c2a",
+      "4c843a1a",
       "answered"
     ],
     "TW-116": [
-      "c7abe7c2",
+      "2beb0be2",
       "out_of_scope"
     ],
     "TW-117": [
-      "b60c0360",
+      "28dd35c9",
       "not_found"
     ],
     "TW-118": [
-      "8dc6beca",
+      "00be9d3a",
       "escalated"
     ],
     "TW-119": [
-      "885b0c9e",
+      "b40be538",
       "out_of_scope"
     ],
     "TW-120": [
-      "e14a1f76",
+      "936cce10",
       "out_of_scope"
     ],
     "TW-121": [
-      "e72c3cae",
+      "c565c05a",
       "out_of_scope"
     ],
     "TW-122": [
-      "21ebf994",
+      "fdb3fdcd",
       "out_of_scope"
     ],
     "TW-123": [
-      "ef4ac3cf",
+      "905c087d",
       "not_found"
     ],
     "TW-124": [
-      "41ade637",
+      "296ef021",
       "out_of_scope"
     ],
     "TW-125": [
-      "b69cc2f6",
+      "7d4c48a0",
       "escalated"
     ],
     "TW-126": [
-      "1a1845c2",
+      "8e70191e",
       "out_of_scope"
     ],
     "TW-127": [
-      "17363fc7",
+      "41e5c507",
       "out_of_scope"
     ],
     "TW-128": [
-      "5ab25675",
+      "694d90b0",
       "escalated"
     ],
     "TW-129": [
-      "1dbc7d55",
+      "37d8a1f7",
       "out_of_scope"
     ],
     "TW-130": [
-      "4a3da92a",
+      "473aa686",
       "out_of_scope"
     ],
     "TW-131": [
-      "af551c89",
+      "5704d6d3",
       "not_found"
     ],
     "TW-132": [
-      "9d5eaf57",
+      "858bcd5b",
       "out_of_scope"
     ],
     "TW-133": [
-      "eddc1134",
+      "43fe372f",
       "not_found"
     ],
     "TW-134": [
-      "b99e5fe2",
+      "2602d577",
       "out_of_scope"
     ],
     "TW-135": [
-      "6c75af7a",
+      "b315859a",
       "out_of_scope"
     ],
     "TW-136": [
-      "c0f3e4d0",
+      "3ec6b0dd",
       "out_of_scope"
     ],
     "TW-137": [
-      "1e271339",
+      "246d66c4",
       "not_found"
     ],
     "TW-138": [
-      "ac05fc6d",
+      "b89086c3",
       "out_of_scope"
     ],
     "TW-139": [
-      "02b91dc8",
+      "6a54d498",
       "out_of_scope"
     ],
     "TW-140": [
-      "1751af54",
+      "475af370",
       "out_of_scope"
     ],
     "TW-141": [
-      "201941c3",
+      "117d578f",
       "out_of_scope"
     ],
     "TW-142": [
-      "0782d019",
+      "d1f97cae",
       "out_of_scope"
     ],
     "TW-143": [
-      "ccfea55e",
+      "710eaa2b",
       "out_of_scope"
     ],
     "TW-144": [
-      "4d1dd93f",
+      "d716b487",
       "out_of_scope"
     ],
     "TW-145": [
-      "33117c2e",
+      "b6b2cca8",
       "not_found"
     ],
     "TW-146": [
-      "2965d65a",
+      "dcec95e9",
       "escalated"
     ],
     "TW-147": [
-      "7bc17d3f",
+      "edeadab3",
       "out_of_scope"
     ],
     "TW-148": [
-      "63000938",
+      "d39145c5",
       "out_of_scope"
     ],
     "TW-149": [
-      "589ddbba",
+      "17975c11",
       "out_of_scope"
     ],
     "TW-150": [
-      "36ef6240",
+      "ae29b83b",
       "out_of_scope"
     ],
     "TW-151": [
-      "9d4d6fc8",
+      "08c6462b",
       "out_of_scope"
     ],
     "TW-152": [
-      "271ea138",
+      "20b9f14d",
       "out_of_scope"
     ],
     "TW-153": [
-      "6fb2f770",
+      "ccbf4364",
       "out_of_scope"
     ],
     "TW-154": [
-      "2422a7d8",
+      "d4a091c0",
       "out_of_scope"
     ],
     "TW-155": [
-      "28a91375",
+      "31b96c2d",
       "out_of_scope"
     ],
     "TW-156": [
-      "71b58d47",
+      "25c43195",
       "not_found"
     ],
     "TW-157": [
-      "6cc95191",
+      "876b424b",
       "out_of_scope"
     ],
     "TW-158": [
-      "c90ddd90",
+      "bc051e22",
       "answered"
     ],
     "TW-159": [
-      "b5c53149",
+      "8d7ef73b",
       "out_of_scope"
     ],
     "TW-160": [
-      "545f138a",
+      "337a64e1",
       "out_of_scope"
     ],
     "TW-161": [
-      "69f2ac3e",
+      "8411e774",
       "answered"
     ],
     "TW-162": [
-      "bcf19d0b",
-      "escalated"
+      "153118fa",
+      "not_found"
     ],
     "TW-163": [
-      "0780c827",
+      "97ccbf18",
       "not_found"
     ],
     "TW-164": [
-      "eb7baff4",
+      "e6cbd2b6",
       "out_of_scope"
     ],
     "TW-165": [
-      "6b65cce9",
+      "c20fc91d",
       "not_found"
     ],
     "TW-166": [
-      "24dbcccb",
+      "1d52697a",
       "escalated"
     ],
     "TW-167": [
-      "63d39df1",
+      "ea367efc",
       "escalated"
     ],
     "TW-168": [
-      "9b591006",
+      "056fd9d5",
       "out_of_scope"
     ],
     "TW-169": [
-      "7f13088d",
+      "65165290",
       "not_found"
     ],
     "TW-170": [
-      "b820b394",
+      "f67cf90f",
       "out_of_scope"
     ],
     "TW-171": [
-      "135b3b1e",
+      "3782679a",
       "out_of_scope"
     ],
     "TW-172": [
-      "fa891c49",
+      "aa1338de",
       "out_of_scope"
     ],
     "TW-173": [
-      "5ea5069a",
+      "48e2a34e",
       "out_of_scope"
     ],
     "TW-174": [
-      "ecf4141e",
+      "9af17845",
       "out_of_scope"
     ],
     "TW-175": [
-      "0b0d1502",
+      "24b54f51",
       "not_found"
     ],
     "TW-176": [
-      "49ff7336",
+      "97073ab3",
       "out_of_scope"
     ],
     "TW-177": [
-      "bf3759a4",
+      "40c9aac3",
       "out_of_scope"
     ],
     "TW-178": [
-      "210e1414",
+      "5aee12e1",
       "not_found"
     ],
     "TW-179": [
-      "bc389adf",
+      "15ffc7cb",
       "out_of_scope"
     ],
     "TW-180": [
-      "b740771c",
+      "ab40bdd8",
       "out_of_scope"
     ],
     "TW-181": [
-      "521d6af7",
+      "e46bf02d",
       "answered"
     ],
     "TW-182": [
-      "10651f58",
+      "c0557874",
       "out_of_scope"
     ],
     "TW-183": [
-      "57367f5c",
+      "be0f310e",
       "out_of_scope"
     ],
     "TW-184": [
-      "b0c5e916",
+      "9adec55e",
       "out_of_scope"
     ],
     "TW-185": [
-      "b930d9bc",
+      "cde775d0",
       "out_of_scope"
     ],
     "TW-186": [
-      "ff7cb49e",
+      "6357512f",
       "out_of_scope"
     ],
     "TW-187": [
-      "b30ec896",
+      "9e847276",
       "out_of_scope"
     ],
     "TW-188": [
-      "a55300a7",
+      "eb13a520",
       "out_of_scope"
     ],
     "TW-189": [
-      "afca8aba",
+      "6795da27",
       "out_of_scope"
     ],
     "TW-190": [
-      "1b5ebfaa",
+      "c67c525e",
       "not_found"
     ],
     "TW-191": [
-      "cc3eda50",
+      "969120ee",
       "out_of_scope"
     ],
     "TW-192": [
-      "51b2815a",
+      "6afd9fbd",
       "answered"
     ],
     "TW-193": [
-      "d7301822",
+      "cd57bcb9",
       "not_found"
     ],
     "TW-194": [
-      "35d93174",
+      "965011c6",
       "out_of_scope"
     ],
     "TW-195": [
-      "74a8ec20",
+      "f3c6a126",
       "out_of_scope"
     ],
     "TW-196": [
-      "bde89eab",
+      "7ade760d",
       "out_of_scope"
     ],
     "TW-197": [
-      "e0cd2045",
+      "e09aafdf",
       "answered"
     ],
     "TW-198": [
-      "d9037636",
+      "efc227c5",
       "out_of_scope"
     ],
     "TW-199": [
-      "759fa073",
+      "062e0bf0",
       "out_of_scope"
     ],
     "TW-200": [
-      "769eddd5",
+      "d93a88e5",
       "out_of_scope"
     ],
     "TW-201": [
-      "13461020",
+      "995b6bcb",
       "out_of_scope"
     ],
     "TW-202": [
-      "c21e790b",
+      "536a842c",
       "out_of_scope"
     ],
     "TW-203": [
-      "910e987c",
-      "escalated"
+      "ce0e9870",
+      "out_of_scope"
     ],
     "TW-204": [
-      "fde61694",
+      "35a9e33b",
       "out_of_scope"
     ],
     "TW-205": [
-      "a475b69c",
+      "f6ca1d36",
       "escalated"
     ],
     "TW-206": [
-      "d4b56651",
+      "53739b0f",
       "out_of_scope"
     ],
     "TW-207": [
-      "9df6d4df",
+      "b395c910",
       "escalated"
     ],
     "TW-208": [
-      "95ce8bf5",
+      "cb386560",
       "out_of_scope"
     ],
     "TW-209": [
-      "b8736976",
+      "ddd78143",
       "escalated"
     ],
     "TW-210": [
-      "f3b7be4e",
+      "2a5cbe22",
       "answered"
     ],
     "TW-211": [
-      "3e6d5730",
+      "a1dd6a2b",
       "answered"
     ],
     "TW-212": [
-      "512510be",
+      "961e6af2",
       "out_of_scope"
     ],
     "TW-213": [
-      "7991391d",
+      "0f71da4d",
       "answered"
     ],
     "TW-214": [
-      "ff58dc06",
+      "e4d2551d",
       "out_of_scope"
     ],
     "TW-215": [
-      "9810b0ff",
+      "fe17806f",
       "not_found"
     ],
     "TW-216": [
-      "a48a0831",
+      "5acef0f8",
       "not_found"
     ],
     "TW-217": [
-      "6138c77a",
+      "ebfbb3e6",
       "not_found"
     ],
     "TW-218": [
-      "56125cec",
+      "894cf156",
       "answered"
     ],
     "TW-219": [
-      "64e187d9",
+      "4b4a004c",
       "out_of_scope"
     ],
     "TW-220": [
-      "9bdfd72f",
+      "0fdff330",
       "out_of_scope"
     ],
     "TW-221": [
-      "74d20d80",
+      "4d5d1c67",
       "out_of_scope"
     ],
     "TW-222": [
-      "7659c9bb",
+      "46fea95d",
       "answered"
     ],
     "TW-223": [
-      "d1f5577f",
+      "55e91357",
       "out_of_scope"
     ],
     "TW-224": [
-      "844e3248",
+      "186dd39c",
       "out_of_scope"
     ],
     "TW-225": [
-      "ef3daa08",
+      "6349720a",
       "answered"
     ],
     "TW-226": [
-      "16b5e5ed",
+      "55a3efe4",
       "out_of_scope"
     ],
     "TW-227": [
-      "1e716e0e",
+      "66d1ab87",
       "out_of_scope"
     ],
     "TW-228": [
-      "7209bd9f",
+      "f7a179cd",
       "not_found"
     ],
     "TW-229": [
-      "00921fc3",
+      "6e7fc98b",
       "out_of_scope"
     ],
     "TW-230": [
-      "9ebc3afa",
+      "cdf2fd0c",
       "out_of_scope"
     ],
     "TW-231": [
-      "b69d13d5",
+      "b2536391",
       "out_of_scope"
     ],
     "TW-232": [
-      "381754c7",
+      "ca8d3c0d",
       "out_of_scope"
     ],
     "TW-233": [
-      "4a38c72f",
+      "f1b74c72",
       "out_of_scope"
     ],
     "TW-234": [
-      "1ac09e15",
+      "d8e8b724",
       "escalated"
     ],
     "TW-235": [
-      "ae1d1173",
+      "c7aaade6",
       "out_of_scope"
     ],
     "TW-236": [
-      "1f427560",
+      "9536e7ff",
       "out_of_scope"
     ],
     "TW-237": [
-      "83fbb2ee",
+      "d85c449f",
       "out_of_scope"
     ],
     "TW-238": [
-      "6bc8e774",
+      "235bc7a6",
       "out_of_scope"
     ],
     "TW-239": [
-      "d9564d8f",
+      "83f3c202",
       "out_of_scope"
     ],
     "TW-240": [
-      "36734c20",
+      "aad90ff6",
       "not_found"
     ],
     "TW-241": [
-      "1c1f487d",
+      "faa4c440",
       "answered"
     ],
     "TW-242": [
-      "16ff0c01",
+      "b1eff95c",
       "out_of_scope"
     ],
     "TW-243": [
-      "0595d1ea",
+      "f7048b08",
       "out_of_scope"
     ],
     "TW-244": [
-      "3d56b9cb",
+      "3d751523",
       "out_of_scope"
     ],
     "TW-245": [
-      "9de34894",
+      "a8e25677",
       "not_found"
     ],
     "TW-246": [
-      "f5ffca1e",
+      "764a6129",
       "not_found"
     ],
     "TW-247": [
-      "eee2e987",
+      "b6db871d",
       "out_of_scope"
     ],
     "TW-248": [
-      "457bd1a0",
+      "ce3adbc5",
       "escalated"
     ],
     "TW-249": [
-      "754164ab",
+      "fc9de209",
       "out_of_scope"
     ],
     "TW-250": [
-      "45b36243",
+      "c39d3d1d",
       "out_of_scope"
     ],
     "TW-251": [
-      "1c9a8bb5",
+      "ab90135f",
       "out_of_scope"
     ],
     "TW-252": [
-      "4621bb82",
+      "090cfb69",
       "out_of_scope"
     ],
     "TW-253": [
-      "c845adf1",
+      "47326378",
       "answered"
     ],
     "TW-254": [
-      "4ae720f2",
+      "de467cf7",
       "out_of_scope"
     ],
     "TW-255": [
-      "2eadad23",
+      "aa36b02f",
       "escalated"
     ],
     "TW-256": [
-      "80ae7e7a",
+      "bec2d2bd",
       "out_of_scope"
     ],
     "TW-257": [
-      "b254576d",
+      "a88196c7",
       "escalated"
     ],
     "TW-258": [
-      "de2fa397",
+      "142bd681",
       "out_of_scope"
     ],
     "TW-259": [
-      "32870752",
+      "40e825c8",
       "out_of_scope"
     ],
     "TW-260": [
-      "38ab4708",
+      "8876d018",
       "answered"
     ],
     "TW-261": [
-      "686168f1",
+      "bd91e9c4",
       "not_found"
     ],
     "TW-262": [
-      "8b019abe",
+      "eb681072",
       "answered"
     ],
     "TW-263": [
-      "e6647a3d",
+      "dfec5f9a",
       "out_of_scope"
     ],
     "TW-264": [
-      "1516d065",
+      "97198e2f",
       "out_of_scope"
     ],
     "TW-265": [
-      "9d22aea1",
+      "6cd82b3d",
       "escalated"
     ],
     "TW-266": [
-      "be323594",
+      "eb023dd3",
       "answered"
     ],
     "TW-267": [
-      "da7409fa",
+      "415fe518",
       "out_of_scope"
     ],
     "TW-268": [
-      "7f7cc936",
+      "b2eb5cff",
       "out_of_scope"
     ],
     "TW-269": [
-      "ed4a1e01",
+      "889d26cd",
       "not_found"
     ],
     "TW-270": [
-      "db8137fd",
+      "d5b3a804",
       "not_found"
     ],
     "TW-271": [
-      "de0c32fd",
+      "fecb9c80",
       "out_of_scope"
     ],
     "TW-272": [
-      "7381e74a",
+      "b86dfb40",
       "out_of_scope"
     ],
     "TW-273": [
-      "8f8ac2d9",
+      "be587414",
       "answered"
     ],
     "TW-274": [
-      "5281366d",
+      "7e419234",
       "out_of_scope"
     ],
     "TW-275": [
-      "e454a3fb",
+      "bfdc5487",
       "escalated"
     ],
     "TW-276": [
-      "80ec2b5e",
+      "c345b6f1",
       "out_of_scope"
     ],
     "TW-277": [
-      "c74dbe1d",
+      "8f3716ef",
       "out_of_scope"
     ],
     "TW-278": [
-      "546958e2",
+      "fdb9a91d",
       "not_found"
     ],
     "TW-279": [
-      "493973b1",
+      "c170ef0c",
       "out_of_scope"
     ],
     "TW-280": [
-      "1f5a1903",
+      "37010057",
       "out_of_scope"
     ],
     "TW-281": [
-      "830db11e",
+      "784e722b",
       "out_of_scope"
     ],
     "TW-282": [
-      "7f7ef958",
-      "escalated"
+      "29d4dea7",
+      "out_of_scope"
     ],
     "TW-283": [
-      "131ca06c",
+      "29f23edf",
       "out_of_scope"
     ],
     "TW-284": [
-      "79826576",
+      "6b4423a0",
       "out_of_scope"
     ],
     "TW-285": [
-      "03bcc978",
+      "a05d4b29",
       "out_of_scope"
     ],
     "TW-286": [
-      "e9b4af1c",
+      "a7d5a67c",
       "answered"
     ],
     "TW-287": [
-      "c76feb88",
+      "2a0861d9",
       "out_of_scope"
     ],
     "TW-288": [
-      "7fa90b77",
+      "132a1ac8",
       "out_of_scope"
     ],
     "TW-289": [
-      "c74318f4",
+      "41a6cd44",
       "out_of_scope"
     ],
     "TW-290": [
-      "9c009681",
+      "751a3848",
       "out_of_scope"
     ],
     "TW-291": [
-      "3ddd38f3",
+      "6cbbfdde",
       "out_of_scope"
     ],
     "TW-292": [
-      "a4eb396d",
+      "8841179c",
       "out_of_scope"
     ],
     "TW-293": [
-      "86b76c8f",
+      "bb317708",
       "out_of_scope"
     ],
     "TW-294": [
-      "9d02fb25",
+      "d827232c",
       "out_of_scope"
     ],
     "TW-295": [
-      "c617286c",
+      "52348060",
       "out_of_scope"
     ],
     "TW-296": [
-      "d1ad7edd",
+      "68edb6ba",
       "out_of_scope"
     ],
     "TW-297": [
-      "6feee894",
+      "d99a73bb",
       "out_of_scope"
     ],
     "TW-298": [
-      "89496181",
+      "7712e3cc",
       "out_of_scope"
     ],
     "TW-299": [
-      "9844d13b",
+      "52c9906a",
       "out_of_scope"
     ],
     "TW-300": [
-      "7e2a575e",
+      "27cb5a9d",
       "out_of_scope"
     ]
   }

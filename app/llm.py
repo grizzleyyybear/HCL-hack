@@ -165,13 +165,17 @@ _GENERAL = re.compile(r"\b(?:weather|capital of|who (?:is|was)|president|footbal
 # Intent keyword rules, checked in this order (first match wins for the type).
 _COMPROMISE = re.compile(r"\b(?:hacked|compromised|unknown login|suspicious login|unauthori[sz]ed "
                          r"(?:access|login)|someone (?:else )?(?:logged|accessed)|leaked)\b", re.IGNORECASE)
-_PASSWORD = re.compile(r"\b(?:password|reset (?:link|email)|locked out|can'?t log ?in|cannot log ?in|"
-                       r"unable to log ?in|can'?t sign ?in)\b", re.IGNORECASE)
-_DELETION = re.compile(r"\b(?:delete|close|remove|erase) (?:my |our |the )?(?:whole )?account\b", re.IGNORECASE)
+# A reset needs reset wording: "password managers" or "minimum password length" are how-to questions.
+_PASSWORD = re.compile(r"\b(?:(?:forgot\w*|lost|reset\w*|change\w*|recover\w*|remember)\s+(?:my\s+|our\s+|the\s+)?"
+                       r"password|password\s+(?:reset|recovery)|reset (?:link|email)|locked out|can'?t log ?in|"
+                       r"cannot log ?in|unable to log ?in|can'?t sign ?in)\b", re.IGNORECASE)
+# "delete my account" is a deletion; "delete the account mapping in the connector" is not.
+_DELETION = re.compile(r"\b(?:delete|close|remove|erase|cancel) (?:my|our) (?:whole |entire )?(?:cloudflow )?account\b"
+                       r"(?!\s+(?:mapping|field|connector|connection|setting|link)s?\b)", re.IGNORECASE)
 _LEGAL = re.compile(r"\b(?:lawyer|legal|sue|suing|lawsuit|attorney|court)\b", re.IGNORECASE)
 _BILLING_SUBTYPES = [  # (pattern, subtype) checked in order
-    (re.compile(r"\b(?:charged (?:me )?twice|double[- ]charge\w*|duplicate\w*|charged two times)\b", re.I),
-     "duplicate_charge"),
+    (re.compile(r"\b(?:charged (?:me |us )?twice|double[- ]charge\w*|charged two times|"
+                r"duplicate[ -]?(?:charge|payment|invoice|billing|transaction)s?)\b", re.I), "duplicate_charge"),
     (re.compile(r"\b(?:refund\w*|money back)\b", re.I), "refund"),
     (re.compile(r"\bcredit\b(?!\s*card)", re.I), "credit"),
     (re.compile(r"\b(?:dispute\w*|chargeback)\b", re.I), "dispute"),
@@ -183,8 +187,14 @@ _TROUBLE = re.compile(r"\b(?:cf-\d{3}|errors?|fail\w*|not working|doesn'?t work|
                       r"stopped|crash\w*|bug)\b", re.IGNORECASE)
 _HOW_TO = re.compile(r"\b(?:how do i|how to|how can i|where|can i)\b", re.IGNORECASE)
 
-_HUMAN = re.compile(r"\b(?:manager|human|real person|a person|agent|supervisor|someone in charge|escalat\w*|"
-                    r"(?:speak|talk) to (?:a |someone|somebody))\b", re.IGNORECASE)
+# Asking for a person, not mentioning one: "get me a manager", "talk to a human", "put me through".
+# ("escalation rules", "user agent header" or "a human approver step" are product questions.)
+_PERSON = r"(?:human|person|manager|supervisor|someone|somebody|agent|representative|rep|real person)"
+_HUMAN = re.compile(r"\b(?:(?:speak|talk|chat)\s+(?:to|with)\s+(?:a\s+|an\s+|your\s+|the\s+)?(?:real\s+)?" + _PERSON +
+                    r"|(?:get|put|transfer|connect|pass|send|escalate)\s+(?:me|us|this|it)\s+(?:to\s+|through\s+(?:to\s+)?|"
+                    r"with\s+)?(?:a\s+|an\s+|your\s+|the\s+)?(?:real\s+)?" + _PERSON +
+                    r"|put\s+me\s+through|escalate\s+(?:this|my|it)\b|(?:want|need|demand)\s+(?:a|an|to\s+(?:speak|talk)\s+to\s+a)\s+"
+                    r"(?:real\s+)?(?:human|person|manager|supervisor)|real person|someone in charge)\b", re.IGNORECASE)
 _STRONG_REPEAT = re.compile(r"\b(?:second|third|fourth|fifth) time\b|\b(?:multiple|several|many) times\b",
                             re.IGNORECASE)
 _REPEAT = re.compile(r"\b(?:again|still|keep|keeps|already (?:wrote|asked|contacted))\b", re.IGNORECASE)
@@ -657,15 +667,16 @@ def _content_words(text: str) -> set[str]:
 
 
 # Read the critic groundedness minimum from policy_registry; None if the registry is unavailable.
-def _critic_min() -> float | None:
+def _critic_min(as_of_date=None) -> float | None:
     try:
-        return float(db.get_policy("critic_min_groundedness")[0])
+        return float(db.get_policy("critic_min_groundedness", as_of_date=as_of_date)[0])
     except (KeyError, ValueError, sqlite3.Error):
         return None
 
 
 # Score groundedness as the share of the draft's content words found in its cited chunks or tool outputs.
-def overlap_critique(draft: Draft, chunks: list[dict], tool_results: list[dict] | None = None) -> Critique:
+def overlap_critique(draft: Draft, chunks: list[dict], tool_results: list[dict] | None = None,
+                     as_of_date=None) -> Critique:
     cited = [c for c in chunks if c.get("chunk_id") in set(draft.cited_chunk_ids)]
     evidence = " ".join(f"{c.get('text', '')} {c['meta'].get('title', '')} {c['meta'].get('section', '')} "
                         f"{c['meta'].get('source_id', '')}" for c in cited)
@@ -676,7 +687,7 @@ def overlap_critique(draft: Draft, chunks: list[dict], tool_results: list[dict] 
     groundedness = round(len(grounded) / len(draft_words), 2) if draft_words else 0.0
 
     issues = []
-    minimum = _critic_min()
+    minimum = _critic_min(as_of_date)
     if minimum is None:
         issues.append("critic threshold unavailable in policy_registry")
     elif groundedness < minimum:

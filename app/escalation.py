@@ -36,6 +36,7 @@ def decide(intent: Intent, critique: Critique, tool_results: list[dict], revisio
     min_groundedness = float(db.get_policy("critic_min_groundedness", as_of_date=as_of_date)[0])
     weak = critique is not None and critique.groundedness < min_groundedness
     promised = safety.makes_promise(answer_text or "")
+    critic_flag = critique is not None and critique.policy_risk != "none"  # the critic saw a promise or unauthorised action
 
     reasons = []
     if intent.subtype in BILLING_SUBTYPES:
@@ -44,8 +45,9 @@ def decide(intent: Intent, critique: Critique, tool_results: list[dict], revisio
         reasons.append("legal_matter")
     if intent.subtype == "deletion":
         reasons.append("account_deletion")
-    # password_reset is handled by the tool and answered; only a compromise (or other security issue) escalates
-    if intent.type == "security" and intent.subtype != "password_reset":
+    # password_reset is handled by the tool and answered; a named security issue (e.g. compromise) escalates.
+    # No subtype at all ("How do I enable 2FA?") is a how-to about security, answered from the KB.
+    if intent.type == "security" and intent.subtype not in (None, "", "password_reset"):
         reasons.append("security_incident")
     if intent.explicit_human_request:
         reasons.append("explicit_human_request")
@@ -59,13 +61,13 @@ def decide(intent: Intent, critique: Critique, tool_results: list[dict], revisio
         reasons.append("unresolved_conflict")
     if revisions >= 1 and weak:
         reasons.append("low_groundedness")
-    if revisions >= 1 and promised:
+    if revisions >= 1 and (promised or critic_flag):  # still a promise (or unauthorised action) after the revision
         reasons.append("promise_made")
     if reasons:
         return "escalate", reasons
 
     # At most one revision: a weak first draft goes back to compose once, never twice.
-    needs_revision = (critique is not None and critique.decision == "revise") or weak or promised
+    needs_revision = (critique is not None and critique.decision == "revise") or weak or promised or critic_flag
     if needs_revision and revisions == 0:
         return "revise", []
     return "answer", []

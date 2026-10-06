@@ -278,3 +278,15 @@ def test_unresolved_pair():
     assert sorted(ids(result)) == ["KB-A", "KB-B"]
     assert result["unresolved"] == [("KB-A", "KB-B")]
     assert result["conflicts"] == []
+
+
+# ---------------------------------------------------------------- review fixes (2026-10-06)
+
+# The fallback check: a figure the doc itself calls out of date is not a clash when both agree on the
+# current one, and day spans for different things (refund window vs data deletion) are not compared.
+def test_numbers_clash_ignores_outdated_and_unrelated_day_figures():
+    doc = "Pro allows 300 API calls per minute. The old limit of 120 calls is out of date."
+    assert precedence._numbers_clash(doc, "Pro allows 300 API calls.") is False
+    assert precedence._numbers_clash(doc, "Your limit is 120 calls per minute.") is True
+    assert precedence._numbers_clash("Refunds within 14 days of the charge.",
+                                     "Your data is deleted 30 days after you cancel.") is False

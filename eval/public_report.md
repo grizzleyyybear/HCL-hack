@@ -1,6 +1,6 @@
 # Public data at scale: robustness evaluation
 
-Generated 2026-10-06 16:08 by `python eval/run_public.py`. Aggregates and trace_ids per set: `eval/results/public_<set>.json`. Probe text stays in gitignored `data/raw/probes/` and is never committed or quoted here.
+Generated 2026-10-06 20:43 by `python eval/run_public.py`. Aggregates and trace_ids per set: `eval/results/public_<set>.json`. Probe text stays in gitignored `data/raw/probes/` and is never committed or quoted here.
 
 > **Measured with `MOCK_LLM=true`.** Ollama is not installed on the build machine, so classify, compose and critic used the deterministic fallbacks in `app/llm.py` (keyword intent rules, template composer, word-overlap critic). Pre-checks, retrieval, precedence, tools, escalation, safety, audit and the API are the real code paths. Rerun with `python eval/run_public.py --live` for the judged model; the classifier decides most of the out-of-scope cases, so live numbers can differ.
 
@@ -23,39 +23,39 @@ Generated 2026-10-06 16:08 by `python eval/run_public.py`. Aggregates and trace_
 
 | Set | Requests | Correct without review | Invented (automatic rule) | Invented after manual review | Answered (citation validity) | Escalated | PII: re-scan / standalone echo / glued echo / log | p50 / p95 latency |
 | --- | --- | --- | --- | --- | --- | --- | --- | --- |
-| `msmarco` | 500 | 98.4% | 1 (0.2%) | 1 (0.2%) | 1 (100.0%) | 3 (0.6%) | 0 / 0 / 0 / 0 | 50 / 66 ms |
-| `twcs` | 300 | 90.0% | 11 (3.7%) | 26 (8.7%) | 30 (96.7%) | 27 (9.0%) | 0 / 0 / 0 / 0 | 60 / 125 ms |
-| `twcs_pii` | 50 | 94.0% | 0 (0.0%) | 3 (6.0%) | 3 (100.0%) | 5 (10.0%) | 0 / 0 / 0 / 0 | 60 / 142 ms |
-| `tech` | 200 | 92.0% | 4 (2.0%) | 13 (6.5%) | 16 (100.0%) | 5 (2.5%) | 0 / 0 / 0 / 0 | 58 / 110 ms |
+| `msmarco` | 500 | 98.4% | 1 (0.2%) | 1 (0.2%) | 1 (100.0%) | 3 (0.6%) | 0 / 0 / 0 / 0 | 48 / 54 ms |
+| `twcs` | 300 | 90.0% | 11 (3.7%) | 26 (8.7%) | 30 (96.7%) | 23 (7.7%) | 0 / 0 / 0 / 0 | 57 / 101 ms |
+| `twcs_pii` | 50 | 94.0% | 0 (0.0%) | 3 (6.0%) | 3 (100.0%) | 4 (8.0%) | 0 / 0 / 0 / 0 | 54 / 108 ms |
+| `tech` | 200 | 92.5% | 4 (2.0%) | 13 (6.5%) | 15 (100.0%) | 4 (2.0%) | 0 / 0 / 0 / 0 | 55 / 93 ms |
 
 PII columns count probes (not occurrences). *Glued* = a 10-19 digit run attached to letters or a hyphen (see the PII section).
 
-1050 requests in 128.8 s (setup and KB load 37.3 s). Log lines flagged by the redaction re-scan: 0.
+1050 requests in 117.3 s (setup and KB load 29.1 s). Log lines flagged by the redaction re-scan: 0.
 
 ## Answer types and verdicts per set
 
 | Set | `answered` | `clarification_needed` | `escalated` | `not_found` | `out_of_scope` | Verdicts |
 | --- | --- | --- | --- | --- | --- | --- |
 | `msmarco` | 1 | 4 | 3 | 8 | 484 | acceptable 492, over_handled 7, invented 1 |
-| `twcs` | 30 | 0 | 27 | 48 | 195 | acceptable 270, answered_review 19, invented_off_topic 10, invented_invalid_citation 1 |
-| `twcs_pii` | 3 | 0 | 5 | 6 | 36 | acceptable 47, answered_review 3 |
-| `tech` | 16 | 2 | 5 | 83 | 94 | acceptable 184, answered_review 12, invented_off_topic 4 |
+| `twcs` | 30 | 0 | 23 | 49 | 198 | acceptable 270, answered_review 19, invented_off_topic 10, invented_invalid_citation 1 |
+| `twcs_pii` | 3 | 0 | 4 | 6 | 37 | acceptable 47, answered_review 3 |
+| `tech` | 15 | 2 | 4 | 85 | 94 | acceptable 185, answered_review 11, invented_off_topic 4 |
 
 **Intent types (classifier output)**
 
 - `msmarco`: out_of_scope 484, how_to 9, troubleshooting 5, billing 2
-- `twcs`: out_of_scope 195, how_to 55, billing 22, complaint 11, troubleshooting 7, account 6, security 4
-- `twcs_pii`: out_of_scope 36, how_to 6, billing 4, complaint 2, security 1, troubleshooting 1
-- `tech`: out_of_scope 94, how_to 63, account 22, troubleshooting 16, billing 5
+- `twcs`: out_of_scope 198, how_to 54, billing 22, complaint 9, troubleshooting 7, account 6, security 4
+- `twcs_pii`: out_of_scope 37, how_to 6, billing 4, security 1, complaint 1, troubleshooting 1
+- `tech`: out_of_scope 94, how_to 64, account 22, troubleshooting 16, billing 4
 
 ## Escalations and side-effect tools
 
 | Set | Escalated | Reasons | Queues | `send_password_reset` fired |
 | --- | --- | --- | --- | --- |
 | `msmarco` | 3 (0.6%) | kb_gap_needs_outcome 3, repeated_contact 1 | technical 3 | 0 |
-| `twcs` | 27 (9.0%) | kb_gap_needs_outcome 14, billing_dispute 9, explicit_human_request 4, repeated_contact 4, security_incident 2, low_groundedness 2 | technical 16, billing 9, security 2 | 2 |
-| `twcs_pii` | 5 (10.0%) | repeated_contact 2, security_incident 1, kb_gap_needs_outcome 1, billing_dispute 1, explicit_human_request 1 | technical 3, security 1, billing 1 | 0 |
-| `tech` | 5 (2.5%) | kb_gap_needs_outcome 4, billing_dispute 1, repeated_contact 1 | technical 4, billing 1 | 0 |
+| `twcs` | 23 (7.7%) | kb_gap_needs_outcome 12, billing_dispute 9, repeated_contact 4, security_incident 2, low_groundedness 2 | technical 12, billing 9, security 2 | 2 |
+| `twcs_pii` | 4 (8.0%) | repeated_contact 2, security_incident 1, kb_gap_needs_outcome 1, billing_dispute 1 | technical 2, security 1, billing 1 | 0 |
+| `tech` | 4 (2.0%) | kb_gap_needs_outcome 4, repeated_contact 1 | technical 4 | 0 |
 
 ## Relevance cut-off test
 
@@ -66,77 +66,76 @@ RETRIEVAL-MIN-01 is 0.65. The weakest in-scope core eval case (same model and to
 | `msmarco` | 1 of 1 | 0 of 0 |
 | `twcs` | 24 of 26 | 3 of 4 |
 | `twcs_pii` | 3 of 3 | 0 of 0 |
-| `tech` | 12 of 13 | 2 of 3 |
+| `tech` | 12 of 13 | 2 of 2 |
 
 ## Answered probes (for manual review, by trace_id)
 
-Trace IDs refer to audit records in the run's temp SQLite DB (`eval-160618.db` under the system temp folder). Full lists are in the JSON files.
+Trace IDs refer to audit records in the run's temp SQLite DB (`eval-204139.db` under the system temp folder). Full lists are in the JSON files.
 
-**`msmarco`**: 1 answered, 0 judged genuinely CloudFlow-generic on manual review. Invented after review by intent type: how_to 1; most cited: KB-ADV-007 (1).
+**`msmarco`**: 1 answered, 0 judged genuinely CloudFlow-generic on manual review. Invented after review by intent type: how_to 1; most cited: KB-ADV-007 (1), RN-4.2-001 (1).
 
 | Probe | trace_id | Automatic verdict | Manual review | Cited | Shared topic | Intent | Best score |
 | --- | --- | --- | --- | --- | --- | --- | --- |
-| MM-006 | `0884c458` | invented | - | KB-ADV-007 | - | how_to | 0.7154 |
+| MM-006 | `39a015b6` | invented | - | KB-ADV-007, RN-4.2-001 | - | how_to | 0.7154 |
 
 **`twcs`**: 30 answered, 4 judged genuinely CloudFlow-generic on manual review. Invented after review by intent type: billing 11, how_to 8, account 4, complaint 3; most cited: KB-BIL-006 (4), KB-TRB-001 (4), KB-GS-004 (4), KB-BIL-002 (3), TKT-2025-0733 (3), KB-BIL-005 (3).
 
 | Probe | trace_id | Automatic verdict | Manual review | Cited | Shared topic | Intent | Best score |
 | --- | --- | --- | --- | --- | --- | --- | --- |
-| TW-023 | `d9bef743` | answered_review | invented | KB-GS-004, KB-BIL-005 | account | account | 0.7644 |
-| TW-025 | `8dbcd4a2` | answered_review | invented | KB-GS-004, KB-BIL-005 | account | account | 0.7347 |
-| TW-028 | `7a0dae42` | answered_review | invented | KB-BIL-002 | billing | billing | 0.6602 |
-| TW-032 | `710a7d78` | answered_review | invented | TKT-2025-0610 | billing | billing | 0.656 |
-| TW-046 | `976dd7b9` | answered_review | generic | KB-TRB-009, KB-TRB-001 | password and login | security | 0.6909 |
-| TW-047 | `2ca38642` | invented_off_topic | - | KB-BIL-002, POL-ESC-001 | - | how_to | 0.7111 |
-| TW-048 | `23dda3dc` | invented_off_topic | - | KB-BIL-006 | - | complaint | 0.7088 |
-| TW-057 | `fae5aa9c` | answered_review | generic | KB-TRB-009, KB-TRB-001 | password and login, account | security | 0.6595 |
-| TW-058 | `cfe8c322` | answered_review | invented | KB-BIL-004, KB-BIL-002 | billing, account | billing | 0.7149 |
-| TW-067 | `e009ed9a` | invented_off_topic | - | KB-TRB-009, KB-TRB-005 | - | how_to | 0.7005 |
-| TW-070 | `79918bbc` | answered_review | invented | KB-GS-004, KB-TRB-001 | account | account | 0.6959 |
-| TW-115 | `8c221c2a` | answered_review | invented | KB-BIL-003 | billing | billing | 0.7453 |
-| TW-158 | `c90ddd90` | invented_off_topic | - | TKT-2025-0733 | - | how_to | 0.6843 |
-| TW-161 | `69f2ac3e` | answered_review | invented | KB-BIL-004, KB-BIL-003 | billing | billing | 0.7292 |
-| TW-181 | `521d6af7` | answered_review | invented | KB-BIL-006 | billing | billing | 0.6571 |
-| TW-192 | `51b2815a` | invented_off_topic | - | POL-ESC-001 | - | billing | 0.7184 |
-| TW-197 | `e0cd2045` | answered_review | generic | KB-TRB-009 | password and login | how_to | 0.7417 |
-| TW-210 | `f3b7be4e` | answered_review | invented | TKT-2024-0811 | account | how_to | 0.6708 |
-| TW-211 | `3e6d5730` | answered_review | invented | KB-BIL-005, KB-BIL-006 | billing | how_to | 0.6919 |
-| TW-213 | `7991391d` | invented_off_topic | - | KB-TRB-003 | - | complaint | 0.6575 |
-| TW-218 | `56125cec` | answered_review | invented | TKT-2025-0610, TKT-2025-0733 | billing | billing | 0.6862 |
-| TW-222 | `7659c9bb` | answered_review | generic | KB-BIL-004, KB-BIL-005 | billing | billing | 0.7067 |
-| TW-225 | `ef3daa08` | invented_off_topic | - | KB-TRB-001, KB-TRB-003 | - | how_to | 0.67 |
-| TW-241 | `1c1f487d` | invented_invalid_citation | - |  | - | account | 0.5667 |
-| TW-253 | `c845adf1` | answered_review | invented | KB-TRB-001, KB-BIL-004 | billing | billing | 0.7006 |
+| TW-023 | `39848b57` | answered_review | invented | KB-GS-004, KB-BIL-005 | account | account | 0.7644 |
+| TW-025 | `630a39b4` | answered_review | invented | KB-GS-004, KB-BIL-005 | account | account | 0.7347 |
+| TW-028 | `f38669a0` | answered_review | invented | KB-BIL-002 | billing | billing | 0.6602 |
+| TW-032 | `58e1d421` | answered_review | invented | TKT-2025-0610 | billing | billing | 0.656 |
+| TW-046 | `cc41af02` | answered_review | generic | KB-TRB-009, KB-TRB-001 | password and login | security | 0.6909 |
+| TW-047 | `b7057850` | invented_off_topic | - | KB-BIL-002, POL-ESC-001 | - | how_to | 0.7111 |
+| TW-048 | `2a8ebeec` | invented_off_topic | - | KB-BIL-006 | - | complaint | 0.7088 |
+| TW-057 | `6db19236` | answered_review | generic | KB-TRB-009, KB-TRB-001 | password and login, account | security | 0.6595 |
+| TW-058 | `420d8db5` | answered_review | invented | KB-BIL-004, KB-BIL-002 | billing, account | billing | 0.7149 |
+| TW-067 | `d130bf38` | invented_off_topic | - | KB-TRB-009, KB-TRB-005 | - | how_to | 0.7005 |
+| TW-070 | `bbd62ba2` | answered_review | invented | KB-GS-004, KB-TRB-001 | account | account | 0.6959 |
+| TW-115 | `4c843a1a` | answered_review | invented | KB-BIL-003 | billing | billing | 0.7453 |
+| TW-158 | `bc051e22` | invented_off_topic | - | TKT-2025-0733 | - | how_to | 0.6843 |
+| TW-161 | `8411e774` | answered_review | invented | KB-BIL-004, KB-BIL-003 | billing | billing | 0.7292 |
+| TW-181 | `e46bf02d` | answered_review | invented | KB-BIL-006 | billing | billing | 0.6571 |
+| TW-192 | `6afd9fbd` | invented_off_topic | - | POL-ESC-001 | - | billing | 0.7184 |
+| TW-197 | `e09aafdf` | answered_review | generic | KB-TRB-009 | password and login | how_to | 0.7417 |
+| TW-210 | `2a5cbe22` | answered_review | invented | TKT-2024-0811 | account | how_to | 0.6708 |
+| TW-211 | `a1dd6a2b` | answered_review | invented | KB-BIL-005, KB-BIL-006 | billing | how_to | 0.6919 |
+| TW-213 | `0f71da4d` | invented_off_topic | - | KB-TRB-003 | - | complaint | 0.6575 |
+| TW-218 | `894cf156` | answered_review | invented | TKT-2025-0610, TKT-2025-0733 | billing | billing | 0.6862 |
+| TW-222 | `46fea95d` | answered_review | generic | KB-BIL-004, KB-BIL-005 | billing | billing | 0.7067 |
+| TW-225 | `6349720a` | invented_off_topic | - | KB-TRB-001, KB-TRB-003 | - | how_to | 0.67 |
+| TW-241 | `faa4c440` | invented_invalid_citation | - |  | - | account | 0.5667 |
+| TW-253 | `47326378` | answered_review | invented | KB-TRB-001, KB-BIL-004 | billing | billing | 0.7006 |
 | ... | | 5 more in `eval/results/public_twcs.json` | | | | | |
 
 **`twcs_pii`**: 3 answered, 0 judged genuinely CloudFlow-generic on manual review. Invented after review by intent type: billing 3; most cited: KB-BIL-006 (2), TKT-2025-0610 (1), TKT-2025-0733 (1).
 
 | Probe | trace_id | Automatic verdict | Manual review | Cited | Shared topic | Intent | Best score |
 | --- | --- | --- | --- | --- | --- | --- | --- |
-| TWP-03 | `1eb76d8b` | answered_review | invented | KB-BIL-006 | billing | billing | 0.688 |
-| TWP-10 | `ce3e4af8` | answered_review | invented | KB-BIL-006 | billing | billing | 0.6728 |
-| TWP-16 | `e74117f3` | answered_review | invented | TKT-2025-0610, TKT-2025-0733 | billing | billing | 0.6704 |
+| TWP-03 | `5f05a3c7` | answered_review | invented | KB-BIL-006 | billing | billing | 0.688 |
+| TWP-10 | `b77ad6ca` | answered_review | invented | KB-BIL-006 | billing | billing | 0.6728 |
+| TWP-16 | `6c5517f7` | answered_review | invented | TKT-2025-0610, TKT-2025-0733 | billing | billing | 0.6704 |
 
-**`tech`**: 16 answered, 3 judged genuinely CloudFlow-generic on manual review. Invented after review by intent type: how_to 6, account 4, troubleshooting 2, billing 1; most cited: KB-TRB-008 (3), KB-API-005 (3), KB-API-007 (3), KB-TRB-001 (2), POL-LIMITS-001 (2), KB-TRB-007 (2).
+**`tech`**: 15 answered, 2 judged genuinely CloudFlow-generic on manual review. Invented after review by intent type: how_to 6, account 4, troubleshooting 2, billing 1; most cited: KB-TRB-008 (3), KB-API-005 (3), KB-API-007 (3), KB-TRB-001 (2), POL-LIMITS-001 (2), KB-TRB-007 (2).
 
 | Probe | trace_id | Automatic verdict | Manual review | Cited | Shared topic | Intent | Best score |
 | --- | --- | --- | --- | --- | --- | --- | --- |
-| TT-040 | `40352ba0` | answered_review | invented | KB-TRB-008, KB-TRB-005 | scheduling and time zones | how_to | 0.6931 |
-| TT-064 | `03d4216d` | invented_off_topic | - | KB-TRB-001, KB-TRB-008 | - | troubleshooting | 0.6676 |
-| TT-069 | `716fc9d1` | invented_off_topic | - | KB-API-003 | - | how_to | 0.7143 |
-| TT-093 | `cf6cb5b0` | invented_off_topic | - | POL-LIMITS-001, KB-BIL-001 | - | account | 0.6912 |
-| TT-100 | `b069e1b7` | invented_off_topic | - | KB-TRB-006, KB-TRB-008 | - | troubleshooting | 0.7237 |
-| TT-105 | `fc782ae8` | answered_review | invented | POL-LIMITS-001, KB-API-005 | rate limits and quotas | account | 0.7435 |
-| TT-107 | `c4e44444` | answered_review | invented | KB-API-005 | rate limits and quotas | account | 0.6747 |
-| TT-110 | `10e54bc4` | answered_review | generic | KB-API-001, KB-API-009 | auth expiry and token refresh | how_to | 0.748 |
-| TT-111 | `89e19527` | answered_review | generic | KB-API-001, KB-API-012 | auth expiry and token refresh | how_to | 0.6866 |
-| TT-127 | `89d1adce` | answered_review | generic | KB-API-001 | auth expiry and token refresh | how_to | 0.6965 |
-| TT-128 | `bdae80cc` | answered_review | invented | KB-TRB-007 | webhook retries and signatures | how_to | 0.6534 |
-| TT-139 | `29d68134` | answered_review | invented | KB-API-007, RN-4.4-001 | webhook retries and signatures | billing | 0.6832 |
-| TT-144 | `32f69464` | answered_review | invented | KB-API-007 | webhook retries and signatures | how_to | 0.663 |
-| TT-148 | `c23299e5` | answered_review | invented | KB-API-007, KB-TRB-007 | webhook retries and signatures | how_to | 0.6732 |
-| TT-150 | `9f995443` | answered_review | invented | KB-TRB-001, KB-API-001 | auth expiry and token refresh | how_to | 0.71 |
-| TT-153 | `7edb3f2c` | answered_review | invented | KB-API-005 | rate limits and quotas | account | 0.7183 |
+| TT-040 | `678ea51c` | answered_review | invented | KB-TRB-008, KB-TRB-005 | scheduling and time zones | how_to | 0.6931 |
+| TT-064 | `44d537b9` | invented_off_topic | - | KB-TRB-001, KB-TRB-008 | - | troubleshooting | 0.6676 |
+| TT-069 | `dcbfd081` | invented_off_topic | - | KB-API-003 | - | how_to | 0.7143 |
+| TT-093 | `bf6db7a4` | invented_off_topic | - | POL-LIMITS-001, KB-BIL-001 | - | account | 0.6912 |
+| TT-100 | `709b653f` | invented_off_topic | - | KB-TRB-006, KB-TRB-008 | - | troubleshooting | 0.7237 |
+| TT-105 | `89e1bc9e` | answered_review | invented | POL-LIMITS-001, KB-API-005 | rate limits and quotas | account | 0.7435 |
+| TT-107 | `4235509b` | answered_review | invented | KB-API-005 | rate limits and quotas | account | 0.6747 |
+| TT-111 | `3b6e1ac5` | answered_review | generic | KB-API-001, KB-API-012 | auth expiry and token refresh | how_to | 0.6866 |
+| TT-127 | `cb118af5` | answered_review | generic | KB-API-001 | auth expiry and token refresh | how_to | 0.6965 |
+| TT-128 | `31463244` | answered_review | invented | KB-TRB-007 | webhook retries and signatures | how_to | 0.6534 |
+| TT-139 | `60b007e3` | answered_review | invented | KB-API-007, RN-4.4-001 | webhook retries and signatures | billing | 0.6832 |
+| TT-144 | `e51a191a` | answered_review | invented | KB-API-007 | webhook retries and signatures | how_to | 0.663 |
+| TT-148 | `1e1d8663` | answered_review | invented | KB-API-007, KB-TRB-007 | webhook retries and signatures | how_to | 0.6732 |
+| TT-150 | `94e570d0` | answered_review | invented | KB-TRB-001, KB-API-001 | auth expiry and token refresh | how_to | 0.71 |
+| TT-153 | `5bac76ba` | answered_review | invented | KB-API-005 | rate limits and quotas | account | 0.7183 |
 
 ## PII and secrets
 

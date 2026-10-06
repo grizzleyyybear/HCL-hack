@@ -13,7 +13,7 @@ from fastapi.testclient import TestClient
 from app import db, llm, retrieval, safety
 from app.graph import nodes
 from app.main import app
-from app.schemas import Critique, SourceMeta
+from app.schemas import Critique, Intent, SourceMeta
 
 SIX_ONE_KEYS = {"trace_id", "conversation_id", "answer_type", "answer", "intent", "citations", "tools_invoked",
                 "critic", "conflicts_detected", "handoff_id", "as_of_date"}
@@ -234,7 +234,7 @@ def test_only_documented_links_survive():
 def test_critic_coverage_none_means_not_covered(client, monkeypatch):
     # Simulate a critic that says the draft does not answer the question (what the real LLM critic reports
     # when retrieval found related but non-answering chunks).
-    weak = lambda draft, chunks, tools=None: Critique(groundedness=0.9, coverage="none", decision="answer")  # noqa: E731
+    weak = lambda draft, chunks, tools=None, as_of_date=None: Critique(groundedness=0.9, coverage="none", decision="answer")  # noqa: E731
     monkeypatch.setattr(llm, "overlap_critique", weak)
     assert ask(client, "How do I export my workflow run history?")["answer_type"] == "not_found"
     refund = ask(client, "Duplicate charges: I want my money back for the double charge.", "A1004")
@@ -490,3 +490,81 @@ def test_audit_names_the_configured_model_without_llm_calls(monkeypatch):
     assert audit.Trace().llm["model"] == "qwen-test:7b"
     monkeypatch.setenv("MOCK_LLM", "true")
     assert audit.Trace().llm["model"] == "mock"
+
+
+# ---------------------------------------------------------------- review fixes (2026-10-06)
+
+# The word "password" alone is a product question; only reset wording triggers the reset tool.
+def test_password_word_alone_does_not_send_a_reset(client):
+    data = ask(client, "Does CloudFlow support password managers?")
+    assert "send_password_reset" not in [t["tool"] for t in data["tools_invoked"]]
+
+
+# "Duplicate a workflow" is not a duplicate charge, and "delete the account mapping" is not an account deletion.
+def test_product_words_do_not_trigger_billing_or_deletion():
+    assert llm.keyword_intent("How do I duplicate a workflow?").subtype != "duplicate_charge"
+    assert llm.keyword_intent("How do I delete the account mapping in the HubSpot connector?").subtype != "deletion"
+    assert llm.keyword_intent("You charged me twice this month.").subtype == "duplicate_charge"
+
+
+# Asking for a person is a request; mentioning escalation rules or a user agent is not.
+@pytest.mark.parametrize("message, human", [
+    ("Get me a manager.", True), ("I'd rather talk to a person than a bot. Please put me through.", True),
+    ("How do I set up escalation rules in my workflow?", False), ("Our user agent header is rejected by the API", False),
+    ("Can a workflow assign tasks to a human approver?", False)])
+def test_human_request_needs_an_actual_request(message, human):
+    assert llm.keyword_intent(message).explicit_human_request is human
+
+
+# An account deletion always reaches a person, even when the KB has nothing on it.
+def test_deletion_request_escalates_without_kb_coverage(client):
+    data = ask(client, "Please delete my account, we are moving to Zapier.")
+    assert data["answer_type"] == "escalated" and "account_deletion" in data["handoff"]["escalation_reasons"]
+
+
+# "Get me a manager" is kept even when the LLM classifier already found the billing subtype.
+def test_human_request_kept_when_llm_found_the_subtype(client, monkeypatch):
+    real = llm.call_json
+
+    def classifier_without_flags(name, variables, schema, fallback):
+        if name == "classifier":
+            return Intent(type="billing", subtype="duplicate_charge", sentiment="angry", confidence=0.9), {}
+        return real(name, variables, schema, fallback)
+    monkeypatch.setattr(llm, "call_json", classifier_without_flags)
+    data = ask(client, "Third time writing. You charged me twice this month. Get me a manager.", "A1004")
+    assert {"billing_dispute", "explicit_human_request", "repeated_contact"} <= set(data["handoff"]["escalation_reasons"])
+
+
+# The caller's own company name is not an "uncovered product" ("Is Northwind over its API rate limit?").
+def test_own_company_name_is_not_an_unknown_term(client):
+    data = ask(client, "Is Northwind over its API rate limit?", "A1001")
+    assert data["answer_type"] != "not_found"
+
+
+# Signed-out callers never continue each other's conversations.
+def test_signed_out_callers_do_not_share_conversations(client):
+    first = ask(client, "How do I export my workflow run history?", None)
+    second = ask(client, "How do I export my workflow run history?", None, conversation_id=first["conversation_id"])
+    assert second["conversation_id"] != first["conversation_id"]
+
+
+# Bad input gets a 422 that names the field but never echoes the body back (it may hold PII).
+def test_validation_errors_do_not_echo_input(client):
+    resp = client.post("/support", headers={"X-Account-Id": "A1001"},
+                       json={"message": {"text": "mail me at bob@example.com"}})
+    assert resp.status_code == 422 and "bob@example.com" not in resp.text
+    resp = client.post("/support", headers={"X-Account-Id": "A1001"},
+                       json={"message": "How do I export?", "as_of_date": "0001-01-01"})
+    assert resp.status_code == 422
+
+
+# "It's not working." gets one clarifying question even when the LLM classifier missed that it is vague.
+def test_vague_message_gets_a_question_when_llm_misses_it(client, monkeypatch):
+    real = llm.call_json
+
+    def classifier_not_vague(name, variables, schema, fallback):
+        if name == "classifier":
+            return Intent(type="troubleshooting", confidence=0.6), {}
+        return real(name, variables, schema, fallback)
+    monkeypatch.setattr(llm, "call_json", classifier_not_vague)
+    assert ask(client, "It's not working.")["answer_type"] == "clarification_needed"

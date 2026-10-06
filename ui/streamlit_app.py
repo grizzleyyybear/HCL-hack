@@ -874,7 +874,7 @@ def render_escalation_card(index: int, r: dict) -> None:
 def render_reply(base: str, index: int, r: dict, agent: bool, titles: dict) -> None:
     with st.chat_message("assistant", avatar=AVATAR):
         with st.container(key=f"amsg_{index}"):
-            st.markdown(r.get("answer", ""))
+            st.markdown(r.get("answer", "").replace("$", r"\$"))  # "$49" must not render as LaTeX math
         if r.get("citations"):
             render_sources_line(r["citations"], titles, agent)
         if r.get("answer_type") == "escalated" and r.get("handoff_id"):
@@ -1020,7 +1020,6 @@ def help_question(page: str, me: dict | None) -> str | None:
 
 # Top bar: company, plan / status / version badges, "Need help? Ask InsightDesk" and the account menu.
 def top_bar(page: str, me: dict | None, busy: bool) -> None:
-    ss = st.session_state
     account = (me or {}).get("account") or signed_in_account() or {}
     left, right = st.columns([3, 2], vertical_alignment="center")
     with left:

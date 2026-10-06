@@ -42,15 +42,20 @@ SECRET_AFTER_WORD_RE = re.compile(
     re.IGNORECASE,
 )
 
+# Matches a JSON Web Token (three base64url parts starting with eyJ), with or without "token:" in front.
+JWT_RE = re.compile(r"\beyJ[\w-]+\.[\w-]+\.[\w-]+")
+
 # Matches an email address like jane.doe+test@example.com.
 EMAIL_RE = re.compile(r"[\w.+-]+@[\w-]+(?:\.[\w-]+)+")
 
 # Matches 13-19 digits with optional single spaces/dashes between them (card candidates; Luhn decides).
-CARD_RE = re.compile(r"(?<![\w+-])\d(?:[ -]?\d){12,18}(?![\w-])")
+CARD_RE = re.compile(r"(?<![\w+-])\d(?:[ -]{0,2}\d){12,18}(?!\w)")
 
-# Matches phone candidates: optional +, digit groups split by one space/dash, or "(415)" style groups.
-# Separators are mandatory between plain digit groups, which keeps the regex fast (no backtracking blow-up).
-PHONE_RE = re.compile(r"(?<![\w+-])\+?(?:\(\d+\)|\d+)(?:[ -]?\(\d+\)|[ -]\d+|(?<=\))\d+)*(?![\w-])")
+# Matches phone candidates: optional +, digit groups split by one space, dash, dot or slash, or "(415)" style
+# groups, and an optional extension ("x204", "ext. 12"). Separators are mandatory between plain digit groups,
+# which keeps the regex fast (no backtracking blow-up); _phone_sub still needs 10+ digits.
+PHONE_RE = re.compile(r"(?<![\w+-])\+?(?:\(\d+\)|\d+)(?:[ ./-]?\(\d+\)|[ ./-]\d+|(?<=\))\d+)*"
+                      r"(?:\s*(?:x|ext\.?)\s*\d{1,5})?(?![\w-])", re.IGNORECASE)
 
 # Digit runs glued to letters ("line07700900123", "card4111111111111111") that the patterns above skip
 # because of their word-boundary lookbehind: 13-19 digits (Luhn-checked) are cards, 10-12 digits phones.
@@ -87,6 +92,15 @@ def _card_sub(match: re.Match) -> str:
     return "[CARD]"
 
 
+# A 10+ digit run behind a letter prefix is hidden as a phone, except our business IDs (INV-, INC-, TKT-),
+# whose numbers are references a customer and the billing team need to see.
+def _prefixed_sub(match: re.Match) -> str:
+    before = match.string[max(0, match.start() - 8):match.start()]
+    if re.search(r"\b(?:INV|INC|TKT)-(?:[A-Z]{1,3}-)?$", before, re.IGNORECASE):
+        return match.group()
+    return _phone_sub(match)
+
+
 # A long digit run glued to letters: [CARD] when it passes Luhn, otherwise still hidden as [PHONE]
 # (an order or tracking number, or a mistyped card; never shown either way).
 def _glued_long_sub(match: re.Match) -> str:
@@ -111,11 +125,12 @@ def redact(text: str) -> tuple[str, bool]:
     out = PREFIXED_KEY_RE.sub("[SECRET]", out)
     out = SK_DASH_KEY_RE.sub("[SECRET]", out)
     out = BEARER_RE.sub(r"\1[SECRET]", out)
+    out = JWT_RE.sub("[SECRET]", out)
     out = SECRET_AFTER_WORD_RE.sub(r"\1\2[SECRET]", out)
     out = EMAIL_RE.sub("[EMAIL]", out)
     out = CARD_RE.sub(_card_sub, out)
     out = PHONE_RE.sub(_phone_sub, out)
-    out = PREFIXED_DIGITS_RE.sub(_phone_sub, out)
+    out = PREFIXED_DIGITS_RE.sub(_prefixed_sub, out)
     out = GLUED_CARD_RE.sub(_glued_long_sub, out)
     out = GLUED_PHONE_RE.sub("[PHONE]", out)
     return out, out != text
@@ -147,7 +162,7 @@ _DATA_WORDS = r"(?:accounts?|invoices?|usage|billing|plan|data|details|subscript
 
 # Matches someone else's account: "my colleague's account", "another customer's invoices", "someone else's usage".
 OTHER_PERSON_RE = re.compile(
-    r"\b(?:colleague|co-?worker|friend|boss|teammate|client|partner|husband|wife|"
+    r"\b(?:colleague|co-?worker|friend|boss|teammate|husband|wife|"
     r"someone\s+else|somebody\s+else|(?:another|other|different)\s+(?:customer|company|client|person|user))"
     r"(?:'s|s'|s)?\s+" + _DATA_WORDS + r"\b",
     re.IGNORECASE,
@@ -158,15 +173,20 @@ _NOT_COMPANIES = (
     r"(?:CloudFlow|I|My|Our|The|This|That|Today|Yesterday|Tomorrow|Free|Pro|Business|Enterprise|API|"
     r"January|February|March|April|May|June|July|August|September|October|November|December|"
     r"Monday|Tuesday|Wednesday|Thursday|Friday|Saturday|Sunday|"
-    r"Salesforce|HubSpot|Slack|Microsoft|Teams|Google|Sheets|Jira|Zendesk|Stripe|PostgreSQL|HTTP)\b"
+    r"Salesforce|HubSpot|Slack|Microsoft|Teams|Google|Sheets|Jira|Zendesk|Stripe|PostgreSQL|HTTP|"
+    r"Production|Staging|Development|Sandbox|Testing|Nonprofits?|Non-profits?|Students?|Startups?|Education|"
+    r"Schools?|Charities|Zapier|Make|Admin|Owner|Workspace)\b"
 )
+# A capitalised word right before a product noun is an adjective ("Production workflows", "Zapier steps").
+_NOT_BEFORE_PRODUCT = (r"(?!\s+(?:workflows?|steps?|runs?|connectors?|connections?|integrations?|webhooks?|users?|"
+                       r"teams?|environments?|apps?|accounts?|plans?|data|jobs?|triggers?|actions?)\b)")
 
 # Matches a named company: "the account of Acme Corp", "invoices for Globex", "Initech's usage".
 # The name must look like a word ("Acme"), so IDs such as INV-6002 or CF-503 never count.
 # ponytail: capitalisation heuristic; company names stored in our DB are checked exactly in other_account_requested.
 NAMED_COMPANY_RE = re.compile(
     r"(?i:\b(?:account|invoices?|usage|billing|subscription|plan)\s+(?:of|for|belonging\s+to)\s+(?:the\s+)?)"
-    r"(?!" + _NOT_COMPANIES + r")[A-Z][a-z][\w&-]*(?:\s+[A-Z][\w&-]+)*"
+    r"(?!" + _NOT_COMPANIES + r")[A-Z][a-z][\w&-]*(?:\s+[A-Z][\w&-]+)*" + _NOT_BEFORE_PRODUCT +
     r"|\b(?!" + _NOT_COMPANIES + r")[A-Z][a-z][\w&-]*(?:\s+[A-Z][\w&-]+)*'s\s+(?i:" + _DATA_WORDS + r")\b"
 )
 
@@ -218,7 +238,7 @@ def other_account_requested(message: str, header_account: str | None) -> bool:
 # ---------------------------------------------------------------- secret requests
 
 # Verbs that put something on screen in this chat.
-_SHOW = r"(?:show|display|reveal|tell|give|paste|print|share|read(?:\s+out)?|copy|provide|expose|post|output|repeat|write)"
+_SHOW = r"(?:show|display|reveal|tell|give|paste|print|share|read(?:\s+out)?|copy|provide|expose|post|output|repeat)"
 # Verbs that deliver something (fine for a reset email, never fine for a key or password).
 _SEND = r"(?:send|email|e-mail|text|dm|message|forward)"
 # Up to 4 filler words between verb and noun ("show me my", "give us the"), but never "how/why/about/reset...".
@@ -230,7 +250,13 @@ _KEY_NOUN = (r"(?:api[\s_-]?(?:key|token)|access[\s_-]?token|auth(?:entication)?
 # Link nouns: the reset link/URL/token/code that must only ever go to the email on file.
 _LINK_NOUN = r"(?:(?:password\s+)?(?:reset|recovery|login|sign[\s-]?in|magic|verification)\s+(?:link|url|token|code))"
 # Words after a noun that make it a docs question ("the API token format") rather than a request.
-_DOC_TAIL = r"(?!\s+(?:format|rotation|docs?|documentation|header|policy|length|expiry|scopes?|permissions?|settings?|page))"
+_DOC_TAIL = (r"(?!\s+(?:formats?|rotation|docs?|documentation|headers?|polic(?:y|ies)|length|expiry|expiration|"
+             r"scopes?|permissions?|settings?|pages?|requirements?|rules?|endpoints?|types?|refresh|"
+             r"examples?|names?|limits?|lifetime|fields?|parameters?|strength|complexity|manager)\b)")
+# "How do I ...", "Where can I ...", "Can I ...", "Is there ...": a how-to question, never a request to reveal.
+HOW_TO_QUESTION_RE = re.compile(r"^\s*(?:how\s+(?:do|can|should|would)\s+(?:i|we)|where\s+(?:do|can)\s+(?:i|we)|"
+                                r"can\s+(?:i|we)|is\s+there|what(?:'s|\s+is)\s+the\s+(?:best|right|safest)\s+way)\b",
+                                re.IGNORECASE)
 
 # "show me my API key", "paste the reset link", "tell me my password".
 SHOW_SECRET_RE = re.compile(r"\b" + _SHOW + _GAP + r"(?:" + _KEY_NOUN + "|" + _LINK_NOUN + r")\b" + _DOC_TAIL, re.I)
@@ -258,6 +284,8 @@ _SECRET_REQUEST_PATTERNS = [SHOW_SECRET_RE, SEND_KEY_RE, SEND_LINK_HERE_RE, WHAT
 
 # True when the message asks us to reveal a key, token, password, reset link or the email on file.
 def asks_for_secret(message: str) -> bool:
+    if HOW_TO_QUESTION_RE.match(message or "") and not SEND_LINK_HERE_RE.search(message or ""):
+        return False
     return any(pattern.search(message or "") for pattern in _SECRET_REQUEST_PATTERNS)
 
 
@@ -287,13 +315,26 @@ _PROMISE_PATTERNS = [
     r"reactivated|cancell?ed|changed)",
     # "I will refund you", "I'll issue a refund", "I'll cancel it"
     r"\bI(?:\s+will|'ll)\s+(?:refund|credit|issue\s+(?:a|the|your)\s+refund|cancel|upgrade|downgrade|unlock|waive)",
+    # "we will refund you", "we'll credit your account", "we will waive the late fee"
+    r"\bwe(?:\s+will|'ll)\s+(?:refund|credit|reimburse|reverse|waive|cancel|upgrade|downgrade|unlock|"
+    r"issue\s+(?:a|the|your)\s+(?:full\s+)?(?:refund|credit))",
+    # "a refund will be issued", "your credit will be applied"
+    r"\b(?:refund|credit|reimbursement)s?\s+will\s+be\s+(?:issued|processed|applied|sent|credited)",
+    # "you will receive a full refund", "you'll get your money back"
+    r"\byou(?:\s+will|'ll)\s+(?:receive|get)\s+(?:a\s+|your\s+|the\s+)?(?:full\s+|partial\s+)?"
+    r"(?:refund|credit|money\s+back)",
+    # "I've processed your refund", "we have processed the refund"
+    r"\b(?:I|we)(?:\s+have|'ve)\s+processed\b",
 ]
 PROMISE_RE = re.compile("|".join(_PROMISE_PATTERNS), re.IGNORECASE)
 
 
 # True when text promises a refund, credit or account change ("refund has been issued", ...).
 def makes_promise(text: str) -> bool:
-    return bool(PROMISE_RE.search((text or "").replace("\u2019", "'")))
+    sentences = re.split(r"(?<=[.!?])\s+|\n+", (text or "").replace("\u2019", "'"))
+    # "If a refund has been approved, ..." or "Once your plan has been cancelled, ..." describes a condition.
+    return any(PROMISE_RE.search(s) for s in sentences
+               if not re.match(r"\s*(?:if|once|when|after|unless|whether|in\s+case)\b", s, re.IGNORECASE))
 
 
 # ---------------------------------------------------------------- logging (R9: logs are redacted too)

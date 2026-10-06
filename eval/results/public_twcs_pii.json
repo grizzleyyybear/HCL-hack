@@ -22,8 +22,8 @@
       "platform_status": 4
     },
     "kb_sources": 73,
-    "setup_s": 37.3,
-    "total_runtime_s": 128.8,
+    "setup_s": 29.1,
+    "total_runtime_s": 117.3,
     "log_lines_flagged_by_redact": 0,
     "in_scope_score_floor": 0.7399
   },
@@ -31,11 +31,11 @@
   "probe_file": "data/raw/probes/twcs_pii_50.jsonl (gitignored, not committed)",
   "description": "the same 50 PII-like tweets, NOT scrubbed (stress test for app/safety.py redaction)",
   "requests": 50,
-  "runtime_s": 5.3,
+  "runtime_s": 4.5,
   "answer_types": {
-    "out_of_scope": 36,
+    "out_of_scope": 37,
     "not_found": 6,
-    "escalated": 5,
+    "escalated": 4,
     "answered": 3
   },
   "verdicts": {
@@ -65,7 +65,7 @@
     "for_review": [
       {
         "id": "TWP-03",
-        "trace_id": "1eb76d8b",
+        "trace_id": "5f05a3c7",
         "verdict": "answered_review",
         "cited": [
           "KB-BIL-006"
@@ -78,7 +78,7 @@
       },
       {
         "id": "TWP-10",
-        "trace_id": "ce3e4af8",
+        "trace_id": "b77ad6ca",
         "verdict": "answered_review",
         "cited": [
           "KB-BIL-006"
@@ -91,7 +91,7 @@
       },
       {
         "id": "TWP-16",
-        "trace_id": "e74117f3",
+        "trace_id": "6c5517f7",
         "verdict": "answered_review",
         "cited": [
           "TKT-2025-0610",
@@ -112,34 +112,33 @@
     "reviewed_generic_below_floor": 0
   },
   "tools_fired": {
-    "lookup_account": 14,
-    "get_invoices": 6,
-    "create_handoff": 5,
+    "lookup_account": 13,
+    "get_invoices": 5,
     "check_refund_eligibility": 4,
+    "create_handoff": 4,
     "check_platform_status": 1
   },
   "escalation": {
-    "count": 5,
-    "rate": 10.0,
+    "count": 4,
+    "rate": 8.0,
     "reasons": {
       "repeated_contact": 2,
       "security_incident": 1,
       "kb_gap_needs_outcome": 1,
-      "billing_dispute": 1,
-      "explicit_human_request": 1
+      "billing_dispute": 1
     },
     "queues": {
-      "technical": 3,
+      "technical": 2,
       "security": 1,
       "billing": 1
     }
   },
   "intent_types": {
-    "out_of_scope": 36,
+    "out_of_scope": 37,
     "how_to": 6,
     "billing": 4,
-    "complaint": 2,
     "security": 1,
+    "complaint": 1,
     "troubleshooting": 1
   },
   "pii": {
@@ -159,210 +158,210 @@
     "log_echo_ids": []
   },
   "latency_ms": {
-    "p50": 60,
-    "p95": 142,
-    "max": 146
+    "p50": 54,
+    "p95": 108,
+    "max": 110
   },
   "errors": [],
   "trace_ids": {
     "TWP-01": [
-      "ec3bd436",
+      "4ac115db",
       "out_of_scope"
     ],
     "TWP-02": [
-      "cc956e68",
+      "254827d0",
       "out_of_scope"
     ],
     "TWP-03": [
-      "1eb76d8b",
+      "5f05a3c7",
       "answered"
     ],
     "TWP-04": [
-      "13cc817e",
+      "a30cd9d7",
       "out_of_scope"
     ],
     "TWP-05": [
-      "32f5cda6",
+      "ff879095",
       "escalated"
     ],
     "TWP-06": [
-      "f3e7ce7b",
+      "962fcfda",
       "out_of_scope"
     ],
     "TWP-07": [
-      "41c9cf61",
+      "7237cf71",
       "escalated"
     ],
     "TWP-08": [
-      "759713e0",
+      "6329f6ec",
       "out_of_scope"
     ],
     "TWP-09": [
-      "05974b37",
+      "19d39043",
       "out_of_scope"
     ],
     "TWP-10": [
-      "ce3e4af8",
+      "b77ad6ca",
       "answered"
     ],
     "TWP-11": [
-      "8af64dd2",
+      "c8125e45",
       "not_found"
     ],
     "TWP-12": [
-      "a2e75feb",
+      "69ec243d",
       "not_found"
     ],
     "TWP-13": [
-      "5333d736",
+      "e0770738",
       "out_of_scope"
     ],
     "TWP-14": [
-      "56816597",
+      "b09eb7f1",
       "out_of_scope"
     ],
     "TWP-15": [
-      "d0be7cc7",
+      "f8f3c925",
       "escalated"
     ],
     "TWP-16": [
-      "e74117f3",
+      "6c5517f7",
       "answered"
     ],
     "TWP-17": [
-      "6a7e28cf",
+      "2cad6e74",
       "out_of_scope"
     ],
     "TWP-18": [
-      "a718c7d6",
+      "1b07005e",
       "out_of_scope"
     ],
     "TWP-19": [
-      "e046db92",
+      "890806ac",
       "not_found"
     ],
     "TWP-20": [
-      "31692019",
+      "25dbf5c3",
       "not_found"
     ],
     "TWP-21": [
-      "96c14e2a",
+      "91b4c2f8",
       "out_of_scope"
     ],
     "TWP-22": [
-      "84698ab7",
+      "399baeac",
       "out_of_scope"
     ],
     "TWP-23": [
-      "b5c5464d",
+      "29f4b310",
       "out_of_scope"
     ],
     "TWP-24": [
-      "78a81b70",
+      "6baaec25",
       "out_of_scope"
     ],
     "TWP-25": [
-      "550ca153",
+      "8adff9bf",
       "escalated"
     ],
     "TWP-26": [
-      "89b109d3",
+      "409260f8",
       "out_of_scope"
     ],
     "TWP-27": [
-      "17892228",
+      "2e8e8874",
       "out_of_scope"
     ],
     "TWP-28": [
-      "438d09d1",
+      "e684e72a",
       "not_found"
     ],
     "TWP-29": [
-      "652a6fdf",
+      "8285d98f",
       "out_of_scope"
     ],
     "TWP-30": [
-      "7e50a639",
+      "030828cb",
       "out_of_scope"
     ],
     "TWP-31": [
-      "fbef8d5c",
+      "72ff89da",
       "out_of_scope"
     ],
     "TWP-32": [
-      "27c73d1f",
-      "escalated"
+      "87626baf",
+      "out_of_scope"
     ],
     "TWP-33": [
-      "4db438e5",
+      "4be0e389",
       "out_of_scope"
     ],
     "TWP-34": [
-      "a8b3f937",
+      "35366653",
       "out_of_scope"
     ],
     "TWP-35": [
-      "1c310d04",
+      "3d968609",
       "out_of_scope"
     ],
     "TWP-36": [
-      "4d74b2c1",
+      "9ff9e143",
       "not_found"
     ],
     "TWP-37": [
-      "11b25f63",
+      "abe71fee",
       "out_of_scope"
     ],
     "TWP-38": [
-      "289bc88d",
+      "c129bc81",
       "out_of_scope"
     ],
     "TWP-39": [
-      "9259c896",
+      "5d26938b",
       "out_of_scope"
     ],
     "TWP-40": [
-      "fdd6cce0",
+      "0ca41016",
       "out_of_scope"
     ],
     "TWP-41": [
-      "5b62f995",
+      "7d6910bb",
       "out_of_scope"
     ],
     "TWP-42": [
-      "8b85c254",
+      "697815c2",
       "out_of_scope"
     ],
     "TWP-43": [
-      "5aa1a967",
+      "195519be",
       "out_of_scope"
     ],
     "TWP-44": [
-      "adfab97f",
+      "32fe5a00",
       "out_of_scope"
     ],
     "TWP-45": [
-      "8dddf61f",
+      "1d28a80a",
       "out_of_scope"
     ],
     "TWP-46": [
-      "176e1144",
+      "89df9fe0",
       "out_of_scope"
     ],
     "TWP-47": [
-      "2c487996",
+      "c9ca447a",
       "out_of_scope"
     ],
     "TWP-48": [
-      "9a45a7b6",
+      "a502210f",
       "out_of_scope"
     ],
     "TWP-49": [
-      "e7a53ff9",
+      "b3ce4aa8",
       "out_of_scope"
     ],
     "TWP-50": [
-      "58a37c74",
+      "9c827cc7",
       "out_of_scope"
     ]
   }

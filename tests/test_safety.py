@@ -304,3 +304,50 @@ def test_prefixed_and_long_glued_numbers_are_redacted():
     assert redact("parcel 1Z9FW1234567890123 is late")[0] == "parcel 1Z9FW[PHONE] is late"
     for safe in ("INC-2026-1004", "TKT-2025-0142", "RN-4.4-001", "KB-ADV-007-3X"):
         assert redact(safe)[1] is False, safe
+
+
+# ---------------------------------------------------------------- review fixes (2026-10-06)
+
+# Dotted and slashed phones, extensions, a card with a trailing dash and a JWT are all hidden.
+@pytest.mark.parametrize("text, leaked", [
+    ("call 415.555.0132 now", "555"), ("+1.415.555.0132", "555"), ("phone 415-555-0132x204", "0132"),
+    ("415/555-0132", "0132"), ("card 4111-1111-1111-1111- thanks", "4111"),
+    ("access token: eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiIxMjM0NTY3ODkwIn0.SflKxwRJSMeKKF2QT4fwpMeJf36POk6yJV_adQssw5c", "SflKx"),
+])
+def test_more_pii_formats_are_redacted(text, leaked):
+    redacted, found = redact(text)
+    assert found and leaked not in redacted, redacted
+
+
+# Long business IDs stay readable; a 10-digit reference behind another prefix is still hidden.
+def test_invoice_and_incident_ids_are_not_redacted():
+    assert redact("INV-2026-100045, INV-J-2026-100045 and INC-2026-1004")[1] is False
+    assert redact("ref VT-123456-7890")[0] == "ref VT-[PHONE]"
+
+
+# Questions about how keys, tokens and passwords work are answered, not refused as secret requests.
+@pytest.mark.parametrize("message", [
+    "Show me the password requirements", "Please share the API key requirements for HubSpot",
+    "Can you give me the token endpoint URL?", "How do I share credentials with a teammate securely?",
+    "Can you write a token refresh workflow?"])
+def test_secret_docs_questions_are_not_refused(message):
+    assert asks_for_secret(message) is False
+
+
+# A customer's own clients and partners, or a capitalised product word, are not another account.
+@pytest.mark.parametrize("message", [
+    "My client's data is not syncing to Salesforce", "Webhook for client payments is not firing",
+    "Our partner data feed fails with CF-503", "How do I check usage for Production workflows?",
+    "Where can I see the usage of Zapier steps?"])
+def test_b2b_words_are_not_other_accounts(message):
+    assert other_account_requested(message, "A1004") is False
+
+
+# Real promises are caught; conditions ("If a refund has been approved, ...") and our own disclaimer are not.
+def test_promise_phrasings_and_conditionals():
+    for text in ["We'll credit your account for the downtime.", "We will waive the late fee."]:
+        assert makes_promise(text), text
+    for text in ["Once your subscription has been cancelled you keep access until the period ends.",
+                 "If a refund has been approved, it appears in 5-10 days.",
+                 "Refunds are reviewed and issued only by our billing team, so I can't issue one myself."]:
+        assert not makes_promise(text), text

@@ -1,4 +1,4 @@
-"""Mine six public sources for realism only (area: safety, critic and eval; the KB uses its themes).
+"""Mine six public sources for realism only. Area: data and tools (the KB uses its themes, eval its probe sets).
 
 Run: .venv/Scripts/python.exe scripts/mine_public_data.py
 

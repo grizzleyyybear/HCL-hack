@@ -19,15 +19,16 @@ InsightDesk is a support agent for **CloudFlow**, a fictional SaaS workflow-auto
 5. [Docker](#docker)
 6. [Pre-demo checklist](#pre-demo-checklist)
 7. [The four parts of the system](#the-four-parts-of-the-system)
-8. [Working together: update, test, commit and push](#working-together-update-test-commit-and-push)
-9. [API and curl examples](#api-and-curl-examples)
-10. [Configuration](#configuration)
-11. [Policy registry and justifications](#policy-registry-and-justifications)
-12. [Edge-case accounts](#edge-case-accounts)
-13. [Assumptions, limitations and known edge cases](#assumptions-limitations-and-known-edge-cases)
-14. [Tests, PII scan and evaluation](#tests-pii-scan-and-evaluation)
-15. [Project structure](#project-structure)
-16. [Credits](#credits)
+8. [Team and individual contributions](#team-and-individual-contributions)
+9. [Working together: update, test, commit and push](#working-together-update-test-commit-and-push)
+10. [API and curl examples](#api-and-curl-examples)
+11. [Configuration](#configuration)
+12. [Policy registry and justifications](#policy-registry-and-justifications)
+13. [Edge-case accounts](#edge-case-accounts)
+14. [Assumptions, limitations and known edge cases](#assumptions-limitations-and-known-edge-cases)
+15. [Tests, PII scan and evaluation](#tests-pii-scan-and-evaluation)
+16. [Project structure](#project-structure)
+17. [Credits](#credits)
 
 ---
 
@@ -269,10 +270,10 @@ between rehearsals.
 
 ## The four parts of the system
 
-The work is split into four areas. Each one can be run, tested and explained on its own, and together they make the
+The work is split into four areas, one per team member ([who did what](#team-and-individual-contributions)). Each one can be run, tested and explained on its own, and together they make the
 pipeline above. Every source file belongs to exactly one area (its docstring says which).
 
-### 1. API and orchestration
+### 1. API and orchestration (Mrinal Sharma, P1)
 
 - **What it does:**
   - Serves the API contract: `/support`, `/ingest`, `/health`, `/conversations`, `/handoffs`, `/audit`,
@@ -284,13 +285,13 @@ pipeline above. Every source file belongs to exactly one area (its docstring say
   - Handles web-app sign-in, and packages everything for Docker.
 - **Main files:** `app/main.py`, `app/schemas.py`, `app/auth.py`, `app/config.py`, `app/graph/`, `app/llm.py`,
   `app/prompts/classifier.txt`, `app/prompts/composer.txt`, `app/audit.py`, `Dockerfile`, `docker-compose.yml`,
-  `scripts/smoke_test.py`, `scripts/reset_demo_state.py`, `scripts/docker_safe_start.ps1`, `scripts/wsl_ollama_forward.py`.
+  `scripts/smoke_test.py`, `scripts/make_samples.py`, `scripts/docker_safe_start.ps1`, `scripts/wsl_ollama_forward.py`.
 - **Check it:** `pytest -q tests/test_pipeline.py tests/test_llm.py tests/test_auth.py`, then
   `python scripts/smoke_test.py` against a running API (20 checks).
 - **Be ready to explain:** why one fixed pipeline instead of agents; which decisions the LLM makes and which code
   makes; what happens when the model returns invalid or incomplete JSON; how a `trace_id` leads to the audit record.
 
-### 2. Knowledge base and retrieval
+### 2. Knowledge base and retrieval (Dev Singh, P2)
 
 - **What it does:**
   - Holds the CloudFlow knowledge base: 34 articles, 3 policies, 2 release notes, 28 tickets and 6 community posts.
@@ -309,7 +310,7 @@ pipeline above. Every source file belongs to exactly one area (its docstring say
   (authority, then recency); how a deprecation dated after `as_of_date` becomes an "upcoming change"; how PDF
   headings are found.
 
-### 3. Account data and tools
+### 3. Account data and tools (Abhinav, P3)
 
 - **What it does:**
   - Defines the SQLite schema (Annex C plus our tables).
@@ -317,15 +318,17 @@ pipeline above. Every source file belongs to exactly one area (its docstring say
   - Validates the data (0 violations) and loads judge CSVs, accepting A9xxx and INV-J IDs.
   - Seeds the policy registry, which holds every threshold the code uses.
   - Provides the eight deterministic tools that produce every account fact.
+  - Mines the six public datasets for realism (anonymised, licences recorded) and resets the demo database.
 - **Main files:** `app/db.py`, `scripts/generate_accounts.py`, `scripts/validate_accounts.py`,
-  `scripts/load_accounts.py`, `scripts/seed_policy_registry.py`, `app/tools/`, `data/accounts/`, `docs/data_card.md`.
-- **Check it:** `pytest -q tests/test_tools.py tests/test_accounts.py`; `python scripts/validate_accounts.py`;
+  `scripts/load_accounts.py`, `scripts/seed_policy_registry.py`, `app/tools/`, `data/accounts/`, `docs/data_card.md`,
+  `scripts/mine_public_data.py`, `data/public/`, `scripts/reset_demo_state.py`.
+- **Check it:** `pytest -q tests/test_tools.py tests/test_accounts.py tests/test_data.py`; `python scripts/validate_accounts.py`;
   `python scripts/load_accounts.py --dir data/accounts`.
 - **Be ready to explain:** why usage exactly at the limit is not "over"; how refund eligibility is computed and why it
   is never executed; how a policy change reaches the tools with no restart (see
   [Policy registry](#policy-registry-and-justifications)).
 
-### 4. Safety, critic and evaluation
+### 4. Safety, critic and evaluation (Bhavesh, P4)
 
 - **What it does:**
   - Redacts PII and secrets in four places: input, answer, handoff bundle and logs.
@@ -336,12 +339,174 @@ pipeline above. Every source file belongs to exactly one area (its docstring say
   - Owns the labelled evaluation set, the runner and the reports, plus the public-data robustness run.
   - Includes the Streamlit web app.
 - **Main files:** `app/safety.py`, `app/escalation.py`, `app/prompts/critic.txt`, `eval/`, `scripts/pii_scan.py`,
-  `scripts/mine_public_data.py`, `ui/streamlit_app.py`, `.streamlit/`.
+  `ui/streamlit_app.py`, `.streamlit/`.
 - **Check it:** `pytest -q tests/test_safety.py tests/test_escalation.py tests/test_redteam.py`;
   `python eval/run_eval.py --compare` (writes [eval/report.md](eval/report.md)); `python eval/run_public.py`;
   `streamlit run ui/streamlit_app.py`.
 - **Be ready to explain:** why code, not the critic, decides to escalate; the escalation confusion table; how PII
   leakage is measured (target 0); what the configuration comparisons chose and why.
+
+## Team and individual contributions
+
+Four people built InsightDesk. Each one owned one area **end to end**: the code, its tests, its data and its part of
+the documentation. Every source file names its area in its first docstring line (`Area: ...`), so ownership can be
+checked file by file. An AI coding assistant was used and is disclosed in
+[docs/ai_usage_disclosure.md](docs/ai_usage_disclosure.md). Each member reviewed the code in their area and can explain
+it. Personal statements are in [docs/team_contribution.md](docs/team_contribution.md), and every member signs
+[docs/declaration.md](docs/declaration.md).
+
+| Member | Role | Owns | Tests | Code |
+| --- | --- | --- | --- | --- |
+| **Mrinal Sharma** | P1 · API and orchestration | API contract, LangGraph pipeline, LLM client, audit, sign-in, Docker | 111 | ~3.8k lines |
+| **Dev Singh** | P2 · Knowledge and retrieval | 73-document knowledge base, source register, chunking, `/ingest` (Markdown, JSON, PDF), `/sources`, source precedence | 66 | ~2.1k lines + the KB (~19,000 words, 294 indexed chunks) |
+| **Abhinav** | P3 · Data and tools | SQLite schema, synthetic accounts, validator, judges' loader, policy registry, the 8 tools, public-dataset mining | 39 | ~2.0k lines + account and public data |
+| **Bhavesh** | P4 · Safety, critic and eval | Redaction and guards, escalation policy and handoff, critic, evaluation and reports, CloudFlow web app | 227 | ~4.8k lines (UI ~1.6k) + eval results |
+
+All 443 tests pass with `pytest -q`. Every area also took part in the code review on 2026-10-06. Four reviewers
+covered one area each, and every confirmed finding was fixed in its owner's files with a regression test (listed
+under "Review fixes" below).
+
+### Mrinal Sharma (P1 · API and orchestration)
+
+- **Built:**
+  - All 11 endpoints (`app/main.py`): the guide's contract (`/support`, `/ingest`, `/health`, `/conversations`,
+    `/handoffs`, `/audit`, `/sources`, both loaders) plus `/auth/login` and `/me`.
+  - One Pydantic response model that returns every section 6.1 field for all six answer types (`app/schemas.py`).
+  - The fixed LangGraph pipeline: nine steps plus escalate/respond, with one revision loop (`app/graph/`).
+  - The LLM client (`app/llm.py`): JSON validation, one retry, then a deterministic fallback; `MOCK_LLM` mode; token
+    accounting; a model-pulled health check. Incomplete drafts are rejected, which lifted live answer-type accuracy
+    from 81.2% to 93.8%.
+  - The classifier and composer prompts, with untrusted text wrapped as data.
+  - Per-request audit records with route, timings, redacted tool input and output, tokens and model (`app/audit.py`).
+  - Web-app sign-in with HMAC-signed expiring tokens (`app/auth.py`).
+  - Docker packaging: one image, offline embedding model, healthchecks, restart policy and memory caps.
+  - The 20-check smoke test and the Docker-crash and WSL helpers.
+- **Review fixes:**
+  - The word "password" alone no longer sends a reset email.
+  - "Duplicate a workflow" is no longer a duplicate charge, and "delete the account mapping" is no longer an account
+    deletion.
+  - A request for a person now needs an actual request: "escalation rules" or "user agent" no longer count.
+  - The classifier keeps the "asked for a manager" and "vague" signals when the LLM misses them.
+  - Deletion and legal requests always reach a person.
+  - Signed-out callers can't continue each other's conversations.
+  - Out-of-range dates get a clean 422, and validation errors never echo PII back.
+  - The caller's own company name is not treated as an unknown product.
+- **Files:** `app/main.py`, `app/schemas.py`, `app/auth.py`, `app/config.py`, `app/audit.py`, `app/llm.py`,
+  `app/graph/`, `app/prompts/classifier.txt`, `app/prompts/composer.txt`, `Dockerfile`, `docker-compose.yml`,
+  `.env.example`, `scripts/smoke_test.py`, `scripts/make_samples.py`, `scripts/docker_safe_start.ps1`,
+  `scripts/wsl_ollama_forward.py`, `docs/sample_audits/`, `docs/sample_handoffs/`, `docs/pitch/`.
+- **Proof:** `pytest -q tests/test_pipeline.py tests/test_llm.py tests/test_auth.py` (111 tests);
+  `python scripts/smoke_test.py --live` (20/20 on the live model); the live-model sample records in `docs/sample_audits/`.
+- **Commits:** `a0f5d3b`, `3b33e71`, `6e1f447` (Docker part), `d947c9f`, `d724461`, `c576c47`, `b77a5a2`, `10739b0`,
+  `aa3fa22`, `00617a1`, `dfe7e48`, `1d0dd2f`, and the review fixes in this area.
+
+### Dev Singh (P2 · Knowledge and retrieval)
+
+- **Built:**
+  - The CloudFlow knowledge base, generated in category batches with our improved Annex F prompt: 34 articles,
+    3 policies, 2 release notes, 28 tickets and 6 community posts (~19,000 words, 294 indexed chunks).
+  - The trap list is built in on purpose: 3.x/4.x article pairs, outdated tickets that contradict the docs, a
+    deprecation dated after 2026-10-06, a supersession and a prompt-injection ticket. All 13 seeded cases pass the KB
+    check (`data/generation/kb_check.txt`).
+  - The source register (`data/source_register.csv`).
+  - Chunking by `##` section, version-range parsing (`4.2+`, `3.x`, `4.0-4.3`, `ALL`, with 4.10 ranked above 4.9),
+    and Chroma indexing with incremental re-ingest (`app/retrieval.py`, `scripts/ingest_kb.py`).
+  - Live `/ingest` for Markdown, JSON tickets and PDFs (headings found by font size; an 18-page real PDF gave 72
+    chunks across 34 sections), and `/sources`.
+  - The Annex A.2 source precedence in code: applicability, supersession, authority, recency, unresolved conflicts
+    and upcoming deprecations (`app/precedence.py`).
+- **Review fixes:**
+  - Supersession now uses the whole register and brings in the replacement article when only the old one was found.
+  - A customer version written "4.x" matches 4.2+ articles.
+  - Startup ingest picks up register-only edits and removes documents dropped from the register.
+  - A byte-order mark no longer hides the first heading.
+  - A wrapped line in a single-font PDF is no longer a heading.
+  - The fallback conflict check no longer compares unrelated numbers.
+- **Files:** `app/retrieval.py`, `app/precedence.py`, `app/prompts/disagreement.txt`, `scripts/ingest_kb.py`,
+  `scripts/generate_kb.py`, `data/kb/`, `data/source_register.csv`, `data/generation/`, `docs/knowledge_base.md`.
+- **Proof:** `pytest -q tests/test_retrieval.py tests/test_ingest.py tests/test_precedence.py` (66 tests);
+  `python scripts/generate_kb.py` (`RESULT: PASS`); retrieval hit rate 100% live and in MOCK ([eval/report.md](eval/report.md)).
+- **Commits:** `0742d4c` (knowledge base), `ac70af1`, `fc58fb8`, and the review fixes in this area.
+
+### Abhinav (P3 · Data and tools)
+
+- **Built:**
+  - The SQLite schema: the 7 Annex C tables plus sources, audit_log, conversations, messages and counters (`app/db.py`).
+  - Synthetic account data: 31 accounts across all 4 plans and all 4 statuses, 62 usage rows, 56 invoices and
+    4 platform components. Rows are generated by an LLM and validated one by one with Pydantic and retries. The
+    eight edge cases (A1001–A1008) are fixed in code. Four LLM slips were caught and logged.
+  - The validator (0 violations, report in `data/accounts/validation_report.txt`).
+  - The judges' loader: CLI and two endpoints, accepts A9xxx and INV-J IDs, skips missing files.
+  - The policy registry: 9 rules, each linked to the policy article section that states it, applied without a
+    restart (`scripts/seed_policy_registry.py`).
+  - The eight deterministic tools (`app/tools/`): usage against limits (over means strictly greater), duplicate
+    charges, refund eligibility from the registry window, platform status, a password reset that reveals nothing,
+    and redacted handoffs.
+  - The public-dataset mining for realism: six sources, licences recorded, anonymised tone exemplars, question
+    templates and topic themes, plus the 1,050 probes for the stress test (`scripts/mine_public_data.py`, `data/public/`).
+  - The one-page data card (`docs/data_card.md`).
+- **Review fixes (all eight data-and-tools findings):**
+  - A refund check never picks an invoice dated after the request.
+  - A refunded invoice is not a duplicate.
+  - A request dated before the first rule no longer crashes `/support`.
+  - A newer or plan-specific rule wins a same-day tie.
+  - Plan lists accept commas and any case.
+  - The loader reads Windows-encoded Excel CSVs and common spreadsheet formatting (capitalised headers, "pro", "$49.00",
+    a card number that lost its leading zero).
+- **Files:** `app/db.py`, `app/tools/`, `scripts/generate_accounts.py`, `scripts/validate_accounts.py`,
+  `scripts/load_accounts.py`, `scripts/seed_policy_registry.py`, `scripts/mine_public_data.py`,
+  `scripts/reset_demo_state.py`, `data/accounts/`, `data/public/`, `docs/data_card.md`, `docs/data_card_details.md`.
+- **Proof:** `pytest -q tests/test_tools.py tests/test_accounts.py tests/test_data.py` (39 tests);
+  `python scripts/validate_accounts.py` (0 violations); `python scripts/load_accounts.py --dir data/accounts`.
+- **Commits:** `5ef97c7`, `ca990fe` (tools and registry part), `0742d4c` (public-data mining), `32d9d44`, `7d42edc`,
+  `2cb5db9`, and the review fixes in this area.
+
+### Bhavesh (P4 · Safety, critic and eval)
+
+- **Built:**
+  - PII and secret redaction in all four places: input, answer, handoff bundle and logs. It covers emails, phones,
+    Luhn-checked cards, API keys, JWTs and passwords (`app/safety.py`).
+  - Guards against other-account and secret requests, and a scan for promised refunds or credits.
+  - The Annex A.3 escalation policy in code: 11 escalation reasons, the routing table, the Annex D handoff bundle and
+    SLA hours from the registry (`app/escalation.py`). The critic prompt supplies the scores.
+  - The evaluation: 32 labelled cases, 20 out-of-scope probes and 15 tone probes; all seven section 7 metrics; three
+    configuration comparisons; a live run on the local model; and the 1,050-request public-data stress test
+    (`eval/`).
+  - 33 red-team tests.
+  - The CloudFlow web app: sign-in, dashboard, usage, billing, the InsightDesk chat, the support-agent view and the
+    agent console for ingest and loading (`ui/streamlit_app.py`).
+- **Review fixes:**
+  - Common promise phrasings are now caught ("We will refund you", "A refund will be issued"), and conditional
+    sentences are not flagged.
+  - A critic flag forces a revision, and escalation if it persists.
+  - Dotted phones, extensions and JWT signatures are redacted.
+  - Long invoice IDs stay readable.
+  - Docs questions ("password requirements") and a customer's own "client"/"partner" are no longer refused.
+  - A security how-to with no subtype is answered instead of becoming an urgent incident.
+  - Dollar amounts no longer render as math in the chat.
+- **Files:** `app/safety.py`, `app/escalation.py`, `app/prompts/critic.txt`, `eval/`, `scripts/pii_scan.py`,
+  `ui/streamlit_app.py`, `.streamlit/`.
+- **Proof:** `pytest -q tests/test_safety.py tests/test_escalation.py tests/test_redteam.py` (227 tests);
+  `python eval/run_eval.py --compare`. Live run: 93.8% answer type, escalation recall 1.0, 0 PII leaks
+  ([eval/report.md](eval/report.md)). Public-data run: 0 PII leaks across 1,050 requests
+  ([eval/public_report.md](eval/public_report.md)).
+- **Commits:** `ca990fe` (safety and escalation part), `188f0b3`, `6e1f447` (UI part), `1c0fbef`, `8829d4f`,
+  `c817ad7`, and the review fixes in this area.
+
+### How to check who did what
+
+1. **By file:** the first line of every source file says its area (`Area: API and orchestration`, `Area: knowledge
+   and retrieval`, `Area: data and tools`, `Area: safety, critic and eval`). The file lists above match.
+2. **By commit:** `git show --stat <commit>` for the commits listed under each member. Every commit touches one area,
+   except the early integration commits, which say which part belongs to whom.
+   - Most commits were pushed from Mrinal's account (`grizzleyyybear`) while the team integrated the build on one
+     machine.
+   - `fc58fb8` was pushed from the P2 package's own account.
+   - The commit "mentor described changes" holds the review fixes for all four areas. Each file it touches belongs
+     to the owner named above.
+3. **By test:** each member's test files cover only their area. `pytest -q` runs all 443.
+4. **By statement:** [docs/team_contribution.md](docs/team_contribution.md) holds each member's own account of what
+   they reviewed and changed by hand, and their part in the demo.
 
 ---
 
@@ -624,6 +789,7 @@ The first `pytest` run downloads the embedding model. Test files:
 | `tests/test_llm.py` | Invalid JSON → one retry → fallback, cloud provider call, wrapper-tag stripping, keyword intent, template composer, overlap critic |
 | `tests/test_pipeline.py` | One request per `answer_type` through `POST /support`, the 429 and duplicate-charge cases, outdated ticket, audit route, PII everywhere, injection |
 | `tests/test_accounts.py` | Generated CSVs have 0 violations, minimum counts, exact edge-case values, the loader accepts judge IDs and skips missing files |
+| `tests/test_data.py` | Policy lookup rules (same-day ties, plan-specific rows, dates before the first rule, comma lists), refunds never use a future invoice, refunded invoices are not duplicates, the loader on a Windows-encoded spreadsheet export, public-text scrubbing, the demo reset |
 | `tests/test_redteam.py` | End-to-end attacks: cross-account requests, PII and secrets (response, audit, messages, bundle, log file), injection in the message and in a retrieved ticket, promise bait, hostile "LLM" output; ends with a PII scan of the temp DB and log |
 
 **Evaluation** ([eval/README.md](eval/README.md), results in [eval/report.md](eval/report.md)) uses 32 labelled core cases (8 per member), 20 MS MARCO out-of-scope probes and 15 Twitter-tone escalation probes. It reports answer correctness, citation validity, retrieval hit rate, the escalation confusion table, critic agreement (from `eval/critic_labels.csv`, labelled by two members), PII leakage, latency and tokens. It also compares MiniLM vs bge-small, top-k 3 vs 5 and critic threshold 0.6 vs 0.7, and states the chosen configuration. Each run uses its own temp database and Chroma folder, so it never touches `insightdesk.db`. Flags: `--embed-model`, `--top-k`, `--critic-min`, `--set core|oos|tone|all`, `--out`, `--live`, `--compare` (see the top of `eval/run_eval.py`). The report holds the MOCK comparisons and a **live run on the local model** (section "Live run on the local model"); rerun `python eval/run_eval.py --live --set core --out eval/results/live_<model>_bge_k3_core.json` after code changes, then `--compare` to refresh the report.

@@ -77,7 +77,7 @@ def _conversation_id(requested: str | None, account_id: str | None) -> str:
         with db.connect() as conn:
             row = conn.execute("SELECT account_id FROM conversations WHERE conversation_id = ?",
                                (requested,)).fetchone()
-        if row is not None and row["account_id"] == account_id:
+        if row is not None and account_id and row["account_id"] == account_id:  # signed-out callers never share one
             return requested
     return db.next_id("C")
 

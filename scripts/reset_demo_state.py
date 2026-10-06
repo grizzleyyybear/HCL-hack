@@ -1,4 +1,4 @@
-"""Clear conversation history before a demo or the judging slot, keeping accounts, policies and the knowledge base.
+"""Clear conversation history before a demo or the judging slot, keeping accounts, policies and the KB. Area: data and tools.
 
 Why: repeated-contact detection counts earlier conversations, so rehearsing a demo case on the same account
 (e.g. A1002) would make the real demo escalate as "repeated contact".

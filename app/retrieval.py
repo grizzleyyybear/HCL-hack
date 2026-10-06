@@ -117,7 +117,8 @@ def _chunk_meta(meta: SourceMeta, section: str) -> dict:
     named = SECTION_VERSION.findall(section)
     if len(named) == 1:
         major_min, major_max = parse_versions(f"{named[0]}.x")
-        version_min, version_max = max(version_min, major_min), min(version_max, major_max)
+        if max(version_min, major_min) <= min(version_max, major_max):  # narrow only to a real overlap
+            version_min, version_max = max(version_min, major_min), min(version_max, major_max)
     return {
         "source_id": meta.source_id, "doc_type": meta.doc_type, "title": meta.title, "section": section,
         "authority_level": int(meta.authority_level), "product_versions": meta.product_versions,
@@ -235,7 +236,8 @@ def pdf_to_markdown(data: bytes, title: str) -> str:
     by_size = any(size >= body * 1.15 for _, size in lines)
     out, last_heading_size = [f"# {title}"], None
     for i, (text, size) in enumerate(lines):
-        heading = (size >= body * 1.15 and len(text.split()) <= 12) if by_size else _pdf_heading(text)
+        after_break = len(out) == 1 or out[-1].startswith("## ") or out[-1].rstrip()[-1:] in ".:!?"
+        heading = (size >= body * 1.15 and len(text.split()) <= 12) if by_size else (_pdf_heading(text) and after_break)
         if text.lstrip("# ").lower() == title.strip().lower() or (i == 0 and heading and by_size):
             continue  # the PDF's own title line; "# {title}" above already says it
         if text.startswith("## "):
@@ -257,7 +259,7 @@ def ingest_upload(file_bytes: bytes, filename: str, metadata_json: str) -> dict:
     meta = SourceMeta.model_validate(json.loads(metadata_json))  # bad JSON or fields -> 422 in main.py
     is_pdf = pathlib.Path(filename).suffix.lower() == ".pdf"
     _Upload(source_id=meta.source_id, doc_type=meta.doc_type, filename=filename, content="-")  # name + type rules
-    text = pdf_to_markdown(file_bytes, meta.title) if is_pdf else file_bytes.decode("utf-8", errors="replace")
+    text = pdf_to_markdown(file_bytes, meta.title) if is_pdf else file_bytes.decode("utf-8-sig", errors="replace")
     upload = _Upload(source_id=meta.source_id, doc_type=meta.doc_type, filename=filename, content=text)
     if meta.doc_type == "ticket":
         _TicketFile.model_validate_json(upload.content)
@@ -300,8 +302,8 @@ def search(query: str, customer_version: str | None, top_k: int) -> list[dict]:
     version_filter = []
     if customer_version:
         try:
-            v = version_code(customer_version)
-            version_filter = [{"version_min": {"$lte": v}}, {"version_max": {"$gte": v}}]
+            low, high = parse_versions(customer_version)  # "4.3" -> 403..403, "4.x" -> 400..499
+            version_filter = [{"version_min": {"$lte": high}}, {"version_max": {"$gte": low}}]
         except ValueError:
             pass  # unreadable version text: search without a version filter
     embedding = _embed([query])
@@ -321,6 +323,16 @@ def _query(collection, embedding: list, doc_types: list[str], version_filter: li
                                                   result["metadatas"][0], result["distances"][0])
     ]
     return sorted(chunks, key=lambda c: c["score"], reverse=True)
+
+
+# Every stored chunk of one source, in the chunk format above (score None: it was not found by a query).
+def chunks_of(source_id: str) -> list[dict]:
+    try:
+        got = _collection().get(where={"source_id": source_id}, include=["documents", "metadatas"])
+    except Exception:  # noqa: BLE001 - no collection yet means no chunks
+        return []
+    return [{"chunk_id": cid, "text": text, "score": None, "meta": meta}
+            for cid, text, meta in zip(got["ids"], got["documents"], got["metadatas"])]
 
 
 # Return True when the Chroma collection can be opened (used by GET /health).

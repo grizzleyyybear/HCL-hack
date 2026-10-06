@@ -17,7 +17,6 @@ import json
 import os
 import pathlib
 import re
-import statistics
 import sys
 import time
 

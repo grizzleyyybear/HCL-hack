@@ -7,6 +7,7 @@ The Pydantic row models below are the single definition of the Annex C tables: t
 this validator and the loader (scripts/load_accounts.py) all use them.
 """
 import csv
+import io
 import datetime
 import pathlib
 import re
@@ -205,10 +206,38 @@ def read_tables(folder) -> tuple[dict, list[str]]:
         if not path.exists():
             missing.append(path.name)
             continue
-        with path.open(newline="", encoding="utf-8-sig") as f:  # utf-8-sig copes with Excel's BOM
-            tables[table] = [{k.strip(): (v or "").strip() for k, v in row.items() if k}
-                             for row in csv.DictReader(f)]
+        raw = path.read_bytes()
+        try:
+            text = raw.decode("utf-8-sig")  # utf-8-sig copes with Excel's BOM
+        except UnicodeDecodeError:
+            text = raw.decode("cp1252")  # an Excel "CSV" saved with the Windows code page
+        rows = csv.DictReader(io.StringIO(text, newline=""))
+        tables[table] = [{k.strip().lower(): _tidy(k.strip().lower(), (v or "").strip()) for k, v in row.items() if k}
+                         for row in rows]
     return tables, missing
+
+
+PLANS = {"free": "Free", "pro": "Pro", "business": "Business", "enterprise": "Enterprise"}
+NUMERIC = {"amount", "monthly_price", "api_rate_limit_per_min", "monthly_workflow_runs", "seats", "workflow_runs",
+           "api_calls_peak_per_min", "seats_used"}
+
+
+# Undo common spreadsheet formatting before validation: "pro" -> "Pro", "Active" -> "active", "10,000" -> "10000",
+# "$49.00" -> "49.00", card_last4 "341" -> "0341" (Excel drops leading zeros), "2026-10-06 08:00" -> "2026-10-06T08:00".
+def _tidy(column: str, value: str) -> str:
+    if column == "plan":
+        return PLANS.get(value.lower(), value)
+    if column in ("status", "support_tier"):
+        return value.lower()
+    if column == "currency":
+        return value.upper()
+    if column in NUMERIC:
+        return re.sub(r"[,\s$₹]", "", value)
+    if column == "card_last4" and value.isdigit() and len(value) < 4:
+        return value.zfill(4)
+    if column == "updated_at" and re.fullmatch(r"\d{4}-\d{2}-\d{2} \d.*", value):
+        return value.replace(" ", "T", 1)
+    return value
 
 
 CHECKS_RUN = [

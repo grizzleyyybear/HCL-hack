@@ -9,7 +9,10 @@ import logging
 import pathlib
 import tempfile
 
-from fastapi import FastAPI, File, Form, Header, HTTPException, UploadFile
+from fastapi import FastAPI, File, Form, Header, HTTPException, Request, UploadFile
+from fastapi.encoders import jsonable_encoder
+from fastapi.exceptions import RequestValidationError
+from fastapi.responses import JSONResponse
 from pydantic import BaseModel, ValidationError
 
 from app import auth, db, llm, retrieval, tools
@@ -42,6 +45,13 @@ async def lifespan(_app: FastAPI):
 
 
 app = FastAPI(title="InsightDesk", version="1.0", lifespan=lifespan)
+
+
+# A 422 names the field and the problem but never echoes the request body back (it may hold PII).
+@app.exception_handler(RequestValidationError)
+async def _validation_error(_request: Request, exc: RequestValidationError):
+    errors = [{k: v for k, v in e.items() if k in ("loc", "msg", "type")} for e in exc.errors()]
+    return JSONResponse(status_code=422, content={"detail": jsonable_encoder(errors)})
 
 
 # Turn "not built yet" into a clear 501 instead of a crash.
