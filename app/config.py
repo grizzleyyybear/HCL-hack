@@ -59,6 +59,20 @@ class Settings:
     def SQLITE_PATH(self) -> str:
         return os.getenv("SQLITE_PATH", str(ROOT / "insightdesk.db"))
 
+    # Web-app sign-in (app/auth.py). Empty DEMO_PASSWORD switches sign-in off; empty AUTH_SECRET means a
+    # random key per process, so sessions end when the API restarts.
+    @property
+    def DEMO_PASSWORD(self) -> str:
+        return os.getenv("DEMO_PASSWORD", "")
+
+    @property
+    def AUTH_SECRET(self) -> str:
+        return os.getenv("AUTH_SECRET", "")
+
+    @property
+    def SESSION_HOURS(self) -> int:
+        return int(os.getenv("SESSION_HOURS", "8"))
+
     @property
     def DATA_DIR(self) -> str:
         return os.getenv("DATA_DIR", str(ROOT / "data"))

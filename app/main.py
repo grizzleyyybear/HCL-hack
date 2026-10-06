@@ -1,8 +1,9 @@
 """FastAPI app: every endpoint of the guide's API contract (section 6).
 
-Each route is a thin wrapper around its owner module. Only A12 (api-platform) edits this file after W0.
+Each route is a thin wrapper around the module that owns the logic. Area: API and orchestration.
 """
 import contextlib
+import datetime
 import json
 import logging
 import pathlib
@@ -11,7 +12,7 @@ import tempfile
 from fastapi import FastAPI, File, Form, Header, HTTPException, UploadFile
 from pydantic import BaseModel, ValidationError
 
-from app import db, llm, retrieval
+from app import auth, db, llm, retrieval, tools
 from app.graph import pipeline
 from app.schemas import SupportRequest, SupportResponse
 
@@ -34,7 +35,9 @@ async def lifespan(_app: FastAPI):
     _try("setup_logging", safety.setup_logging)
     from scripts import ingest_kb, seed_policy_registry
     _try("seed_policy_registry", seed_policy_registry.seed)
-    _try("ingest_kb", ingest_kb.ingest_all)
+    _try("ingest_kb", lambda: log.info("knowledge base: %s", ingest_kb.ingest_all()))
+    # Load the embedding model now so the first customer request does not pay the ~15 s model load.
+    _try("warm_up_embeddings", lambda: retrieval.search("warm up", None, 1))
     yield
 
 
@@ -46,9 +49,22 @@ def _not_ready(exc: NotImplementedError):
     raise HTTPException(status_code=501, detail=f"not implemented yet: {exc}")
 
 
+# The account inside an "Authorization: Bearer <token>" header; 401 when the token is missing, bad or expired.
+def _session_account(authorization: str | None) -> str:
+    scheme, _, token = (authorization or "").partition(" ")
+    account_id = auth.verify_token(token.strip()) if scheme.lower() == "bearer" else None
+    if not account_id:
+        raise HTTPException(status_code=401, detail="Sign in again: the session token is missing, invalid or expired.")
+    return account_id
+
+
 # POST /support: handle one customer message. The account comes only from the X-Account-Id header.
+# The web app also sends its session token; when one is sent it must belong to that same account.
 @app.post("/support", response_model=SupportResponse, response_model_exclude_none=False)
-def support(request: SupportRequest, x_account_id: str | None = Header(default=None, alias="X-Account-Id")):
+def support(request: SupportRequest, x_account_id: str | None = Header(default=None, alias="X-Account-Id"),
+            authorization: str | None = Header(default=None)):
+    if authorization is not None and _session_account(authorization) != (x_account_id or "").strip().upper():
+        raise HTTPException(status_code=401, detail="The session token does not belong to the X-Account-Id account.")
     try:
         return pipeline.run(request, x_account_id)
     except NotImplementedError as exc:
@@ -64,8 +80,44 @@ async def ingest(file: UploadFile = File(...), metadata: str = Form(...)):
         raise HTTPException(status_code=422, detail=json.loads(exc.json(include_input=False)))
     except json.JSONDecodeError as exc:
         raise HTTPException(status_code=422, detail=f"metadata is not valid JSON: {exc}")
+    except ValueError as exc:  # anything else wrong with the upload (e.g. unparseable content)
+        raise HTTPException(status_code=422, detail=str(exc))
     except NotImplementedError as exc:
         _not_ready(exc)
+
+
+class LoginRequest(BaseModel):
+    login: str  # owner email or account ID
+    password: str
+
+
+# POST /auth/login: sign in to the CloudFlow web app; returns a signed session token and the account summary.
+@app.post("/auth/login")
+def auth_login(body: LoginRequest):
+    try:
+        session = auth.login(body.login, body.password)
+    except auth.NotConfigured as exc:
+        raise HTTPException(status_code=503, detail=str(exc))
+    if session is None:
+        log.info("sign-in failed")
+        raise HTTPException(status_code=401, detail="Email/account ID or password is incorrect.")
+    log.info("sign-in ok for %s", session["account"]["account_id"])
+    return session
+
+
+# GET /me: the signed-in account's dashboard data, read by the same deterministic tools the pipeline uses.
+@app.get("/me")
+def me(authorization: str | None = Header(default=None)):
+    account_id = _session_account(authorization)
+    account = auth.find_account(account_id)
+    if account is None:
+        raise HTTPException(status_code=401, detail="Sign in again: this account no longer exists.")
+    period = datetime.date.today().isoformat()[:7]
+    usage = tools.get_usage(account_id, period=period)
+    return {"account": account, "period": period, "usage": usage,
+            "limits": tools.get_plan_limits(account["plan"], None if "error" in usage else usage),
+            "invoices": tools.get_invoices(account_id).get("invoices", []),
+            "platform_status": tools.check_platform_status().get("components", [])}
 
 
 # GET /health: status of the API, vector store, SQLite and LLM, each "ok" or "error".
