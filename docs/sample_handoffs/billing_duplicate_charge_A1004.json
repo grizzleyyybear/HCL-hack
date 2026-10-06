@@ -1,0 +1,121 @@
+{
+  "request": {
+    "account_id": "A1004",
+    "message": "Third time writing. You charged me twice. Get me a manager."
+  },
+  "customer_reply": "I'm sorry about the duplicate charge. I've passed it to our billing team with your invoice details so they can review it. You can expect a reply within 24 hours. I can't issue refunds or credits myself; the billing team makes that decision after reviewing your account.",
+  "handoff": {
+    "handoff_id": "H-0002",
+    "conversation_id": "C-0004",
+    "account_id": "A1004",
+    "queue": "billing",
+    "priority": "high",
+    "created_at": "2026-10-06T08:02:35+00:00",
+    "bundle": {
+      "queue": "billing",
+      "priority": "high",
+      "intent": "billing_dispute",
+      "urgency": "high",
+      "sentiment": "negative",
+      "escalation_reasons": [
+        "billing_dispute",
+        "explicit_human_request",
+        "repeated_contact"
+      ],
+      "customer_summary": "Topic: billing_dispute; sentiment negative; urgency high. Customer wrote: \"Third time writing. You charged me twice. Get me a manager.\"",
+      "evidence": [
+        {
+          "tool": "lookup_account",
+          "output": {
+            "account_id": "A1004",
+            "plan": "Pro",
+            "status": "active",
+            "product_version": "4.4",
+            "created_at": "2025-04-01"
+          }
+        },
+        {
+          "tool": "get_invoices",
+          "output": {
+            "invoices": [
+              {
+                "invoice_id": "INV-6001",
+                "amount": 49.0,
+                "currency": "USD",
+                "charged_on": "2026-10-01",
+                "status": "paid",
+                "failure_reason": "",
+                "card_last4": "5556"
+              },
+              {
+                "invoice_id": "INV-6002",
+                "amount": 49.0,
+                "currency": "USD",
+                "charged_on": "2026-10-01",
+                "status": "paid",
+                "failure_reason": "",
+                "card_last4": "5556"
+              },
+              {
+                "invoice_id": "INV-6402",
+                "amount": 49.0,
+                "currency": "USD",
+                "charged_on": "2026-09-01",
+                "status": "paid",
+                "failure_reason": "",
+                "card_last4": "5556"
+              },
+              {
+                "invoice_id": "INV-6401",
+                "amount": 49.0,
+                "currency": "USD",
+                "charged_on": "2026-08-01",
+                "status": "paid",
+                "failure_reason": "",
+                "card_last4": "5556"
+              }
+            ],
+            "possible_duplicates": [
+              {
+                "invoice_ids": [
+                  "INV-6001",
+                  "INV-6002"
+                ],
+                "amount": 49.0,
+                "charged_on": "2026-10-01"
+              }
+            ]
+          }
+        },
+        {
+          "tool": "check_refund_eligibility",
+          "output": {
+            "eligible": true,
+            "invoice_id": "INV-6002",
+            "plan": "Pro",
+            "days_since_charge": 5,
+            "window_days": 14,
+            "rule_id": "REFUND-WINDOW-01",
+            "plan_rule_id": "REFUND-FREE-01",
+            "reasons": [],
+            "refund_executed": false
+          }
+        },
+        {
+          "source_id": "KB-BIL-003",
+          "section": "Other billing disputes"
+        },
+        {
+          "source_id": "KB-BIL-002",
+          "section": "Common questions"
+        }
+      ],
+      "attempted_answer": "According to \"Duplicate charges and billing disputes\" (KB-BIL-003, section \"Other billing disputes\"): For any other disagreement, such as a charge you did not expect or an amount that looks wrong,...",
+      "unresolved_questions": [
+        "Approve refund of INV-6002 (possible duplicate of INV-6001)?",
+        "Contact the customer personally? They asked for a person or have written repeatedly."
+      ],
+      "pii_redacted": true
+    }
+  }
+}

@@ -1,0 +1,52 @@
+{
+  "trace_id": "74588de6",
+  "timestamp": "2026-10-06T08:02:34+00:00",
+  "route": [
+    "pre_checks",
+    "respond"
+  ],
+  "step_ms": [
+    {
+      "step": "pre_checks",
+      "ms": 0
+    },
+    {
+      "step": "respond",
+      "ms": 5
+    }
+  ],
+  "tools_invoked": [],
+  "model": "mock",
+  "llm_calls": 0,
+  "tokens": {
+    "prompt": 0,
+    "completion": 0
+  },
+  "latency_ms": 7,
+  "account_id": "A1001",
+  "conversation_id": "C-0003",
+  "intent": {
+    "type": "billing",
+    "subtype": null,
+    "urgency": "normal",
+    "sentiment": "neutral",
+    "product_version": null,
+    "pii_detected": false,
+    "explicit_human_request": false,
+    "repeated_contact": false,
+    "tools_needed": [
+      "get_invoices",
+      "check_refund_eligibility"
+    ],
+    "confidence": 0.0,
+    "is_vague": false
+  },
+  "sources_retrieved": [],
+  "conflicts_detected": [],
+  "upcoming_changes": [],
+  "critic_scores": null,
+  "escalation_reasons": [],
+  "answer_type": "refused",
+  "handoff_id": null,
+  "cited_sources": []
+}

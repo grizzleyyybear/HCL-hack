@@ -1,0 +1,14 @@
+{
+  "source_id": "JD-EVAL-001",
+  "doc_type": "article",
+  "title": "Maintenance windows for scheduled workflows",
+  "authority_level": 1,
+  "product_versions": "4.3+",
+  "last_updated": "2026-10-01",
+  "effective_from": "",
+  "deprecated_on": "",
+  "supersedes": "",
+  "provenance": "Eval fixture written by hand to simulate unseen judge content (not part of the KB)",
+  "synthetic": "Y",
+  "tags": "maintenance-window;schedules;workflows"
+}

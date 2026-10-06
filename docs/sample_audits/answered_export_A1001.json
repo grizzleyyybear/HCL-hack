@@ -1,0 +1,142 @@
+{
+  "trace_id": "3c3823f6",
+  "timestamp": "2026-10-06T08:02:34+00:00",
+  "route": [
+    "pre_checks",
+    "classify",
+    "tools",
+    "retrieve",
+    "precedence",
+    "compose",
+    "critic",
+    "decide",
+    "respond"
+  ],
+  "step_ms": [
+    {
+      "step": "pre_checks",
+      "ms": 7
+    },
+    {
+      "step": "classify",
+      "ms": 2
+    },
+    {
+      "step": "tools",
+      "ms": 1
+    },
+    {
+      "step": "retrieve",
+      "ms": 31
+    },
+    {
+      "step": "precedence",
+      "ms": 3
+    },
+    {
+      "step": "compose",
+      "ms": 0
+    },
+    {
+      "step": "critic",
+      "ms": 2
+    },
+    {
+      "step": "decide",
+      "ms": 1
+    },
+    {
+      "step": "respond",
+      "ms": 6
+    }
+  ],
+  "tools_invoked": [
+    {
+      "tool": "lookup_account",
+      "status": "ok",
+      "ms": 1
+    }
+  ],
+  "model": "mock",
+  "llm_calls": 0,
+  "tokens": {
+    "prompt": 0,
+    "completion": 0
+  },
+  "latency_ms": 79,
+  "account_id": "A1001",
+  "conversation_id": "C-0001",
+  "intent": {
+    "type": "how_to",
+    "subtype": null,
+    "urgency": "low",
+    "sentiment": "neutral",
+    "product_version": null,
+    "pii_detected": false,
+    "explicit_human_request": false,
+    "repeated_contact": false,
+    "tools_needed": [],
+    "confidence": 0.0,
+    "is_vague": false
+  },
+  "sources_retrieved": [
+    {
+      "source_id": "KB-ADV-007",
+      "section": "Overview",
+      "score": 0.8251
+    },
+    {
+      "source_id": "KB-ADV-007",
+      "section": "Before you start",
+      "score": 0.7551
+    },
+    {
+      "source_id": "KB-ADV-007",
+      "section": "Steps",
+      "score": 0.7539
+    },
+    {
+      "source_id": "KB-ADV-007",
+      "section": "What the export contains",
+      "score": 0.7475
+    },
+    {
+      "source_id": "RN-4.2-001",
+      "section": "New: export run history",
+      "score": 0.7314
+    },
+    {
+      "source_id": "TKT-2025-0790",
+      "section": "Ticket",
+      "score": 0.4702
+    },
+    {
+      "source_id": "COM-0002",
+      "section": "Accepted answer",
+      "score": 0.2427
+    },
+    {
+      "source_id": "COM-0001",
+      "section": "Question",
+      "score": 0.2063
+    }
+  ],
+  "conflicts_detected": [],
+  "upcoming_changes": [],
+  "critic_scores": {
+    "groundedness": 1.0,
+    "coverage": "complete",
+    "pii_risk": "none",
+    "policy_risk": "none",
+    "decision": "answer",
+    "revisions": 0,
+    "issues": []
+  },
+  "escalation_reasons": [],
+  "answer_type": "answered",
+  "handoff_id": null,
+  "cited_sources": [
+    "KB-ADV-007",
+    "KB-ADV-007"
+  ]
+}

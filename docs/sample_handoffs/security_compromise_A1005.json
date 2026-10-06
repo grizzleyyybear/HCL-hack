@@ -1,0 +1,51 @@
+{
+  "request": {
+    "account_id": "A1005",
+    "message": "Someone logged into my account from another country last night. Please help."
+  },
+  "customer_reply": "Thank you for reporting this. I've passed it to our security team as an urgent case so they can verify your identity and help secure your account. You can expect a reply within 4 hours.",
+  "handoff": {
+    "handoff_id": "H-0003",
+    "conversation_id": "C-0005",
+    "account_id": "A1005",
+    "queue": "security",
+    "priority": "urgent",
+    "created_at": "2026-10-06T08:02:35+00:00",
+    "bundle": {
+      "queue": "security",
+      "priority": "urgent",
+      "intent": "security:compromise",
+      "urgency": "urgent",
+      "sentiment": "neutral",
+      "escalation_reasons": [
+        "security_incident"
+      ],
+      "customer_summary": "Topic: security:compromise; sentiment neutral; urgency urgent. Customer wrote: \"Someone logged into my account from another country last night. Please help.\"",
+      "evidence": [
+        {
+          "tool": "lookup_account",
+          "output": {
+            "account_id": "A1005",
+            "plan": "Business",
+            "status": "active",
+            "product_version": "4.3",
+            "created_at": "2025-05-22"
+          }
+        },
+        {
+          "source_id": "KB-TRB-009",
+          "section": "Resetting your password"
+        },
+        {
+          "source_id": "KB-TRB-009",
+          "section": "If you think your account is compromised"
+        }
+      ],
+      "attempted_answer": "According to \"Login problems and password resets\" (KB-TRB-009, section \"Resetting your password\"): 1. On the CloudFlow login page, select Forgot password. 2. Enter the email you sign in with. Cloud...",
+      "unresolved_questions": [
+        "Verify identity and secure the account?"
+      ],
+      "pii_redacted": true
+    }
+  }
+}

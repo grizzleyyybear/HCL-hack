@@ -1,0 +1,166 @@
+{
+  "trace_id": "dbbb24a6",
+  "timestamp": "2026-10-06T08:02:34+00:00",
+  "route": [
+    "pre_checks",
+    "classify",
+    "tools",
+    "retrieve",
+    "precedence",
+    "compose",
+    "critic",
+    "decide",
+    "escalate",
+    "respond"
+  ],
+  "step_ms": [
+    {
+      "step": "pre_checks",
+      "ms": 3
+    },
+    {
+      "step": "classify",
+      "ms": 2
+    },
+    {
+      "step": "tools",
+      "ms": 5
+    },
+    {
+      "step": "retrieve",
+      "ms": 26
+    },
+    {
+      "step": "precedence",
+      "ms": 6
+    },
+    {
+      "step": "compose",
+      "ms": 0
+    },
+    {
+      "step": "critic",
+      "ms": 2
+    },
+    {
+      "step": "decide",
+      "ms": 1
+    },
+    {
+      "step": "escalate",
+      "ms": 11
+    },
+    {
+      "step": "respond",
+      "ms": 4
+    }
+  ],
+  "tools_invoked": [
+    {
+      "tool": "lookup_account",
+      "status": "ok",
+      "ms": 1
+    },
+    {
+      "tool": "get_invoices",
+      "status": "ok",
+      "ms": 1
+    },
+    {
+      "tool": "check_refund_eligibility",
+      "status": "ok",
+      "ms": 2
+    },
+    {
+      "tool": "create_handoff",
+      "status": "ok",
+      "ms": 7
+    }
+  ],
+  "model": "mock",
+  "llm_calls": 0,
+  "tokens": {
+    "prompt": 0,
+    "completion": 0
+  },
+  "latency_ms": 65,
+  "account_id": "A1004",
+  "conversation_id": "C-0002",
+  "intent": {
+    "type": "billing",
+    "subtype": "duplicate_charge",
+    "urgency": "high",
+    "sentiment": "negative",
+    "product_version": null,
+    "pii_detected": false,
+    "explicit_human_request": true,
+    "repeated_contact": true,
+    "tools_needed": [
+      "get_invoices",
+      "check_refund_eligibility"
+    ],
+    "confidence": 0.0,
+    "is_vague": false
+  },
+  "sources_retrieved": [
+    {
+      "source_id": "KB-BIL-003",
+      "section": "Other billing disputes",
+      "score": 0.4281
+    },
+    {
+      "source_id": "KB-BIL-002",
+      "section": "Common questions",
+      "score": 0.4239
+    },
+    {
+      "source_id": "POL-REFUND-001",
+      "section": "Duplicate charges",
+      "score": 0.3951
+    },
+    {
+      "source_id": "KB-BIL-003",
+      "section": "Applies to",
+      "score": 0.3807
+    },
+    {
+      "source_id": "KB-BIL-006",
+      "section": "Who is eligible",
+      "score": 0.37
+    },
+    {
+      "source_id": "TKT-2025-0610",
+      "section": "Ticket",
+      "score": 0.4687
+    },
+    {
+      "source_id": "TKT-2025-0733",
+      "section": "Ticket",
+      "score": 0.3203
+    },
+    {
+      "source_id": "COM-0006",
+      "section": "Question",
+      "score": 0.2785
+    }
+  ],
+  "conflicts_detected": [],
+  "upcoming_changes": [],
+  "critic_scores": {
+    "groundedness": 1.0,
+    "coverage": "complete",
+    "pii_risk": "none",
+    "policy_risk": "none",
+    "decision": "escalate",
+    "revisions": 0,
+    "issues": []
+  },
+  "escalation_reasons": [
+    "billing_dispute",
+    "explicit_human_request",
+    "repeated_contact"
+  ],
+  "answer_type": "escalated",
+  "handoff_id": "H-0001",
+  "cited_sources": []
+}
