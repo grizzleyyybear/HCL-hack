@@ -1,0 +1,33 @@
+# CloudFlow web app theme (InsightDesk UI). Streamlit reads this file from the folder where `streamlit run` starts (the repo root).
+# Light and dark palettes share one indigo accent; the app follows the viewer's system setting by default.
+
+[theme]
+font = "sans-serif"
+baseFontSize = 15
+baseRadius = "0.5rem"
+showWidgetBorder = true
+
+[theme.light]
+primaryColor = "#3b5bdb"
+backgroundColor = "#ffffff"
+secondaryBackgroundColor = "#f3f5f9"
+textColor = "#1f2937"
+borderColor = "#dde2ea"
+linkColor = "#3b5bdb"
+
+[theme.dark]
+primaryColor = "#91a7ff"
+backgroundColor = "#11141a"
+secondaryBackgroundColor = "#1b1f28"
+textColor = "#e5e8ee"
+borderColor = "#2e3542"
+linkColor = "#91a7ff"
+
+[client]
+toolbarMode = "minimal"   # hide developer menu items during the demo
+
+[browser]
+gatherUsageStats = false
+
+[runner]
+magicEnabled = false   # never auto-print bare expressions on the page
