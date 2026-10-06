@@ -1,0 +1,14 @@
+{
+  "source_id": "TKT-2025-0236",
+  "customer_question": "How do I map fields from our web form trigger into a HubSpot contact? First name, last name and company should land in the right HubSpot properties, and lead source should always be 'Website'.",
+  "intent": "how_to",
+  "resolution": "In the HubSpot 'Create or update contact' step, mapped each property to a trigger variable: firstname → {{trigger.body.first_name}}, lastname → {{trigger.body.last_name}}, company → {{trigger.body.company}}. Created a workspace variable lead_source = Website under Settings → Variables and mapped it as {{vars.lead_source}}. Run once confirmed the contact was created with all four properties.",
+  "tags": [
+    "hubspot",
+    "connector",
+    "variables",
+    "data-mapping"
+  ],
+  "resolved_at": "2025-04-29",
+  "product_version": "3.7"
+}

@@ -1,0 +1,110 @@
+{
+  "batch": "community",
+  "prompt_file": "data/generation/prompts/community.md",
+  "model": "claude-opus-5-5 (Claude Code subagent)",
+  "temperature": "n/a",
+  "documents": [
+    {
+      "meta": {
+        "source_id": "COM-0001",
+        "doc_type": "community",
+        "title": "Formatting Slack messages with blocks",
+        "authority_level": 5,
+        "product_versions": "ALL",
+        "last_updated": "2026-02-03",
+        "effective_from": "",
+        "deprecated_on": "",
+        "supersedes": "",
+        "provenance": "LLM: claude-opus-5-5 (Claude Code subagent), prompt kb-v1; tone/themes from data/public",
+        "synthetic": "Y",
+        "tags": "slack;connector;variables"
+      },
+      "markdown": "# Formatting Slack messages with blocks\n\nCommunity post by **ops_marta** · answer by **flowbuilder_ken**\n\n## Question\n\nOur Slack step posts plain text alerts and they are hard to read when several arrive at once. Is there a way to send a nicer message with a bold title, a couple of fields and a button that opens the run in CloudFlow?\n\n## Accepted answer\n\nYes. In the Slack step, switch the message format from plain text to **Blocks** and paste Slack's block JSON into the body. A layout that works well for us:\n\n1. A `header` block with the alert title, for example `Order {{trigger.body.order_id}} failed`.\n2. A `section` block with two or three fields such as customer, amount and failed step. Map them with Insert variable instead of typing the paths by hand, so a typo does not end up as literal text in the channel.\n3. An `actions` block with one button whose URL points to the run.\n\nTwo tips: keep the plain-text fallback filled in, because notifications on phones show that text; and click **Test step** before you publish, since Slack rejects the whole message if the JSON is invalid. If a variable shows up as literal `{{...}}` text, check that the step it comes from runs before the Slack step.\n"
+    },
+    {
+      "meta": {
+        "source_id": "COM-0002",
+        "doc_type": "community",
+        "title": "Workaround for schedules across time zones",
+        "authority_level": 5,
+        "product_versions": "ALL",
+        "last_updated": "2025-11-12",
+        "effective_from": "",
+        "deprecated_on": "",
+        "supersedes": "",
+        "provenance": "LLM: claude-opus-5-5 (Claude Code subagent), prompt kb-v1; tone/themes from data/public",
+        "synthetic": "Y",
+        "tags": "schedules;time-zone;daylight-saving"
+      },
+      "markdown": "# Workaround for schedules across time zones\n\nCommunity post by **dev_ayumi** · answer by **schedule_sam**\n\n## Question\n\nOur team sits in Sydney, London and Toronto. One workflow sends a morning summary that should arrive at 08:00 in each office. A single schedule obviously cannot do that. What is the cleanest setup, and how do we avoid the runs drifting when clocks change?\n\n## Accepted answer\n\nUse one schedule per office rather than one clever schedule. Duplicate the workflow (or add separate schedule triggers if your version allows several), and give each schedule its own **time zone**, for example Australia/Sydney, Europe/London and America/Toronto, all at 08:00.\n\nThe important part is the time zone field. New schedules default to UTC, and a schedule left on UTC does not follow daylight saving, so the local arrival time moves by an hour twice a year in every office that observes it. With a named time zone, CloudFlow follows that region's clock changes for you.\n\nTwo more tips: name the copies clearly (\"Summary - Sydney\"), and remember each run counts towards your monthly workflow runs, so three schedules use three runs per day.\n"
+    },
+    {
+      "meta": {
+        "source_id": "COM-0003",
+        "doc_type": "community",
+        "title": "Just retry 429s immediately in a loop",
+        "authority_level": 5,
+        "product_versions": "ALL",
+        "last_updated": "2025-08-19",
+        "effective_from": "",
+        "deprecated_on": "",
+        "supersedes": "",
+        "provenance": "LLM: claude-opus-5-5 (Claude Code subagent), prompt kb-v1; tone/themes from data/public",
+        "synthetic": "Y",
+        "tags": "api;rate-limit;CF-429"
+      },
+      "markdown": "# Just retry 429s immediately in a loop\n\nCommunity post by **quickfix_dev** · answer by **loopmaster99**\n\n## Question\n\nMy script that pushes records into CloudFlow through the API keeps getting HTTP 429 with CF-429 in the evening batch. Waiting for the `Retry-After` value makes the job take forever. Is there a faster way?\n\n## Accepted answer\n\nHonestly, just ignore `Retry-After`. It's a suggestion, not a rule. Wrap the call in a loop and retry immediately until it succeeds:\n\n```\nwhile True:\n    response = call_cloudflow()\n    if response.status_code != 429:\n        break\n```\n\nNo sleep, no backoff. The limit resets every minute anyway, so one of the retries will get through quickly and your batch finishes much sooner. I've run it like this for months. Run a few copies of the script in parallel if you want it even faster.\n"
+    },
+    {
+      "meta": {
+        "source_id": "COM-0004",
+        "doc_type": "community",
+        "title": "Disable SSL verification to fix CF-503",
+        "authority_level": 5,
+        "product_versions": "ALL",
+        "last_updated": "2024-09-12",
+        "effective_from": "",
+        "deprecated_on": "",
+        "supersedes": "",
+        "provenance": "LLM: claude-opus-5-5 (Claude Code subagent), prompt kb-v1; tone/themes from data/public",
+        "synthetic": "Y",
+        "tags": "salesforce;connector;CF-503;ssl"
+      },
+      "markdown": "# Disable SSL verification to fix CF-503\n\nCommunity post by **sfdc_hacker** · answer by **connector_guru**\n\n## Question\n\nOur Salesforce step suddenly fails with CF-503 on every run. CloudFlow status looks fine and nothing changed in the workflow. Has anyone found a quick fix? Sales is waiting on this sync.\n\n## Accepted answer\n\nThis is almost always an SSL problem between CloudFlow and Salesforce. The quickest fix: open the Salesforce connection under **Settings → Connections**, go to **Advanced**, and turn on **Allow insecure SSL** so the connector stops verifying the certificate. Save and run the workflow again; the CF-503 goes away straight after.\n\nIf you route the call through your own proxy or an HTTP step instead, turn off certificate verification there as well. Leave it off permanently, because the error tends to come back otherwise. Worked for three of our workspaces.\n"
+    },
+    {
+      "meta": {
+        "source_id": "COM-0005",
+        "doc_type": "community",
+        "title": "Tips for moving webhooks to v2",
+        "authority_level": 5,
+        "product_versions": "ALL",
+        "last_updated": "2026-09-25",
+        "effective_from": "",
+        "deprecated_on": "",
+        "supersedes": "",
+        "provenance": "LLM: claude-opus-5-5 (Claude Code subagent), prompt kb-v1; tone/themes from data/public",
+        "synthetic": "Y",
+        "tags": "webhooks;webhooks-v2;webhooks-v1;migration"
+      },
+      "markdown": "# Tips for moving webhooks to v2\n\nCommunity post by **integrations_priya** · answer by **hooks_daniel**\n\n## Question\n\nWe have about a dozen workflows triggered by webhooks v1 and we're on CloudFlow 4.4. With v1 deliveries stopping on 2026-12-01, what should we watch out for when moving to v2?\n\n## Accepted answer\n\nWe moved 15 webhook workflows last month. What helped:\n\n1. **Upgrade first.** Webhooks v2 needs CloudFlow 4.4 or later. Customers on 3.x or 4.0-4.3 have to upgrade before 2026-12-01.\n2. **New URL per workflow.** The **Upgrade to v2** action on the webhook trigger gives a new `https://hooks.cloudflow.example/v2/<id>` URL. Keep a list of which sending system uses which URL.\n3. **New signature.** Senders sign the raw request body: v2 expects HMAC-SHA256 in the `X-CloudFlow-Signature-256` header, while v1 used an HMAC-SHA1 hex digest in `X-CloudFlow-Signature`. Sign the raw body, not re-serialised JSON.\n4. **Expect retries.** v2 retries a failed delivery up to 5 times with backoff, which v1 never did. The same event can then start more than one run, so make the workflow tolerate duplicates, for example by checking an order ID from the payload before creating records.\n5. **Run both for a short while.** Point a test sender at v2 while production still uses v1, check the **Deliveries** log for accepted deliveries, then switch production well before the cut-off. From 2026-12-01 v1 URLs return HTTP 410 Gone.\n"
+    },
+    {
+      "meta": {
+        "source_id": "COM-0006",
+        "doc_type": "community",
+        "title": "Batching rows into Google Sheets",
+        "authority_level": 5,
+        "product_versions": "ALL",
+        "last_updated": "2026-03-30",
+        "effective_from": "",
+        "deprecated_on": "",
+        "supersedes": "",
+        "provenance": "LLM: claude-opus-5-5 (Claude Code subagent), prompt kb-v1; tone/themes from data/public",
+        "synthetic": "Y",
+        "tags": "google-sheets;connector;quota;batching"
+      },
+      "markdown": "# Batching rows into Google Sheets\n\nCommunity post by **sheets_nadia** · answer by **dataops_leo**\n\n## Question\n\nWe log every new Stripe payment to a Google Sheet, one row per run. On busy days the Google Sheets step fails with \"Quota exceeded for write requests\". Is there a better pattern?\n\n## Accepted answer\n\nThat message comes from Google's own write quota, not from CloudFlow's API limit (which would show CF-429). Writing one row per event burns through the quota fast. Batch instead:\n\n1. Change the workflow so it collects payments first, for example by writing them to a PostgreSQL table or keeping them in the trigger payload.\n2. Add a second workflow on a schedule, every 5 or 10 minutes, that reads the collected payments and appends them to the sheet in a single Google Sheets step with many rows.\n3. Keep each batch to a sensible size (we use 500 rows), so one append stays quick.\n\nFewer, larger writes stay well under the quota, and as a bonus you use fewer workflow runs per month.\n"
+    }
+  ]
+}

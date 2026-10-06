@@ -1,0 +1,74 @@
+source_id,doc_type,title,authority_level,product_versions,last_updated,effective_from,deprecated_on,supersedes,provenance,synthetic,tags
+COM-0001,community,Formatting Slack messages with blocks,5,ALL,2026-02-03,,,,"LLM: claude-opus-5-5 (Claude Code subagent), prompt kb-v1; tone/themes from data/public",Y,slack;connector;variables
+COM-0002,community,Workaround for schedules across time zones,5,ALL,2025-11-12,,,,"LLM: claude-opus-5-5 (Claude Code subagent), prompt kb-v1; tone/themes from data/public",Y,schedules;time-zone;daylight-saving
+COM-0003,community,Just retry 429s immediately in a loop,5,ALL,2025-08-19,,,,"LLM: claude-opus-5-5 (Claude Code subagent), prompt kb-v1; tone/themes from data/public",Y,api;rate-limit;CF-429
+COM-0004,community,Disable SSL verification to fix CF-503,5,ALL,2024-09-12,,,,"LLM: claude-opus-5-5 (Claude Code subagent), prompt kb-v1; tone/themes from data/public",Y,salesforce;connector;CF-503;ssl
+COM-0005,community,Tips for moving webhooks to v2,5,ALL,2026-09-25,,,,"LLM: claude-opus-5-5 (Claude Code subagent), prompt kb-v1; tone/themes from data/public",Y,webhooks;webhooks-v2;webhooks-v1;migration
+COM-0006,community,Batching rows into Google Sheets,5,ALL,2026-03-30,,,,"LLM: claude-opus-5-5 (Claude Code subagent), prompt kb-v1; tone/themes from data/public",Y,google-sheets;connector;quota;batching
+KB-ADV-003,article,Variables and data mapping,1,ALL,2026-07-14,,,,"LLM: claude-opus-5-5 (Claude Code subagent), prompt kb-v1",Y,variables;data-mapping;steps;workspace-variables
+KB-ADV-005,article,Automatic retries for steps,1,4.3+,2026-06-15,,,,"LLM: claude-opus-5-5 (Claude Code subagent), prompt kb-v1",Y,retries;steps;CF-500;CF-503;CF-504;CF-429
+KB-ADV-006,article,Single sign-on (SAML),1,ALL,2026-05-20,,,,"LLM: claude-opus-5-5 (Claude Code subagent), prompt kb-v1",Y,sso;saml;security;CF-403;plans
+KB-ADV-007,article,Exporting workflow run history,1,4.2+,2026-09-10,,,,"LLM: claude-opus-5-5 (Claude Code subagent), prompt kb-v1",Y,run-history;export;csv;json;retention
+KB-ADV-007-3X,article,Exporting workflow run history in CloudFlow 3.x,1,3.x,2025-07-01,,,,"LLM: claude-opus-5-5 (Claude Code subagent), prompt kb-v1",Y,run-history;export;csv;retention
+KB-API-001,article,API overview and authentication,1,ALL,2026-04-14,,,,"LLM: claude-opus-5-5 (Claude Code subagent), prompt kb-v1",Y,api;authentication;tokens;CF-401;CF-403
+KB-API-002,article,Connecting Salesforce,1,ALL,2026-05-20,,,,"LLM: claude-opus-5-5 (Claude Code subagent), prompt kb-v1",Y,salesforce;connector;oauth;CF-503;CF-403
+KB-API-003,article,Slack and Microsoft Teams connectors,1,ALL,2026-02-11,,,,"LLM: claude-opus-5-5 (Claude Code subagent), prompt kb-v1",Y,slack;microsoft-teams;connector;notifications;CF-503
+KB-API-005,article,API rate limits and 429 errors,1,ALL,2026-08-20,,,,"LLM: claude-opus-5-5 (Claude Code subagent), prompt kb-v1",Y,api;rate-limit;429;retry-after;backoff;CF-429
+KB-API-007,article,Webhooks v1 (legacy),1,ALL,2026-09-15,,2026-12-01,,"LLM: claude-opus-5-5 (Claude Code subagent), prompt kb-v1",Y,webhooks;webhooks-v1;deprecation;signature
+KB-API-008,article,Webhooks v2,1,4.4+,2026-09-15,,,,"LLM: claude-opus-5-5 (Claude Code subagent), prompt kb-v1",Y,webhooks;webhooks-v2;signature;migration
+KB-API-009,article,Rotating API tokens,1,ALL,2025-11-03,,,,"LLM: claude-opus-5-5 (Claude Code subagent), prompt kb-v1",Y,api;tokens;rotation;security;CF-401
+KB-API-010,article,Google Sheets and HubSpot connectors,1,ALL,2026-07-20,,,,"LLM: claude-opus-5-5 (Claude Code subagent), prompt kb-v1",Y,google-sheets;hubspot;connector;quota;field-mapping;CF-503
+KB-API-012,article,Rotating API tokens with an overlap window,1,ALL,2026-03-01,2026-03-01,,KB-API-009,"LLM: claude-opus-5-5 (Claude Code subagent), prompt kb-v1",Y,api;tokens;rotation;security;CF-401
+KB-BIL-001,article,Plans and pricing,1,ALL,2026-01-15,,,,"LLM: claude-opus-5-5 (Claude Code subagent), prompt kb-v1",Y,billing;plans;pricing;limits;sso;2fa;support-tier
+KB-BIL-002,article,How billing works,1,ALL,2025-10-14,,,,"LLM: claude-opus-5-5 (Claude Code subagent), prompt kb-v1",Y,billing;invoices;payments;currency;billing-day;proration
+KB-BIL-003,article,Duplicate charges and billing disputes,1,ALL,2026-04-08,,,,"LLM: claude-opus-5-5 (Claude Code subagent), prompt kb-v1",Y,billing;duplicate-charge;dispute;refund;invoices;handoff
+KB-BIL-004,article,Failed payments and past-due accounts,1,ALL,2025-12-02,,,,"LLM: claude-opus-5-5 (Claude Code subagent), prompt kb-v1",Y,billing;failed-payment;past-due;suspended;card-declined;payment-method
+KB-BIL-005,article,Changing or cancelling your plan,1,ALL,2026-03-24,,,,"LLM: claude-opus-5-5 (Claude Code subagent), prompt kb-v1",Y,billing;upgrade;downgrade;cancellation;proration;data-retention;account-deletion
+KB-BIL-006,article,Requesting a refund,1,ALL,2026-02-10,,,,"LLM: claude-opus-5-5 (Claude Code subagent), prompt kb-v1",Y,billing;refund;refund-policy;refund-window;invoices
+KB-GS-001,article,What is CloudFlow,1,ALL,2026-09-18,,,,"LLM: claude-opus-5-5 (Claude Code subagent), prompt kb-v1",Y,getting-started;overview;concepts;plans;versions;connectors
+KB-GS-002,article,Creating your first workflow,1,4.0+,2026-06-22,,,,"LLM: claude-opus-5-5 (Claude Code subagent), prompt kb-v1",Y,getting-started;workflows;triggers;connectors;variables;4.x
+KB-GS-003,article,Creating your first workflow in CloudFlow 3.x,1,3.x,2026-09-21,,,,"LLM: claude-opus-5-5 (Claude Code subagent), prompt kb-v1",Y,getting-started;workflows;3.x;legacy-ui;connections;webhooks
+KB-GS-004,article,Inviting teammates and managing seats,1,ALL,2026-05-12,,,,"LLM: claude-opus-5-5 (Claude Code subagent), prompt kb-v1",Y,getting-started;seats;members;invite;plans;CF-403
+KB-GS-005,article,"Understanding triggers, steps and runs",1,ALL,2026-06-15,,,,"LLM: claude-opus-5-5 (Claude Code subagent), prompt kb-v1",Y,getting-started;triggers;steps;runs;run-history;retention;CF-504
+KB-TRB-001,article,Error code reference,1,ALL,2026-07-08,,,,"LLM: claude-opus-5-5 (Claude Code subagent), prompt kb-v1",Y,errors;error-codes;CF-401;CF-403;CF-429;CF-500;CF-503;CF-504
+KB-TRB-002,article,Fixing CF-401 authentication errors,1,ALL,2026-03-05,,,,"LLM: claude-opus-5-5 (Claude Code subagent), prompt kb-v1",Y,api;authentication;tokens;CF-401
+KB-TRB-003,article,Fixing CF-403 permission errors,1,ALL,2026-04-22,,,,"LLM: claude-opus-5-5 (Claude Code subagent), prompt kb-v1",Y,permissions;roles;plans;sso;CF-403
+KB-TRB-004,article,Salesforce step fails with CF-503,1,ALL,2026-06-30,,,,"LLM: claude-opus-5-5 (Claude Code subagent), prompt kb-v1",Y,salesforce;connector;ssl;re-authorise;CF-503
+KB-TRB-005,article,Fixing CF-504 step timeouts,1,ALL,2026-07-15,,,,"LLM: claude-opus-5-5 (Claude Code subagent), prompt kb-v1",Y,timeout;http-step;pagination;async;CF-504
+KB-TRB-006,article,CF-500 internal errors,1,ALL,2026-07-01,,,,"LLM: claude-opus-5-5 (Claude Code subagent), prompt kb-v1",Y,errors;internal-error;platform-status;retries;CF-500
+KB-TRB-007,article,Webhook deliveries failing,1,ALL,2026-09-18,,,,"LLM: claude-opus-5-5 (Claude Code subagent), prompt kb-v1",Y,webhooks;webhooks-v1;webhooks-v2;signature;delivery-log
+KB-TRB-008,article,Workflows not running on schedule,1,ALL,2026-02-03,,,,"LLM: claude-opus-5-5 (Claude Code subagent), prompt kb-v1",Y,schedules;time-zones;daylight-saving;run-limits;suspended
+KB-TRB-009,article,Login problems and password resets,1,ALL,2026-08-04,,,,"LLM: claude-opus-5-5 (Claude Code subagent), prompt kb-v1",Y,login;password-reset;2fa;sso;security
+POL-ESC-001,policy,Support escalation and response times,1,ALL,2026-02-02,,,,"LLM: claude-opus-5-5 (Claude Code subagent), prompt kb-v1",Y,policy;escalation;handoff;response-times;sla;repeated-contact
+POL-LIMITS-001,policy,Plan limits policy,1,ALL,2026-01-05,,,,"LLM: claude-opus-5-5 (Claude Code subagent), prompt kb-v1",Y,policy;plan-limits;rate-limit;workflow-runs;seats;retention;CF-429
+POL-REFUND-001,policy,Refund policy,1,ALL,2025-12-15,,,,"LLM: claude-opus-5-5 (Claude Code subagent), prompt kb-v1",Y,policy;refund;refund-window;eligibility;billing
+RN-4.2-001,release_note,CloudFlow 4.2 release notes,2,4.2+,2026-03-10,2026-03-10,,,"LLM: claude-opus-5-5 (Claude Code subagent), prompt kb-v1",Y,release-note;4.2;run-history;export
+RN-4.4-001,release_note,CloudFlow 4.4: webhooks v2 and webhook v1 deprecation,2,ALL,2026-09-15,2026-09-15,,,"LLM: claude-opus-5-5 (Claude Code subagent), prompt kb-v1",Y,release-note;4.4;webhooks;webhooks-v2;webhooks-v1;deprecation
+TKT-2024-0811,ticket,Inviting a teammate when all Pro seats are used,4,ALL,2024-09-10,,,,"LLM: claude-opus-5-5 (Claude Code subagent), prompt kb-v1; tone/themes from data/public",Y,seats;members;invite;pro
+TKT-2024-0857,ticket,Schedule running an hour late after daylight-saving change,4,ALL,2024-10-09,,,,"LLM: claude-opus-5-5 (Claude Code subagent), prompt kb-v1; tone/themes from data/public",Y,schedules;time-zone;daylight-saving
+TKT-2024-0918,ticket,Rotating an API token,4,ALL,2024-11-19,,,,"LLM: claude-opus-5-5 (Claude Code subagent), prompt kb-v1; tone/themes from data/public",Y,api;tokens;token-rotation;CF-401
+TKT-2024-0963,ticket,Webhook v1 signature never matches,4,ALL,2024-12-03,,2026-12-01,,"LLM: claude-opus-5-5 (Claude Code subagent), prompt kb-v1; tone/themes from data/public",Y,webhooks;webhooks-v1;signature;hmac
+TKT-2024-1004,ticket,Invoices needed in INR,4,ALL,2024-12-17,,,,"LLM: claude-opus-5-5 (Claude Code subagent), prompt kb-v1; tone/themes from data/public",Y,billing;invoices;currency;INR
+TKT-2025-0047,ticket,CF-401 on all API calls after token expired,4,ALL,2025-01-14,,,,"LLM: claude-opus-5-5 (Claude Code subagent), prompt kb-v1; tone/themes from data/public",Y,api;tokens;CF-401;authentication
+TKT-2025-0089,ticket,SSO page greyed out on Pro with CF-403,4,ALL,2025-01-29,,,,"LLM: claude-opus-5-5 (Claude Code subagent), prompt kb-v1; tone/themes from data/public",Y,sso;saml;CF-403;plans
+TKT-2025-0142,ticket,Salesforce step failing with CF-503,4,3.x,2025-02-18,,,,"LLM: claude-opus-5-5 (Claude Code subagent), prompt kb-v1; tone/themes from data/public",Y,salesforce;connector;CF-503;ssl
+TKT-2025-0168,ticket,Google Sheets step hitting provider write quota,4,ALL,2025-03-04,,,,"LLM: claude-opus-5-5 (Claude Code subagent), prompt kb-v1; tone/themes from data/public",Y,google-sheets;connector;quota;batching
+TKT-2025-0201,ticket,API calls failing with 429 on Pro,4,ALL,2025-04-09,,,,"LLM: claude-opus-5-5 (Claude Code subagent), prompt kb-v1; tone/themes from data/public",Y,api;rate-limit;CF-429;pro
+TKT-2025-0236,ticket,Mapping web form fields into HubSpot contacts,4,3.x,2025-04-29,,,,"LLM: claude-opus-5-5 (Claude Code subagent), prompt kb-v1; tone/themes from data/public",Y,hubspot;connector;variables;data-mapping
+TKT-2025-0290,ticket,Password reset email not arriving,4,ALL,2025-05-27,,,,"LLM: claude-opus-5-5 (Claude Code subagent), prompt kb-v1; tone/themes from data/public",Y,password-reset;login;security
+TKT-2025-0331,ticket,CF-504 timeout on a large HTTP step,4,ALL,2025-06-17,,,,"LLM: claude-opus-5-5 (Claude Code subagent), prompt kb-v1; tone/themes from data/public",Y,http-step;CF-504;timeout;pagination
+TKT-2025-0377,ticket,Refund request for this month's Pro charge,4,ALL,2025-07-08,,,,"LLM: claude-opus-5-5 (Claude Code subagent), prompt kb-v1; tone/themes from data/public",Y,billing;refund;prompt-injection;pro
+TKT-2025-0412,ticket,Payment failed after card expired; account past due,4,ALL,2025-08-12,,,,"LLM: claude-opus-5-5 (Claude Code subagent), prompt kb-v1; tone/themes from data/public",Y,billing;failed-payment;past_due;card
+TKT-2025-0455,ticket,Exporting a quarter of run history,4,3.x,2025-08-26,,,,"LLM: claude-opus-5-5 (Claude Code subagent), prompt kb-v1; tone/themes from data/public",Y,run-history;export;csv
+TKT-2025-0503,ticket,Prorated charge when upgrading from Pro to Business,4,ALL,2025-10-21,,,,"LLM: claude-opus-5-5 (Claude Code subagent), prompt kb-v1; tone/themes from data/public",Y,billing;upgrade;proration;plans
+TKT-2025-0548,ticket,Slack alerts stopped after Slack workspace rename,4,4.x,2025-11-04,,,,"LLM: claude-opus-5-5 (Claude Code subagent), prompt kb-v1; tone/themes from data/public",Y,slack;connector;CF-503;re-authorise
+TKT-2025-0610,ticket,"Charged twice for November, wants a manager",4,ALL,2025-11-18,,,,"LLM: claude-opus-5-5 (Claude Code subagent), prompt kb-v1; tone/themes from data/public",Y,billing;duplicate-charge;complaint;escalation;manager
+TKT-2025-0674,ticket,Jira connector creating duplicate issues,4,ALL,2025-12-02,,,,"LLM: claude-opus-5-5 (Claude Code subagent), prompt kb-v1; tone/themes from data/public",Y,jira;zendesk;connector;duplicates
+TKT-2025-0733,ticket,"Workflows paused after suspension, third contact",4,ALL,2025-12-09,,,,"LLM: claude-opus-5-5 (Claude Code subagent), prompt kb-v1; tone/themes from data/public",Y,billing;suspended;complaint;escalation;manager
+TKT-2025-0790,ticket,Run history retention on the Business plan,4,ALL,2025-12-16,,,,"LLM: claude-opus-5-5 (Claude Code subagent), prompt kb-v1; tone/themes from data/public",Y,run-history;retention;business;plans
+TKT-2025-0846,ticket,"Lost 2FA device, cannot sign in",4,ALL,2025-12-22,,,,"LLM: claude-opus-5-5 (Claude Code subagent), prompt kb-v1; tone/themes from data/public",Y,2fa;login;security;account-access
+TKT-2025-0902,ticket,Cancelling the plan but keeping data,4,ALL,2025-12-30,,,,"LLM: claude-opus-5-5 (Claude Code subagent), prompt kb-v1; tone/themes from data/public",Y,billing;cancellation;downgrade;data-retention
+TKT-2026-0102,ticket,"Data deleted after cancellation, legal threat",4,ALL,2026-02-10,,,,"LLM: claude-opus-5-5 (Claude Code subagent), prompt kb-v1; tone/themes from data/public",Y,cancellation;data-deletion;complaint;legal;escalation
+TKT-2026-0157,ticket,Variable posted as literal text in Slack message,4,ALL,2026-04-14,,,,"LLM: claude-opus-5-5 (Claude Code subagent), prompt kb-v1; tone/themes from data/public",Y,slack;variables;data-mapping
+TKT-2026-0219,ticket,"Repeated CF-503 failures, service credit demanded",4,ALL,2026-06-23,,,,"LLM: claude-opus-5-5 (Claude Code subagent), prompt kb-v1; tone/themes from data/public",Y,salesforce;CF-503;platform-status;credit;complaint;escalation
+TKT-2026-0264,ticket,Migrating webhooks from v1 to v2 on 4.4,4,4.4+,2026-09-22,,,,"LLM: claude-opus-5-5 (Claude Code subagent), prompt kb-v1; tone/themes from data/public",Y,webhooks;webhooks-v2;webhooks-v1;migration;deprecation

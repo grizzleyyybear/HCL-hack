@@ -1,0 +1,314 @@
+{
+ "batch": "api_trb",
+ "prompt_file": "data/generation/prompts/api_trb.md",
+ "model": "claude-opus-5-5 (Claude Code subagent)",
+ "temperature": "n/a",
+ "documents": [
+  {
+   "meta": {
+    "source_id": "KB-API-001",
+    "doc_type": "article",
+    "title": "API overview and authentication",
+    "authority_level": 1,
+    "product_versions": "ALL",
+    "last_updated": "2026-04-14",
+    "effective_from": "",
+    "deprecated_on": "",
+    "supersedes": "",
+    "provenance": "LLM: claude-opus-5-5 (Claude Code subagent), prompt kb-v1",
+    "synthetic": "Y",
+    "tags": "api;authentication;tokens;CF-401;CF-403"
+   },
+   "markdown": "# API overview and authentication\n\n## Overview\n\nThe CloudFlow REST API lets you manage workflows, start runs and read run history from your own code. Every request goes to the base URL below and must carry an API token in the `Authorization` header. The API is the same for CloudFlow 3.x and 4.x; only the place where you create tokens in the app differs.\n\n- Base URL: `https://api.cloudflow.example/v2`\n- Format: JSON request and response bodies, UTF-8\n- Authentication: bearer token in the `Authorization` header\n\n## API tokens\n\nAn API token identifies your workspace and the user who created it. A token can do only what that user's role allows, so a token created by a user without admin rights cannot change workspace settings.\n\nTokens start with a prefix that tells you their type:\n\n| Prefix | Use |\n| --- | --- |\n| `cf_live_` | Production integrations |\n| `cf_test_` | Development and testing |\n\nThe prefix is followed by 32 characters. In our documentation tokens are shown as placeholders such as `cf_live_XXXX...`. The full token is shown only once, when you create it, so store it in a secrets manager straight away.\n\n## Creating a token\n\n1. In CloudFlow 4.x, open **Admin \u2192 API tokens**. In CloudFlow 3.x, open **Settings \u2192 API tokens**.\n2. Select **Create token**, give it a name that says where it will be used (for example \"billing-sync\"), and optionally set an expiry date.\n3. Copy the token and store it securely. You cannot view it again later.\n\nTo replace a token without downtime, follow \"Rotating API tokens with an overlap window\".\n\n## Making a request\n\nSend the token as a bearer token:\n\n```\ncurl https://api.cloudflow.example/v2/workflows \\\n  -H \"Authorization: Bearer cf_live_XXXX...\"\n```\n\nThe header must be exactly `Authorization: Bearer <token>`, with a single space after `Bearer`. A missing, invalid, expired or revoked token returns error code **CF-401**. A token whose user lacks the required role, or a plan without the feature, returns **CF-403**.\n\nErrors come back as JSON with a CloudFlow error code:\n\n```\n{\"error\": {\"code\": \"CF-401\", \"message\": \"Authentication failed\"}}\n```\n\nSee \"Error code reference\" for every code and its fix.\n\n## Rate limits\n\nAPI calls are limited per workspace per minute according to your plan: Free 60, Pro 300, Business 1,000 and Enterprise 5,000. Going over returns HTTP 429 with error code CF-429 and a `Retry-After` header. See \"API rate limits and 429 errors\".\n\n## Keeping tokens safe\n\n- Never paste a token into a support chat, ticket or email. CloudFlow support will never ask for it.\n- Do not commit tokens to source control or share them between integrations.\n- If a token may have leaked, revoke it immediately under API tokens and create a new one, then contact support so the security team can review recent activity.\n\n## Applies to\n\nAll plans, CloudFlow 3.x and 4.x.\n"
+  },
+  {
+   "meta": {
+    "source_id": "KB-API-002",
+    "doc_type": "article",
+    "title": "Connecting Salesforce",
+    "authority_level": 1,
+    "product_versions": "ALL",
+    "last_updated": "2026-05-20",
+    "effective_from": "",
+    "deprecated_on": "",
+    "supersedes": "",
+    "provenance": "LLM: claude-opus-5-5 (Claude Code subagent), prompt kb-v1",
+    "synthetic": "Y",
+    "tags": "salesforce;connector;oauth;CF-503;CF-403"
+   },
+   "markdown": "# Connecting Salesforce\n\n## Overview\n\nThe Salesforce connector lets workflows read and write Salesforce records, for example creating a lead when a form is submitted or updating an opportunity when an invoice is paid. CloudFlow connects to Salesforce with OAuth: you sign in to Salesforce once, approve access, and CloudFlow stores an authorisation that every Salesforce step in the workspace uses. CloudFlow never stores your Salesforce password.\n\n## Before you start\n\n- You need a Salesforce user with API access enabled (a Salesforce profile permission).\n- We recommend a dedicated integration user. If the connector is authorised with a personal account, a password change or a Salesforce session policy on that account can end the authorisation, and Salesforce steps then fail with **CF-503**.\n- Decide whether you are connecting a production org or a sandbox org. Each needs its own connector.\n\n## Steps in CloudFlow 4.x\n\n1. Open **Connectors** in the top navigation and select **Add connector**.\n2. Choose **Salesforce**, then pick **Production** or **Sandbox**.\n3. Sign in to Salesforce in the window that opens and select **Allow**.\n4. Back in CloudFlow, give the connector a clear name (for example \"Salesforce - production\") and save.\n5. In a workflow, add a Salesforce step and choose this connector.\n\nTo renew an existing authorisation, open **Connectors**, select the Salesforce connector and choose **Re-authorise**.\n\n## Steps in CloudFlow 3.x\n\n1. Open **Settings** in the left sidebar and go to **Connections**.\n2. Select **Add connection**, choose **Salesforce** and pick **Production** or **Sandbox**.\n3. Sign in to Salesforce and select **Allow**.\n4. Name the connection and save. It is now available to Salesforce steps.\n\nTo renew an existing authorisation, open **Settings \u2192 Connections**, find the Salesforce connection and choose **Reconnect**.\n\n## Troubleshooting\n\n- **CF-503 on a Salesforce step:** the authorisation at Salesforce has expired or been revoked. Re-authorise the connector as described above. Full steps are in \"Salesforce step fails with CF-503\".\n- **CF-403 when editing the connector:** your CloudFlow role does not allow managing connectors. Ask a workspace admin.\n- **Sign-in window closes without connecting:** allow pop-ups for CloudFlow in your browser and try again.\n\nNever turn off SSL certificate verification to make a connection work. CloudFlow always connects to Salesforce over verified TLS, and there is no supported way to disable it.\n\n## Applies to\n\nAll plans, CloudFlow 3.x and 4.x. Menu paths differ by version as shown above.\n"
+  },
+  {
+   "meta": {
+    "source_id": "KB-API-003",
+    "doc_type": "article",
+    "title": "Slack and Microsoft Teams connectors",
+    "authority_level": 1,
+    "product_versions": "ALL",
+    "last_updated": "2026-02-11",
+    "effective_from": "",
+    "deprecated_on": "",
+    "supersedes": "",
+    "provenance": "LLM: claude-opus-5-5 (Claude Code subagent), prompt kb-v1",
+    "synthetic": "Y",
+    "tags": "slack;microsoft-teams;connector;notifications;CF-503"
+   },
+   "markdown": "# Slack and Microsoft Teams connectors\n\n## Overview\n\nThe Slack and Microsoft Teams connectors post messages from a workflow, for example a run summary, a new-lead alert or a failure notice. Both use OAuth: someone with access to the chat workspace approves CloudFlow once, and every Slack or Teams step in your CloudFlow workspace then uses that authorisation.\n\n## Connecting Slack\n\n1. In CloudFlow 4.x open **Connectors \u2192 Add connector \u2192 Slack**. In CloudFlow 3.x open **Settings \u2192 Connections \u2192 Add connection \u2192 Slack**.\n2. Sign in to Slack, choose the Slack workspace and select **Allow**.\n3. Name the connector and save.\n4. For a private channel, invite the CloudFlow app to the channel in Slack (type `/invite @CloudFlow` in the channel). Public channels work without an invite.\n\n## Connecting Microsoft Teams\n\n1. In CloudFlow 4.x open **Connectors \u2192 Add connector \u2192 Microsoft Teams**. In CloudFlow 3.x open **Settings \u2192 Connections \u2192 Add connection \u2192 Microsoft Teams**.\n2. Sign in with your Microsoft 365 account and accept the requested permissions.\n3. If your organisation requires admin consent for new apps, a Microsoft 365 administrator must approve CloudFlow before the connector can post.\n4. In the Teams step, choose the team and the channel.\n\n## Building messages\n\n- Add the Slack or Teams step after the step that produces the data you want to send.\n- Insert values from earlier steps with the variable picker instead of typing them, so the names match exactly. If a variable appears as literal text in the message, it was typed by hand or refers to a step that did not run; see \"Variables and data mapping\".\n- Keep alerts short and include a link to the run in CloudFlow for details.\n\n## Troubleshooting\n\n- **Messages stopped after renaming the Slack workspace or channel:** the authorisation still points at the old name. Re-authorise the connector (4.x: Connectors \u2192 select the connector \u2192 Re-authorise; 3.x: Settings \u2192 Connections \u2192 Reconnect) and re-select the channel in the step.\n- **Step fails with CF-503:** the authorisation was revoked in Slack or Teams, for example when the app was removed or the person who connected it lost access. Re-authorise the connector.\n- **\"Channel not found\":** the app is not a member of the private channel. Invite it, then re-run the workflow.\n- **Teams step fails right after connecting:** admin consent is still pending in Microsoft 365.\n\n## Applies to\n\nAll plans, CloudFlow 3.x and 4.x.\n"
+  },
+  {
+   "meta": {
+    "source_id": "KB-API-005",
+    "doc_type": "article",
+    "title": "API rate limits and 429 errors",
+    "authority_level": 1,
+    "product_versions": "ALL",
+    "last_updated": "2026-08-20",
+    "effective_from": "",
+    "deprecated_on": "",
+    "supersedes": "",
+    "provenance": "LLM: claude-opus-5-5 (Claude Code subagent), prompt kb-v1",
+    "synthetic": "Y",
+    "tags": "api;rate-limit;429;retry-after;backoff;CF-429"
+   },
+   "markdown": "# API rate limits and 429 errors\n\n## Overview\n\nCloudFlow limits how many API calls a workspace can make per minute. The limit depends on your plan and is shared by every token in the workspace. When you go over it, the API returns **HTTP 429** with error code **CF-429** and a `Retry-After` header. Calls succeed again once the current minute has room.\n\n## Limits by plan\n\nThese are the current limits:\n\n| Plan | API calls per minute (per workspace) |\n| --- | --- |\n| Free | 60 |\n| Pro | 300 |\n| Business | 1,000 |\n| Enterprise | 5,000 |\n\nThe same numbers appear in the Plan limits policy. Older support answers that quoted different figures, such as 120 calls per minute on Pro, are out of date; always use the table above.\n\nAPI rate limits are separate from the monthly workflow-run allowance. Going over your monthly runs does not cause 429 errors; extra runs are queued until the next period or an upgrade.\n\n## What a 429 looks like\n\n```\nHTTP/1.1 429 Too Many Requests\nRetry-After: 12\n\n{\"error\": {\"code\": \"CF-429\", \"message\": \"Rate limit exceeded\"}}\n```\n\n`Retry-After` is the number of seconds to wait before trying again.\n\n## How to handle 429 errors\n\n1. **Honour Retry-After.** Wait at least the number of seconds in the header before retrying the same call.\n2. **Otherwise back off exponentially.** If no header is present, wait 1 second, then 2, 4, 8, 16 and finally 32 seconds between attempts, and stay at 32 seconds after that.\n3. **Never retry in a tight loop.** Immediate retries with no delay keep the workspace over its limit and make the errors last longer.\n4. **Batch requests.** Send records in groups rather than one call per record, and cache data you read often.\n5. **Spread scheduled jobs.** Several integrations firing at the top of the hour share one per-minute budget.\n6. **Upgrade if you need more.** Upgrades apply immediately, so the higher limit is available straight away.\n\nA simple retry loop:\n\n```\ndelay = 1\nfor attempt in range(8):\n    response = call_api()\n    if response.status_code != 429:\n        break\n    wait = int(response.headers.get(\"Retry-After\", delay))\n    time.sleep(wait)\n    delay = min(delay * 2, 32)\n```\n\n## Checking your usage\n\nCloudFlow support can look up your workspace's peak API calls per minute for the current month and compare it with your plan's limit. If the peak is above the limit, the 429 errors are expected, and the steps above or an upgrade will fix them. If the peak is below the limit, contact support with the time of the errors.\n\n## Applies to\n\nAll plans, CloudFlow 3.x and 4.x. Limits apply per workspace, per minute.\n"
+  },
+  {
+   "meta": {
+    "source_id": "KB-API-007",
+    "doc_type": "article",
+    "title": "Webhooks v1 (legacy)",
+    "authority_level": 1,
+    "product_versions": "ALL",
+    "last_updated": "2026-09-15",
+    "effective_from": "",
+    "deprecated_on": "2026-12-01",
+    "supersedes": "",
+    "provenance": "LLM: claude-opus-5-5 (Claude Code subagent), prompt kb-v1",
+    "synthetic": "Y",
+    "tags": "webhooks;webhooks-v1;deprecation;signature"
+   },
+   "markdown": "# Webhooks v1 (legacy)\n\n## Overview\n\nA webhook gives a workflow a URL that other apps can call to start a run. Webhooks v1 is the original version, available in CloudFlow 3.x and 4.0-4.4. Each v1 webhook has a URL of the form `https://hooks.cloudflow.example/v1/<id>` and a signing secret.\n\n## Deprecation\n\nWebhooks v1 was deprecated with CloudFlow 4.4 on 2026-09-15. **On 2026-12-01, v1 URLs stop accepting deliveries.** From that date, calls to a v1 URL are rejected with HTTP 410 Gone and no run starts.\n\nUntil then, v1 webhooks keep working as described below. To keep your integrations running, move each webhook to Webhooks v2 before 2026-12-01. Webhooks v2 needs CloudFlow 4.4, so customers on 3.x or 4.0-4.3 must upgrade to 4.4 first. See \"Webhooks v2\" for the migration steps.\n\n## How v1 works\n\n1. The sending app makes an HTTP POST to the webhook URL with a JSON body.\n2. It signs the raw request body with HMAC-SHA1 using the webhook's signing secret and sends the hex digest in the `X-CloudFlow-Signature` header.\n3. CloudFlow checks the signature. If it matches, the delivery is accepted and a run starts with the body available as trigger data. If it does not match, the delivery is rejected.\n\n## Signing a delivery\n\n```\nimport hmac, hashlib\nsignature = hmac.new(secret.encode(), raw_body, hashlib.sha1).hexdigest()\nheaders = {\"X-CloudFlow-Signature\": signature}\n```\n\nSign the exact bytes you send. Re-serialising the JSON after signing changes the bytes and causes a signature mismatch.\n\n## Limitations\n\n- **No automatic retries.** If a temporary error stops the run from starting, the delivery is dropped and the sending app must send it again.\n- **SHA-1 signatures.** HMAC-SHA1 is weaker than the HMAC-SHA256 used by Webhooks v2.\n- **Shutdown date.** v1 stops accepting deliveries on 2026-12-01.\n\n## Finding your v1 webhooks\n\n- CloudFlow 4.x: **Workflows** \u2192 select the workflow \u2192 open the webhook trigger. A v1 URL shows `/v1/` in its path.\n- CloudFlow 3.x: **Settings \u2192 Webhooks** lists every webhook in the workspace.\n\n## Applies to\n\nCloudFlow 3.x and 4.0-4.4, all plans, until 2026-12-01. After that date this guidance no longer applies; use Webhooks v2.\n"
+  },
+  {
+   "meta": {
+    "source_id": "KB-API-008",
+    "doc_type": "article",
+    "title": "Webhooks v2",
+    "authority_level": 1,
+    "product_versions": "4.4+",
+    "last_updated": "2026-09-15",
+    "effective_from": "",
+    "deprecated_on": "",
+    "supersedes": "",
+    "provenance": "LLM: claude-opus-5-5 (Claude Code subagent), prompt kb-v1",
+    "synthetic": "Y",
+    "tags": "webhooks;webhooks-v2;signature;migration"
+   },
+   "markdown": "# Webhooks v2\n\n## Overview\n\nWebhooks v2 is the current way to start a workflow from another app with an HTTP call. It became generally available in CloudFlow 4.4 (2026-09-15) and replaces Webhooks v1, which stops accepting deliveries on 2026-12-01. Each v2 webhook has a URL of the form `https://hooks.cloudflow.example/v2/<id>` and its own signing secret.\n\n## What changed from v1\n\n| | Webhooks v1 | Webhooks v2 |\n| --- | --- | --- |\n| URL | `hooks.cloudflow.example/v1/<id>` | `hooks.cloudflow.example/v2/<id>` |\n| Signature | HMAC-SHA1 in `X-CloudFlow-Signature` | HMAC-SHA256 in `X-CloudFlow-Signature-256` |\n| Automatic retries | None | 5, with backoff |\n| Versions | 3.x, 4.0-4.4 | 4.4 and later |\n| Status | Deprecated; stops 2026-12-01 | Current |\n\n## Signing deliveries\n\nThe sending app signs the raw request body with HMAC-SHA256 using the webhook's signing secret and sends the lowercase hex digest in the `X-CloudFlow-Signature-256` header:\n\n```\nimport hmac, hashlib\nsignature = hmac.new(secret.encode(), raw_body, hashlib.sha256).hexdigest()\nheaders = {\"X-CloudFlow-Signature-256\": signature}\n```\n\nCloudFlow rejects deliveries with a missing or wrong signature and records them in the webhook's delivery log.\n\n## Retries\n\nCloudFlow queues every accepted v2 delivery. If a temporary error stops the run from starting, CloudFlow retries automatically up to 5 times with increasing delays. Each attempt appears in the delivery log, so you can see whether a delivery succeeded on a retry. Deliveries rejected for a bad signature are not retried, because the same request would fail the same way.\n\n## Migrating from v1\n\n1. Make sure the workspace is on CloudFlow 4.4. Customers on 3.x or 4.0-4.3 must upgrade first.\n2. Open **Workflows**, select the workflow and open its webhook trigger.\n3. Select **Upgrade to v2**. CloudFlow creates a v2 URL and a new signing secret. The v1 URL keeps working until 2026-12-01, so both can run side by side during the move.\n4. Update the sending app: send to the v2 URL and sign with HMAC-SHA256 in `X-CloudFlow-Signature-256` using the new secret.\n5. Send a test delivery and check that it shows as accepted in the delivery log.\n6. When all senders use v2, remove the v1 URL from the trigger.\n\nComplete the move before 2026-12-01. After that date, v1 URLs return HTTP 410 Gone.\n\n## Applies to\n\nCloudFlow 4.4 and later, all plans.\n"
+  },
+  {
+   "meta": {
+    "source_id": "KB-API-009",
+    "doc_type": "article",
+    "title": "Rotating API tokens",
+    "authority_level": 1,
+    "product_versions": "ALL",
+    "last_updated": "2025-11-03",
+    "effective_from": "",
+    "deprecated_on": "",
+    "supersedes": "",
+    "provenance": "LLM: claude-opus-5-5 (Claude Code subagent), prompt kb-v1",
+    "synthetic": "Y",
+    "tags": "api;tokens;rotation;security;CF-401"
+   },
+   "markdown": "# Rotating API tokens\n\n## Overview\n\nRotating an API token means replacing it with a new one, for example when a team member leaves, when a token is close to its expiry date, or as part of a regular security schedule. This article explains how to replace a token in CloudFlow.\n\n## Steps\n\n1. Open the token list. In CloudFlow 4.x go to **Admin \u2192 API tokens**; in CloudFlow 3.x go to **Settings \u2192 API tokens**.\n2. Find the token you want to replace and select **Revoke**. Confirm the prompt. The token stops working immediately.\n3. Select **Create token**, enter a name and optionally an expiry date.\n4. Copy the new token. It looks like `cf_live_XXXX...` and is shown only once.\n5. Update every integration and script that used the old token with the new value.\n6. Make one test API call to confirm the integration works again.\n\n## What to expect\n\nBetween revoking the old token and deploying the new one, requests from your integrations fail with **CF-401** because the old token is no longer valid. Plan the rotation for a quiet period, tell the owners of each integration in advance, and have the new value ready to deploy as quickly as possible.\n\n## Tips\n\n- Give each integration its own token so you only have to update one system per rotation.\n- Record where each token is used in its name, for example \"warehouse-sync\".\n- Keep tokens in a secrets manager rather than in code or configuration files.\n- Never share tokens in chat or email.\n\n## Troubleshooting\n\n- **Still seeing CF-401 after the rotation:** the new value has not reached every integration, or the header is malformed. It must read `Authorization: Bearer <token>`.\n- **Lost the new token before saving it:** tokens cannot be shown again. Revoke it and create another one.\n\n## Applies to\n\nAll plans, CloudFlow 3.x and 4.x.\n"
+  },
+  {
+   "meta": {
+    "source_id": "KB-API-010",
+    "doc_type": "article",
+    "title": "Google Sheets and HubSpot connectors",
+    "authority_level": 1,
+    "product_versions": "ALL",
+    "last_updated": "2026-07-20",
+    "effective_from": "",
+    "deprecated_on": "",
+    "supersedes": "",
+    "provenance": "LLM: claude-opus-5-5 (Claude Code subagent), prompt kb-v1",
+    "synthetic": "Y",
+    "tags": "google-sheets;hubspot;connector;quota;field-mapping;CF-503"
+   },
+   "markdown": "# Google Sheets and HubSpot connectors\n\n## Overview\n\nThe Google Sheets connector reads and writes rows in a spreadsheet, and the HubSpot connector creates and updates CRM records such as contacts, companies and deals. Both connect with OAuth, so CloudFlow never stores your Google or HubSpot password.\n\n## Connecting Google Sheets\n\n1. In CloudFlow 4.x open **Connectors \u2192 Add connector \u2192 Google Sheets**. In CloudFlow 3.x open **Settings \u2192 Connections \u2192 Add connection \u2192 Google Sheets**.\n2. Sign in with the Google account that can open the spreadsheet and select **Allow**.\n3. In a Google Sheets step, choose the spreadsheet and the sheet (tab). The first row is treated as column headers.\n\n## Google Sheets quotas\n\nGoogle limits how many requests each account can make per minute. A workflow that writes one row per call can hit this provider quota on busy days; the step then fails with Google's quota message in the run details. This is Google's limit, not your CloudFlow API rate limit (CF-429).\n\nTo avoid it:\n\n- Use the **Add multiple rows** action to write rows in batches instead of one at a time.\n- Spread large imports across a schedule rather than one burst.\n- On CloudFlow 4.3 or later, enable automatic retries on the step (Step \u2192 Settings \u2192 Retries) so short quota spikes clear on their own.\n\n## Connecting HubSpot\n\n1. In CloudFlow 4.x open **Connectors \u2192 Add connector \u2192 HubSpot**. In CloudFlow 3.x open **Settings \u2192 Connections \u2192 Add connection \u2192 HubSpot**.\n2. Sign in to HubSpot, choose the HubSpot account and approve the requested access.\n3. In a HubSpot step, choose the object (contact, company or deal) and the action.\n\n## Mapping HubSpot fields\n\n- Map each HubSpot property to a value from an earlier step using the variable picker.\n- Custom properties are matched by their internal name, not the label shown in HubSpot. If a value never appears in HubSpot, check the property's internal name in HubSpot's property settings.\n- Dates must be in ISO format (YYYY-MM-DD); convert them in an earlier step if the source uses another format.\n\n## Troubleshooting\n\n- **CF-503 on either connector:** the authorisation was revoked or expired, for example after a password change or when the connected user lost access. Re-authorise it (4.x: Connectors \u2192 select the connector \u2192 Re-authorise; 3.x: Settings \u2192 Connections \u2192 Reconnect).\n- **Spreadsheet not found:** the connected Google account cannot open that spreadsheet. Share it with that account, then re-run.\n\n## Applies to\n\nAll plans, CloudFlow 3.x and 4.x. Automatic step retries need CloudFlow 4.3 or later.\n"
+  },
+  {
+   "meta": {
+    "source_id": "KB-API-012",
+    "doc_type": "article",
+    "title": "Rotating API tokens with an overlap window",
+    "authority_level": 1,
+    "product_versions": "ALL",
+    "last_updated": "2026-03-01",
+    "effective_from": "2026-03-01",
+    "deprecated_on": "",
+    "supersedes": "KB-API-009",
+    "provenance": "LLM: claude-opus-5-5 (Claude Code subagent), prompt kb-v1",
+    "synthetic": "Y",
+    "tags": "api;tokens;rotation;security;CF-401"
+   },
+   "markdown": "# Rotating API tokens with an overlap window\n\n## Overview\n\nThis is the current procedure for replacing a CloudFlow API token, effective 2026-03-01. You create the new token first, deploy it, keep both tokens active for a **24-hour overlap window**, and only then revoke the old token. Your integrations keep working throughout.\n\nIt replaces the earlier procedure (\"Rotating API tokens\"), which revoked the old token before creating the new one. That order caused CF-401 errors and downtime until the new token was deployed, so it should no longer be used.\n\n## Steps\n\n1. Open the token list: **Admin \u2192 API tokens** in CloudFlow 4.x, or **Settings \u2192 API tokens** in CloudFlow 3.x.\n2. Select **Create token**. Use a name that shows what it replaces, for example \"billing-sync-2026-10\", and optionally set an expiry date.\n3. Copy the new token (it looks like `cf_live_XXXX...`). It is shown only once.\n4. Deploy the new token to every integration and script that used the old one.\n5. Keep both tokens active for 24 hours. During this overlap window, check that traffic has moved to the new token: the token list shows a **Last used** time for each token.\n6. After the 24-hour overlap, when the old token shows no recent use, select **Revoke** on the old token.\n\n## Why the overlap window matters\n\nMost integrations run on several servers or pick up new secrets on a schedule. During the overlap window some requests may still use the old token while others already use the new one; because both are valid, none of them fail. Revoking first cuts every caller off at once.\n\n## If a token has leaked\n\nDo not wait for an overlap window. Revoke the leaked token immediately, create a new one, accept a short interruption, and contact support so the security team can review recent activity. Never paste a token into a support chat.\n\n## Troubleshooting\n\n- **CF-401 after rotating:** some caller is still using a revoked token, or the header is malformed. It must read `Authorization: Bearer <token>`.\n- **Old token still in use after 24 hours:** find the integration from the token's name and update it before you revoke the old token.\n\n## Applies to\n\nAll plans, CloudFlow 3.x and 4.x. Effective 2026-03-01; replaces the revoke-first procedure.\n"
+  },
+  {
+   "meta": {
+    "source_id": "KB-TRB-001",
+    "doc_type": "article",
+    "title": "Error code reference",
+    "authority_level": 1,
+    "product_versions": "ALL",
+    "last_updated": "2026-07-08",
+    "effective_from": "",
+    "deprecated_on": "",
+    "supersedes": "",
+    "provenance": "LLM: claude-opus-5-5 (Claude Code subagent), prompt kb-v1",
+    "synthetic": "Y",
+    "tags": "errors;error-codes;CF-401;CF-403;CF-429;CF-500;CF-503;CF-504"
+   },
+   "markdown": "# Error code reference\n\n## Overview\n\nWhen an API call or a workflow step fails, CloudFlow returns an error code that starts with `CF-`. The code appears in the API response body, in the run details for a failed step, and in failure notifications. Use the table below to find what the code means and how to fix it.\n\n## Error codes\n\n| Code | Meaning | Fix |\n| --- | --- | --- |\n| CF-401 | Authentication failed: the API token is invalid, expired or revoked | Create a new token (see \"Rotating API tokens with an overlap window\") and check the header is `Authorization: Bearer <token>` |\n| CF-403 | Permission denied: your role, or your plan, does not include the feature | Ask a workspace admin for the role you need. Some features, such as SSO, need the Business or Enterprise plan |\n| CF-429 | Rate limit exceeded | Honour the `Retry-After` header, use exponential backoff (1 s doubling up to 32 s), batch requests, or upgrade for a higher limit |\n| CF-500 | Internal error | Retry once. If it persists, check platform status and contact support with the run ID |\n| CF-503 | Connector unavailable: usually the connector's authorisation at the provider expired or was revoked (for Salesforce, often after a password change or session policy) | Re-authorise the connector (4.x: Connectors \u2192 select \u2192 Re-authorise; 3.x: Settings \u2192 Connections \u2192 Reconnect). If platform status shows connectors degraded, wait for the incident to clear. Never disable SSL verification |\n| CF-504 | Step timeout: the step ran longer than 300 seconds | Split the step, use pagination, or use async mode in the HTTP step |\n\n## Detailed guides\n\n- CF-401: \"Fixing CF-401 authentication errors\"\n- CF-403: \"Fixing CF-403 permission errors\"\n- CF-429: \"API rate limits and 429 errors\"\n- CF-500: \"CF-500 internal errors\"\n- CF-503: \"Salesforce step fails with CF-503\" (the same re-authorise fix applies to other connectors)\n- CF-504: \"Fixing CF-504 step timeouts\"\n\n## Where to find the code\n\n- **API:** the JSON body contains `{\"error\": {\"code\": \"CF-...\", \"message\": \"...\"}}`.\n- **Workflow runs in 4.x:** **Runs** \u2192 select the failed run \u2192 select the step marked as failed.\n- **Workflow runs in 3.x:** **Settings \u2192 Run history** \u2192 select the run.\n\nEach run has a run ID. Include it when you contact support so the team can find the exact failure.\n\n## Before contacting support\n\n1. Note the error code and the run ID.\n2. Check platform status. If a component (api, workflow-engine, connectors or billing) shows degraded or outage, the error may clear when the incident ends.\n3. Try the fix in the table once.\n\n## Applies to\n\nAll plans, CloudFlow 3.x and 4.x.\n"
+  },
+  {
+   "meta": {
+    "source_id": "KB-TRB-002",
+    "doc_type": "article",
+    "title": "Fixing CF-401 authentication errors",
+    "authority_level": 1,
+    "product_versions": "ALL",
+    "last_updated": "2026-03-05",
+    "effective_from": "",
+    "deprecated_on": "",
+    "supersedes": "",
+    "provenance": "LLM: claude-opus-5-5 (Claude Code subagent), prompt kb-v1",
+    "synthetic": "Y",
+    "tags": "api;authentication;tokens;CF-401"
+   },
+   "markdown": "# Fixing CF-401 authentication errors\n\n## Overview\n\nError **CF-401** means CloudFlow could not authenticate an API request: the token is invalid, expired or revoked, or it was not sent in the expected format. The response is HTTP 401 with `{\"error\": {\"code\": \"CF-401\", ...}}`.\n\n## Common causes\n\n- The token has passed its expiry date.\n- Someone revoked the token, for example during a rotation or when its owner left the workspace.\n- The header is malformed: `Bearer` is missing, the token is wrapped in quotes, or a line break was copied with it.\n- The token was copied incompletely. A full token is `cf_live_` or `cf_test_` followed by 32 characters.\n\n## Steps\n\n1. **Check the header.** It must be exactly `Authorization: Bearer cf_live_XXXX...` with one space after `Bearer` and no quotes around the token.\n2. **Check the token status.** Open **Admin \u2192 API tokens** (CloudFlow 4.x) or **Settings \u2192 API tokens** (CloudFlow 3.x). Find the token by name and check whether it shows as active, expired or revoked.\n3. **If it is expired or revoked, create a new token** and deploy it. Follow \"Rotating API tokens with an overlap window\": create the new token, deploy it, keep both active for 24 hours while the old one still works, then revoke the old one.\n4. **Test with a single call:**\n\n```\ncurl https://api.cloudflow.example/v2/workflows \\\n  -H \"Authorization: Bearer cf_live_XXXX...\"\n```\n\nA JSON list of workflows means the token works.\n\n## Avoiding CF-401 in future\n\n- Set a reminder before a token's expiry date and rotate with the overlap window instead of letting it expire.\n- Do not revoke a token before its replacement is deployed. Revoking first is the most common cause of CF-401 outages.\n- Give each integration its own token so a rotation affects only one system.\n\n## When it is not the token\n\nIf the token is active and the header is correct but calls still fail with CF-401, the user who created the token may have been removed from the workspace, which invalidates their tokens. Create a new token from an active user. If you suspect a token was leaked, revoke it immediately and contact support; the security team will review recent activity. Never send the token itself to support.\n\n## Applies to\n\nAll plans, CloudFlow 3.x and 4.x.\n"
+  },
+  {
+   "meta": {
+    "source_id": "KB-TRB-003",
+    "doc_type": "article",
+    "title": "Fixing CF-403 permission errors",
+    "authority_level": 1,
+    "product_versions": "ALL",
+    "last_updated": "2026-04-22",
+    "effective_from": "",
+    "deprecated_on": "",
+    "supersedes": "",
+    "provenance": "LLM: claude-opus-5-5 (Claude Code subagent), prompt kb-v1",
+    "synthetic": "Y",
+    "tags": "permissions;roles;plans;sso;CF-403"
+   },
+   "markdown": "# Fixing CF-403 permission errors\n\n## Overview\n\nError **CF-403** means the request was authenticated but is not allowed. There are two causes: the user (or the user who created the API token) does not have the workspace role needed for the action, or the workspace's plan does not include the feature.\n\n## Check which cause applies\n\nThe error message tells you which one it is:\n\n- \"Your role does not allow this action\" means a role problem.\n- \"Your plan does not include this feature\" means a plan problem.\n\n## Fixing a role problem\n\n1. Ask a workspace admin to review your role. In CloudFlow 4.x admins manage members under **Admin \u2192 Members**; in CloudFlow 3.x under **Settings \u2192 Members**.\n2. The admin grants the role needed for the action, for example permission to edit connectors or manage API tokens.\n3. Sign out and back in, then retry. API tokens use their creator's current role, so the same token works once the role is updated.\n\nRole changes must come from an admin of your workspace.\n\n## Fixing a plan problem\n\nSome features are only on higher plans. The most common example is single sign-on (SAML), which needs the **Business** or **Enterprise** plan. On Free or Pro the SSO settings are unavailable, and API calls to configure SSO return CF-403.\n\n| Feature | Free | Pro | Business | Enterprise |\n| --- | --- | --- | --- | --- |\n| SSO (SAML) | No | No | Yes | Yes |\n| Two-factor authentication (2FA) | Yes | Yes | Yes | Yes |\n| Priority support | No | No | Yes | Yes |\n\nTo get a plan feature, an admin can upgrade the plan. Upgrades apply immediately and are prorated. See \"Changing or cancelling your plan\".\n\n## Still seeing CF-403?\n\n- Check that you are in the right workspace. Roles are set per workspace.\n- If the error appears when editing a connector, your role may not allow managing connectors. Ask an admin.\n- If the error appears for an API call made with a token, check the role of the user who created the token, not your own.\n\n## Applies to\n\nAll plans, CloudFlow 3.x and 4.x.\n"
+  },
+  {
+   "meta": {
+    "source_id": "KB-TRB-004",
+    "doc_type": "article",
+    "title": "Salesforce step fails with CF-503",
+    "authority_level": 1,
+    "product_versions": "ALL",
+    "last_updated": "2026-06-30",
+    "effective_from": "",
+    "deprecated_on": "",
+    "supersedes": "",
+    "provenance": "LLM: claude-opus-5-5 (Claude Code subagent), prompt kb-v1",
+    "synthetic": "Y",
+    "tags": "salesforce;connector;ssl;re-authorise;CF-503"
+   },
+   "markdown": "# Salesforce step fails with CF-503\n\n## Overview\n\nA Salesforce step that fails with **CF-503 (connector unavailable)** almost always means CloudFlow's authorisation at Salesforce has expired or been revoked. Common triggers are a password change on the Salesforce user that authorised the connector, a Salesforce session policy that ends long-lived sessions, the connected app being revoked by a Salesforce admin, or the integration user being deactivated. The fix is to re-authorise the connector.\n\n## Check platform status first\n\nIf the CloudFlow status page shows the **connectors** component as degraded or in an outage, the CF-503 errors come from the incident, not from your authorisation. Wait for the incident to clear, then re-run the failed runs. If connectors are operational, continue below.\n\n## Steps in CloudFlow 4.x\n\n1. Open **Connectors** in the top navigation.\n2. Select the Salesforce connector used by the failing step.\n3. Choose **Re-authorise**, sign in to Salesforce and select **Allow**.\n4. Open **Runs**, select the failed run and choose **Re-run**.\n\n## Steps in CloudFlow 3.x\n\n1. Open **Settings** in the left sidebar and go to **Connections**.\n2. Find the Salesforce connection and choose **Reconnect**.\n3. Sign in to Salesforce and select **Allow**.\n4. Open **Settings \u2192 Run history**, find the failed run and run it again.\n\n## Never disable SSL verification\n\nDo not disable SSL verification or look for an \"insecure SSL\" option to make a CF-503 go away. Turning off certificate checks exposes your Salesforce data to interception and does not fix an expired authorisation. Older advice, including some past support tickets, suggested enabling \"Allow insecure SSL\" on the connector; that advice is outdated and unsafe. The toggle existed only in CloudFlow 3.0-3.3 and was removed in 3.4 for security. If you are still on 3.0-3.3, upgrade to 3.8 or 4.x.\n\n## Preventing repeat failures\n\n- Authorise the connector with a dedicated Salesforce integration user whose password does not change with staff turnover.\n- Ask your Salesforce admin to exempt the CloudFlow connected app from short session timeouts.\n- On CloudFlow 4.3 or later, automatic step retries help with brief provider outages, but they cannot fix an expired authorisation.\n\n## Applies to\n\nAll plans, CloudFlow 3.x and 4.x. Menu paths differ by version as shown above.\n"
+  },
+  {
+   "meta": {
+    "source_id": "KB-TRB-005",
+    "doc_type": "article",
+    "title": "Fixing CF-504 step timeouts",
+    "authority_level": 1,
+    "product_versions": "ALL",
+    "last_updated": "2026-07-15",
+    "effective_from": "",
+    "deprecated_on": "",
+    "supersedes": "",
+    "provenance": "LLM: claude-opus-5-5 (Claude Code subagent), prompt kb-v1",
+    "synthetic": "Y",
+    "tags": "timeout;http-step;pagination;async;CF-504"
+   },
+   "markdown": "# Fixing CF-504 step timeouts\n\n## Overview\n\nError **CF-504** means a single step ran for longer than **300 seconds** and CloudFlow stopped it. The limit applies to each step, not to the whole workflow, and it is the same on every plan. Timeouts usually come from an HTTP step calling a slow endpoint, or from a step that tries to process a very large amount of data in one go.\n\n## Find the slow step\n\n- CloudFlow 4.x: open **Runs**, select the failed run and look at the step marked with CF-504. The run details show how long each step took.\n- CloudFlow 3.x: open **Settings \u2192 Run history** and select the run.\n\n## Fixes\n\n**1. Use pagination.** If the step fetches a large list, for example thousands of records from an API, fetch it page by page. In the HTTP step, request one page, then follow the next-page token or offset until there are no more pages. Each request finishes well inside the limit.\n\n**2. Split the step.** Break one heavy step into several smaller ones, for example fetch, then transform, then write. Each step gets its own 300-second limit.\n\n**3. Use async mode in the HTTP step.** For an endpoint that starts a long job, open the HTTP step's settings and turn on **Async mode**. CloudFlow sends the request and waits for the remote service to call back on the step's callback URL instead of holding the connection open, so the step does not time out while the job runs.\n\n**4. Reduce the data.** Filter records at the source, for example only records changed since the last run, instead of fetching everything and filtering in CloudFlow.\n\n## Example\n\nA workflow that downloaded 50,000 rows from a reporting API in a single HTTP request failed with CF-504 after 300 seconds. Switching to pages of 1,000 rows made each request take a few seconds, and the run completed.\n\n## What does not help\n\nRetrying a step that timed out usually times out again for the same reason. Automatic step retries (CloudFlow 4.3 or later) are useful for brief errors, not for steps that are simply too slow. Fix the step first, then re-run.\n\n## Applies to\n\nAll plans, CloudFlow 3.x and 4.x.\n"
+  },
+  {
+   "meta": {
+    "source_id": "KB-TRB-006",
+    "doc_type": "article",
+    "title": "CF-500 internal errors",
+    "authority_level": 1,
+    "product_versions": "ALL",
+    "last_updated": "2026-07-01",
+    "effective_from": "",
+    "deprecated_on": "",
+    "supersedes": "",
+    "provenance": "LLM: claude-opus-5-5 (Claude Code subagent), prompt kb-v1",
+    "synthetic": "Y",
+    "tags": "errors;internal-error;platform-status;retries;CF-500"
+   },
+   "markdown": "# CF-500 internal errors\n\n## Overview\n\nError **CF-500** means something went wrong inside CloudFlow while handling an API call or running a step. It is not caused by your token, role or data format. Most CF-500 errors are brief and succeed on a retry.\n\n## Steps\n\n1. **Retry once.** Re-run the failed run, or repeat the API call after a few seconds. In CloudFlow 4.x open **Runs**, select the run and choose **Re-run**; in CloudFlow 3.x open **Settings \u2192 Run history** and run it again.\n2. **If it fails again, check platform status.** The CloudFlow status page lists four components: **api**, **workflow-engine**, **connectors** and **billing**. If the relevant component shows degraded or outage, an incident is in progress; wait for it to clear before retrying.\n3. **If status is operational and the error persists, contact support** with the run ID, or for API calls the time of the request and the endpoint. The run ID is shown at the top of the run details.\n\n## Reducing the impact\n\n- On CloudFlow 4.3 or later, turn on automatic retries for steps that call other services: open the step, go to **Settings \u2192 Retries** and choose up to 5 retries. Brief internal errors then recover without manual re-runs.\n- In your own API clients, retry a CF-500 once after a short delay. Do not retry in a tight loop; that adds load during an incident and can push you over your rate limit (CF-429).\n\n## What to include when you contact support\n\n- The error code (CF-500) and the run ID\n- The workflow name and the step that failed\n- When it started, and whether it happens every time or only sometimes\n\nNever include API tokens or passwords in your message. Support does not need them to investigate.\n\n## Applies to\n\nAll plans, CloudFlow 3.x and 4.x. Automatic step retries need CloudFlow 4.3 or later.\n"
+  },
+  {
+   "meta": {
+    "source_id": "KB-TRB-007",
+    "doc_type": "article",
+    "title": "Webhook deliveries failing",
+    "authority_level": 1,
+    "product_versions": "ALL",
+    "last_updated": "2026-09-18",
+    "effective_from": "",
+    "deprecated_on": "",
+    "supersedes": "",
+    "provenance": "LLM: claude-opus-5-5 (Claude Code subagent), prompt kb-v1",
+    "synthetic": "Y",
+    "tags": "webhooks;webhooks-v1;webhooks-v2;signature;delivery-log"
+   },
+   "markdown": "# Webhook deliveries failing\n\n## Overview\n\nWhen another app calls a CloudFlow webhook URL and no run starts, the delivery was either rejected or could not start the workflow. The most common causes are a signature that does not match, a v1 URL used after the v1 shutdown, or a paused workflow. Start with the delivery log.\n\n## Check the delivery log\n\n- CloudFlow 4.x: **Workflows** \u2192 select the workflow \u2192 open the webhook trigger \u2192 **Deliveries**.\n- CloudFlow 3.x: **Settings \u2192 Webhooks** \u2192 select the webhook \u2192 **Deliveries**.\n\nEach delivery shows when it arrived and whether it was accepted or rejected, with the reason.\n\n## Signature mismatches\n\nWebhooks v1 and v2 sign deliveries differently. A sender using the wrong method is rejected with \"Signature mismatch\".\n\n| | Webhooks v1 | Webhooks v2 (4.4+) |\n| --- | --- | --- |\n| URL | `https://hooks.cloudflow.example/v1/<id>` | `https://hooks.cloudflow.example/v2/<id>` |\n| Algorithm | HMAC-SHA1 | HMAC-SHA256 |\n| Header | `X-CloudFlow-Signature` | `X-CloudFlow-Signature-256` |\n| Automatic retries | None | 5, with backoff |\n\nCheck, in order:\n\n1. The algorithm and header match the URL version. A SHA-1 signature sent to a v2 URL always fails.\n2. The secret is the current one. Upgrading a webhook to v2 or regenerating its secret creates a new secret, and the old one stops matching.\n3. The signature is computed over the exact raw body that is sent. Parsing and re-serialising the JSON, or changing whitespace or character encoding after signing, breaks the match.\n4. The digest is sent as lowercase hex.\n\n## v1 URLs after 2026-12-01\n\nWebhooks v1 stops accepting deliveries on **2026-12-01**. From then on, calls to `/v1/` URLs return HTTP 410 Gone and no run starts. Move to Webhooks v2 before that date. v2 needs CloudFlow 4.4, so 3.x and 4.0-4.3 customers must upgrade first. See \"Webhooks v2\" for the migration steps.\n\n## Accepted but no run\n\n- **Workflow paused:** check that the workflow is switched on. When an account is suspended, all its workflows are paused.\n- **Monthly run limit reached:** runs over the plan's monthly allowance are queued until the next period or an upgrade.\n- **Temporary error:** v2 retries up to 5 times automatically, and each attempt shows in the delivery log. v1 does not retry, so the sender must resend.\n\n## Applies to\n\nAll plans, CloudFlow 3.x and 4.x. Webhooks v2 needs CloudFlow 4.4 or later.\n"
+  },
+  {
+   "meta": {
+    "source_id": "KB-TRB-008",
+    "doc_type": "article",
+    "title": "Workflows not running on schedule",
+    "authority_level": 1,
+    "product_versions": "ALL",
+    "last_updated": "2026-02-03",
+    "effective_from": "",
+    "deprecated_on": "",
+    "supersedes": "",
+    "provenance": "LLM: claude-opus-5-5 (Claude Code subagent), prompt kb-v1",
+    "synthetic": "Y",
+    "tags": "schedules;time-zones;daylight-saving;run-limits;suspended"
+   },
+   "markdown": "# Workflows not running on schedule\n\n## Overview\n\nA scheduled workflow can start late, start at the wrong hour, or not start at all. The three most common causes are the schedule's time zone, a paused workflow, and the monthly run limit. Check them in that order.\n\n## Time zones and daylight saving\n\nEvery schedule runs in the time zone set on its schedule trigger. New schedules default to UTC.\n\n- If a workflow runs a few hours early or late every day, the time zone is probably wrong. Open the schedule trigger and set the time zone you expect.\n- If a workflow shifted by exactly one hour after a daylight-saving change, the schedule uses a fixed UTC offset (such as UTC+1) instead of a named time zone. Choose a named zone such as Europe/London or America/New_York; named zones follow daylight-saving changes automatically.\n\nWhere to find it: in CloudFlow 4.x, **Workflows** \u2192 select the workflow \u2192 open the schedule trigger. In CloudFlow 3.x, open the workflow and select its schedule trigger.\n\n## Paused workflows\n\n- A workflow that is switched off does not run on schedule. Check its on/off switch in the workflow list.\n- When an account is **suspended**, for example after an invoice stays unpaid, all workflows are paused. They do not run until the account is active again. See \"Failed payments and past-due accounts\".\n\n## Monthly run limits\n\nEach plan includes a number of workflow runs per month:\n\n| Plan | Workflow runs per month |\n| --- | --- |\n| Free | 500 |\n| Pro | 10,000 |\n| Business | 50,000 |\n| Enterprise | 500,000 |\n\nWhen the limit is exceeded, new runs, including scheduled ones, are **queued** until the next period or until you upgrade. Upgrades apply immediately, so queued runs can start once the higher allowance is active.\n\n## Other checks\n\n- **Run history:** check whether runs started and failed (they appear in run history with an error code) or never started at all. A run that started and failed is a step problem, not a schedule problem; see \"Error code reference\".\n- **Platform status:** if the **workflow-engine** component shows degraded or outage, scheduled runs may start late until the incident clears.\n\n## Applies to\n\nAll plans, CloudFlow 3.x and 4.x.\n"
+  },
+  {
+   "meta": {
+    "source_id": "KB-TRB-009",
+    "doc_type": "article",
+    "title": "Login problems and password resets",
+    "authority_level": 1,
+    "product_versions": "ALL",
+    "last_updated": "2026-08-04",
+    "effective_from": "",
+    "deprecated_on": "",
+    "supersedes": "",
+    "provenance": "LLM: claude-opus-5-5 (Claude Code subagent), prompt kb-v1",
+    "synthetic": "Y",
+    "tags": "login;password-reset;2fa;sso;security"
+   },
+   "markdown": "# Login problems and password resets\n\n## Overview\n\nThis article covers the most common sign-in problems: a forgotten password, a reset email that does not arrive, an expired reset link, and a lost two-factor authentication (2FA) device.\n\n## Resetting your password\n\n1. On the CloudFlow login page, select **Forgot password**.\n2. Enter the email you sign in with. CloudFlow sends a reset email to the address on file for that user.\n3. Open the link in the email and choose a new password.\n\nReset links **expire after 30 minutes**. If the link has expired, request a new one; only the most recent link works.\n\nYou can also ask CloudFlow support to trigger a reset. Support sends the reset email to the owner email on file for the account. For your security, support never shows a reset link, token or email address in chat, and cannot send the link to a different address. If you no longer have access to the email on file, the security team must verify your identity first.\n\n## Reset email not arriving\n\n- Wait a few minutes, then check your spam or junk folder.\n- Check that you entered the email you sign in with; a typo or a different work address is a common cause.\n- Ask your IT team whether a mail filter quarantines automated emails, and allow messages from CloudFlow.\n- Request a new reset if more than 30 minutes have passed, because the earlier link no longer works.\n\n## Two-factor authentication\n\n2FA is available on all plans and strongly recommended. If you lose your 2FA device:\n\n1. Sign in with one of the recovery codes you saved when you turned on 2FA.\n2. If you have no recovery codes, contact support. The request goes to the security team, which verifies your identity before resetting 2FA. This cannot be done in chat.\n\n## Single sign-on users\n\nIf your workspace uses SSO (SAML, available on the Business and Enterprise plans), you sign in through your company's identity provider. Your password is managed there, so ask your IT team to reset it.\n\n## If you think your account is compromised\n\nIf you see sign-ins you do not recognise, or you believe a password or API token has leaked, contact support straight away. The case goes to the security team. Revoke any leaked API tokens immediately under API tokens.\n\nNever share your password, a reset link or an API token with anyone, including CloudFlow support.\n\n## Applies to\n\nAll plans, CloudFlow 3.x and 4.x.\n"
+  }
+ ]
+}

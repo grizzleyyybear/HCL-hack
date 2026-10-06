@@ -1,0 +1,14 @@
+{
+  "source_id": "TKT-2025-0331",
+  "customer_question": "An HTTP step that pulls all orders from our shop's API fails with CF-504 after about five minutes. It worked fine when we had fewer orders.",
+  "intent": "bug",
+  "resolution": "CF-504 means the step ran longer than the 300-second limit. The HTTP step requested every order in one call. Changed it to use the shop API's pagination (500 orders per page) in a loop, so each request finishes in seconds. The workflow then completed in about 2 minutes with no timeouts.",
+  "tags": [
+    "http-step",
+    "CF-504",
+    "timeout",
+    "pagination"
+  ],
+  "resolved_at": "2025-06-17",
+  "product_version": "3.8"
+}

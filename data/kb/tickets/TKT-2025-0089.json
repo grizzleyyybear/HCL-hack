@@ -1,0 +1,14 @@
+{
+  "source_id": "TKT-2025-0089",
+  "customer_question": "I'm an admin on our Pro workspace and want to set up SAML single sign-on, but the Single sign-on page is greyed out and the API returns CF-403. Is something wrong with my permissions?",
+  "intent": "account",
+  "resolution": "The admin's permissions were fine. SSO (SAML) is available only on the Business and Enterprise plans, so a Pro workspace gets CF-403 (permission denied: the plan lacks the feature). Explained that an upgrade to Business applies immediately with prorated billing, and that 2FA is available on all plans in the meantime. The customer enabled 2FA for all members and planned the upgrade.",
+  "tags": [
+    "sso",
+    "saml",
+    "CF-403",
+    "plans"
+  ],
+  "resolved_at": "2025-01-29",
+  "product_version": "3.5"
+}

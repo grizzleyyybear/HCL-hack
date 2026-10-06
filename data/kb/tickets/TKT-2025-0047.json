@@ -1,0 +1,14 @@
+{
+  "source_id": "TKT-2025-0047",
+  "customer_question": "All our API calls started failing this morning with CF-401. We didn't change anything. The token starts with cf_live_XXXX... if that helps.",
+  "intent": "bug",
+  "resolution": "The API token had expired, which returns CF-401 (authentication failed); its Last used date in the token list (Settings → API tokens in 3.x, Admin → API tokens in 4.x) matched the start of the failures. The customer created a new token, replaced it in the integration and confirmed the header format `Authorization: Bearer <token>`. Calls succeeded afterwards. Reminded the customer never to paste tokens into tickets.",
+  "tags": [
+    "api",
+    "tokens",
+    "CF-401",
+    "authentication"
+  ],
+  "resolved_at": "2025-01-14",
+  "product_version": "3.5"
+}

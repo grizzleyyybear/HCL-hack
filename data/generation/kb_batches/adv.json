@@ -1,0 +1,93 @@
+{
+  "batch": "adv",
+  "prompt_file": "data/generation/prompts/adv.md",
+  "model": "claude-opus-5-5 (Claude Code subagent)",
+  "temperature": "n/a",
+  "documents": [
+    {
+      "meta": {
+        "source_id": "KB-ADV-003",
+        "doc_type": "article",
+        "title": "Variables and data mapping",
+        "authority_level": 1,
+        "product_versions": "ALL",
+        "last_updated": "2026-07-14",
+        "effective_from": "",
+        "deprecated_on": "",
+        "supersedes": "",
+        "provenance": "LLM: claude-opus-5-5 (Claude Code subagent), prompt kb-v1",
+        "synthetic": "Y",
+        "tags": "variables;data-mapping;steps;workspace-variables"
+      },
+      "markdown": "# Variables and data mapping\n\n## Overview\n\nVariables let a step use data that the trigger or an earlier step produced in the same run. Data mapping means filling a step's input fields with those variables, for example putting the email field from a form submission into a HubSpot contact or a Salesforce lead. Variables are resolved when the run reaches the step, so every run uses its own values.\n\n## Variable syntax\n\n- `{{trigger.<field>}}`: data from the trigger, for example `{{trigger.body.order_id}}` for a webhook trigger.\n- `{{steps.<step_key>.<field>}}`: the output of an earlier step, for example `{{steps.find_contact.id}}`.\n- `{{vars.<name>}}`: a workspace variable, a fixed value shared by all workflows, such as a default Slack channel.\n- `{{run.id}}` and `{{run.started_at}}`: details of the current run.\n\nPaths are case-sensitive. Use dots for nested fields and a number for list items, for example `{{steps.search.results.0.id}}`. A step can only use the trigger and steps that run before it.\n\n## Mapping fields in CloudFlow 4.x\n\n1. Open **Workflows** and select the workflow.\n2. Click the step you want to configure.\n3. Click into an input field and choose **Insert variable**.\n4. Pick the trigger or an earlier step, then the field. CloudFlow inserts the full path for you.\n5. Click **Test step** to see the resolved value before you publish.\n\n## Mapping fields in CloudFlow 3.x\n\nOpen the workflow from the left sidebar and select the step. The **Variables** panel on the right lists the trigger and earlier steps. Drag a field into an input, or type the path by hand using the same syntax as above. Save, then use **Run once** to check the result.\n\n## Workspace variables\n\nCreate workspace variables under **Admin → Variables** in 4.x or **Settings → Variables** in 3.x. Do not store API tokens or passwords in variables; connectors keep their own authorisation, and variable values are visible to every workspace member who can edit workflows.\n\n## Troubleshooting\n\n- **The output shows the literal text, such as `{{steps.lookup.name}}`:** the path does not match any data. Check spelling and case, and make sure the referenced step runs before the current one.\n- **The value is empty:** the earlier step returned no data for this run. Add a condition step that checks the value before you use it.\n- **A number arrives as text:** some connectors expect numbers. Map the raw field, not a field that was already combined with other text.\n\n## Applies to\n\nAll CloudFlow versions (3.x and 4.x) and all plans. Menu paths differ by version as shown above.\n"
+    },
+    {
+      "meta": {
+        "source_id": "KB-ADV-005",
+        "doc_type": "article",
+        "title": "Automatic retries for steps",
+        "authority_level": 1,
+        "product_versions": "4.3+",
+        "last_updated": "2026-06-15",
+        "effective_from": "",
+        "deprecated_on": "",
+        "supersedes": "",
+        "provenance": "LLM: claude-opus-5-5 (Claude Code subagent), prompt kb-v1",
+        "synthetic": "Y",
+        "tags": "retries;steps;CF-500;CF-503;CF-504;CF-429"
+      },
+      "markdown": "# Automatic retries for steps\n\n## Overview\n\nFrom CloudFlow 4.3, each step can retry itself automatically when it fails with a temporary error. A short outage at a connected app or a brief rate limit then no longer fails the whole run. Each step can retry up to 5 times.\n\n## Steps\n\n1. Open **Workflows** and select the workflow.\n2. Click the step you want to protect.\n3. Open **Settings → Retries**.\n4. Set **Number of retries** to a value from 0 to 5. The default is 0, which means retries are off.\n5. Choose the **Delay** between attempts: **Fixed** waits the same time before every attempt; **Exponential** doubles the wait after each attempt.\n6. Save and publish the workflow.\n\n## Which errors are retried\n\n| Error | Retried | Why |\n| --- | --- | --- |\n| CF-500 internal error | Yes | Usually temporary |\n| CF-503 connector unavailable | Yes | Helps during a short connector incident |\n| CF-504 step timeout | Yes | Helps when the connected app was briefly slow |\n| CF-429 rate limit exceeded | Yes | The wait honours the `Retry-After` header |\n| CF-401 authentication failed | No | A retry cannot fix an invalid or expired token |\n| CF-403 permission denied | No | A retry cannot change a role or plan |\n\nIf a step still fails with CF-503 after all retries, the connector most likely needs to be re-authorised (see \"Salesforce step fails with CF-503\"). If CF-504 keeps happening, split the step or use pagination.\n\n## How retries are counted\n\nRetries happen inside the same run. Run history shows each attempt under the step, and a retry does not count as an extra workflow run towards your monthly limit. Attempts that call the CloudFlow API do count towards your plan's API calls per minute.\n\n## Tips\n\n- Make repeated steps safe. A \"create record\" step can create a duplicate if the first attempt succeeded at the connected app but timed out in CloudFlow. Search for an existing record first, then create only if none is found.\n- Prefer **Exponential** delay for rate limits and outages, so attempts spread out instead of piling up.\n- Keep the number of retries low for steps that send messages, so customers are not notified several times.\n\n## Earlier versions\n\nVersions before 4.3, including all 3.x releases, have no per-step retry settings. Upgrade to 4.3 or later to use automatic retries.\n\n## Applies to\n\nCloudFlow 4.3 and later, all plans.\n"
+    },
+    {
+      "meta": {
+        "source_id": "KB-ADV-006",
+        "doc_type": "article",
+        "title": "Single sign-on (SAML)",
+        "authority_level": 1,
+        "product_versions": "ALL",
+        "last_updated": "2026-05-20",
+        "effective_from": "",
+        "deprecated_on": "",
+        "supersedes": "",
+        "provenance": "LLM: claude-opus-5-5 (Claude Code subagent), prompt kb-v1",
+        "synthetic": "Y",
+        "tags": "sso;saml;security;CF-403;plans"
+      },
+      "markdown": "# Single sign-on (SAML)\n\n## Overview\n\nSingle sign-on (SSO) lets workspace members sign in to CloudFlow through your company's identity provider using SAML 2.0. **SSO is available on the Business and Enterprise plans only.** On Free and Pro the option is not available, and trying to enable it returns **CF-403** (permission denied). Two-factor authentication (2FA) is available on all plans.\n\n## Before you start\n\n- Your workspace is on the Business or Enterprise plan. Upgrades apply immediately and are prorated.\n- You are a workspace admin.\n- You can create a SAML 2.0 application in your identity provider's admin console.\n\n## Steps in CloudFlow 4.x\n\n1. Open **Admin → Security → Single sign-on**.\n2. Copy the **ACS URL** and **Entity ID** that CloudFlow shows.\n3. In your identity provider, create a SAML 2.0 application, paste both values, and map the user's email address to the `email` attribute.\n4. Download the identity provider's metadata XML file and upload it in CloudFlow.\n5. Click **Test sign-in** and sign in with a test user.\n6. When the test succeeds, turn on **Enforce SSO** so members must sign in through your identity provider.\n\n## Steps in CloudFlow 3.x\n\nOpen **Settings → Security → Single sign-on** from the left sidebar and follow the same steps: copy the ACS URL and Entity ID, create the SAML application, and upload the metadata XML. Test by signing in from a private browser window before you enforce SSO.\n\n## Keep a fallback\n\nWhile SSO is enforced, the workspace owner can still sign in with a password and 2FA. Keep this login so you can fix the configuration if your identity provider is unavailable or its certificate changes.\n\n## Troubleshooting\n\n- **The SSO option is missing or you see CF-403:** check that the plan is Business or Enterprise and that you are a workspace admin.\n- **\"SAML response invalid\" after it worked before:** your identity provider probably rotated its signing certificate. Download the new metadata XML and upload it again.\n- **A new member cannot sign in:** every SSO user takes a seat. If all seats on your plan are in use, free a seat or upgrade.\n\n## Applies to\n\nAll CloudFlow versions (3.x and 4.x), Business and Enterprise plans only.\n"
+    },
+    {
+      "meta": {
+        "source_id": "KB-ADV-007",
+        "doc_type": "article",
+        "title": "Exporting workflow run history",
+        "authority_level": 1,
+        "product_versions": "4.2+",
+        "last_updated": "2026-09-10",
+        "effective_from": "",
+        "deprecated_on": "",
+        "supersedes": "",
+        "provenance": "LLM: claude-opus-5-5 (Claude Code subagent), prompt kb-v1",
+        "synthetic": "Y",
+        "tags": "run-history;export;csv;json;retention"
+      },
+      "markdown": "# Exporting workflow run history\n\n## Overview\n\nFrom CloudFlow 4.2 you can export the run history of any workflow yourself, as a CSV or JSON file. Exports are useful for audits, reporting and investigating failed runs. You do not need to contact support for an export.\n\n## Before you start\n\n- You need CloudFlow 4.2 or later. On CloudFlow 3.x, see \"Exporting workflow run history in CloudFlow 3.x\" (KB-ADV-007-3X).\n- You need permission to view the workflow.\n- The date range you can export is limited by your plan's run history retention:\n\n| Plan | Run history retention |\n| --- | --- |\n| Free | 7 days |\n| Pro | 30 days |\n| Business | 90 days |\n| Enterprise | 365 days |\n\n## Steps\n\n1. In the top navigation, open **Workflows**.\n2. Select the workflow.\n3. Open the **Runs** tab.\n4. Optional: set a date range and a status filter, for example only failed runs.\n5. Click **Export**.\n6. Choose **CSV** or **JSON** and confirm. The file downloads in your browser.\n\nEach export can contain up to 100,000 rows, for any date range within your plan's retention.\n\n## What the export contains\n\nOne row (CSV) or one object (JSON) per run, with the run ID, status, start and finish time, duration, trigger type, and, for failed runs, the failed step and its error code. Step input and output data is not included, so the file does not contain the records your workflow processed.\n\n## Troubleshooting\n\n- **There is no Export button:** check your product version. The button was added in CloudFlow 4.2. On 3.x, use the steps in KB-ADV-007-3X.\n- **Older runs are missing:** runs older than your plan's retention are no longer stored and cannot be exported.\n- **You have more than 100,000 runs in the range:** split the export into several smaller date ranges.\n\n## Applies to\n\nCloudFlow 4.2 and later, all plans. The date range is limited by the plan's run history retention.\n"
+    },
+    {
+      "meta": {
+        "source_id": "KB-ADV-007-3X",
+        "doc_type": "article",
+        "title": "Exporting workflow run history in CloudFlow 3.x",
+        "authority_level": 1,
+        "product_versions": "3.x",
+        "last_updated": "2025-07-01",
+        "effective_from": "",
+        "deprecated_on": "",
+        "supersedes": "",
+        "provenance": "LLM: claude-opus-5-5 (Claude Code subagent), prompt kb-v1",
+        "synthetic": "Y",
+        "tags": "run-history;export;csv;retention"
+      },
+      "markdown": "# Exporting workflow run history in CloudFlow 3.x\n\n## Overview\n\nIn CloudFlow 3.x, run history is exported as a CSV file from the **Settings** area in the left sidebar. The 3.x export covers the last 30 days of runs and is limited to 10,000 rows.\n\n## Steps\n\n1. Open **Settings** in the left sidebar.\n2. Select **Run history**.\n3. Optional: use the **Workflow** filter to export a single workflow.\n4. Click **Download CSV**.\n\nThe file downloads in your browser and contains runs from the last 30 days, up to 10,000 rows.\n\n## Limits\n\n- **Last 30 days only.** On the Free plan run history is kept for 7 days, so the file covers at most 7 days.\n- **At most 10,000 rows.** If you have more runs, filter by workflow and download one workflow at a time.\n- **CSV only.** JSON export is not available in 3.x.\n\n## Need more?\n\nCloudFlow 4.2 and later add an **Export** button (Workflows → select the workflow → Runs tab → Export) that supports CSV or JSON, up to 100,000 rows, and any date range within your plan's retention. See \"Exporting workflow run history\" (KB-ADV-007). CloudFlow 3.8 is the final 3.x release and is supported until 2027-06-30, so plan your upgrade before then.\n\n## Troubleshooting\n\n- **Download CSV is greyed out:** there are no runs in the last 30 days for the selected filter. Clear the Workflow filter.\n- **The file opens with all values in one column:** open it with your spreadsheet tool's import option and choose comma as the separator.\n\n## Applies to\n\nCloudFlow 3.x (3.0 to 3.8), all plans. For CloudFlow 4.2 and later, see KB-ADV-007.\n"
+    }
+  ]
+}

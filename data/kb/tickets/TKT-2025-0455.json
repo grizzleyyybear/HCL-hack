@@ -1,0 +1,13 @@
+{
+  "source_id": "TKT-2025-0455",
+  "customer_question": "We're on 3.8 (Business). Our auditor needs a CSV of every run of our invoicing workflow for the last quarter. How do I export run history for that whole period?",
+  "intent": "how_to",
+  "resolution": "Explained that run history cannot be exported for that period from the app. Told the customer to email support with the workflow name and date range so support could generate the CSV and send it, and to use the same email-support process for future exports. Support sent the CSV two days later and closed the ticket.",
+  "tags": [
+    "run-history",
+    "export",
+    "csv"
+  ],
+  "resolved_at": "2025-08-26",
+  "product_version": "3.8"
+}

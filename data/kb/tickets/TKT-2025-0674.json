@@ -1,0 +1,14 @@
+{
+  "source_id": "TKT-2025-0674",
+  "customer_question": "Our Zendesk-to-Jira workflow has been creating every Jira issue twice since last week.",
+  "intent": "bug",
+  "resolution": "A copy of the workflow made during testing was still active with the same Zendesk trigger, so both copies created an issue for each ticket. Deactivated the duplicate workflow, and added a Jira search step before the create step that looks for the Zendesk ticket ID in an issue label, so the workflow skips creation when the issue already exists.",
+  "tags": [
+    "jira",
+    "zendesk",
+    "connector",
+    "duplicates"
+  ],
+  "resolved_at": "2025-12-02",
+  "product_version": "4.0"
+}

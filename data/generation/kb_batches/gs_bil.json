@@ -1,0 +1,195 @@
+{
+  "batch": "gs_bil",
+  "prompt_file": "data/generation/prompts/gs_bil.md",
+  "model": "claude-opus-5-5 (Claude Code subagent)",
+  "temperature": "n/a",
+  "documents": [
+    {
+      "meta": {
+        "source_id": "KB-GS-001",
+        "doc_type": "article",
+        "title": "What is CloudFlow",
+        "authority_level": 1,
+        "product_versions": "ALL",
+        "last_updated": "2026-09-18",
+        "effective_from": "",
+        "deprecated_on": "",
+        "supersedes": "",
+        "provenance": "LLM: claude-opus-5-5 (Claude Code subagent), prompt kb-v1",
+        "synthetic": "Y",
+        "tags": "getting-started;overview;concepts;plans;versions;connectors"
+      },
+      "markdown": "# What is CloudFlow\n\n## Overview\n\nCloudFlow is a workflow-automation service. You connect the apps your team already uses, describe what should happen when something changes, and CloudFlow carries out those steps for you every time, keeping a record of each run. A typical workflow might create a Jira issue when a Zendesk ticket is tagged \"bug\", then post a summary to a Slack channel.\n\n## Key concepts\n\n- **Workspace**: your team's home in CloudFlow. Members, connectors, workflows, API tokens and billing all belong to a workspace.\n- **Workflow**: a trigger plus an ordered list of steps.\n- **Trigger**: what starts a workflow: a schedule, a webhook call, an event in a connected app, or a manual start.\n- **Step**: one action, such as \"create a HubSpot contact\" or \"call this URL\". Steps run in order.\n- **Connector**: an authorised link between your workspace and an external app.\n- **Run**: one execution of a workflow. Every run is recorded in **run history** with its status and the result of each step.\n- **Variables**: values passed between steps, for example an email address from the trigger that a later step uses.\n- **Schedules**, **webhooks** and **API tokens**: ways to start workflows on a timetable, from another system, or from your own code through the CloudFlow API.\n\n## Supported connectors\n\nCloudFlow connects to Salesforce, HubSpot, Slack, Microsoft Teams, Google Sheets, Jira, Zendesk, Stripe and PostgreSQL. A generic HTTP step lets a workflow call any service that offers a web API.\n\n## Plans at a glance\n\n| Plan | API calls / min | Workflow runs / month | Seats | Price / month |\n| --- | --- | --- | --- | --- |\n| Free | 60 | 500 | 1 | $0 |\n| Pro | 300 | 10,000 | 5 | $49 |\n| Business | 1,000 | 50,000 | 25 | $199 |\n| Enterprise | 5,000 | 500,000 | 200 | $999 |\n\nSupport tiers, run history retention and single sign-on also differ by plan. See *Plans and pricing* (KB-BIL-001) for the full table.\n\n## Product versions\n\nCloudFlow 4.4, released on 2026-09-15, is the current release. Versions 4.0 and later use a top navigation bar with **Workflows**, **Connectors**, **Runs** and **Admin**. Version 3.x uses the legacy interface, where most administration lives under **Settings** in the left sidebar. CloudFlow 3.8 is the final 3.x release and is supported until 2027-06-30.\n\nHelp articles state the versions they cover in their *Applies to* section. Some tasks, such as exporting run history, have separate articles for 3.x and 4.x because the menus differ.\n\n## Applies to\n\nAll plans. All product versions (3.x and 4.x).\n"
+    },
+    {
+      "meta": {
+        "source_id": "KB-GS-002",
+        "doc_type": "article",
+        "title": "Creating your first workflow",
+        "authority_level": 1,
+        "product_versions": "4.0+",
+        "last_updated": "2026-06-22",
+        "effective_from": "",
+        "deprecated_on": "",
+        "supersedes": "",
+        "provenance": "LLM: claude-opus-5-5 (Claude Code subagent), prompt kb-v1",
+        "synthetic": "Y",
+        "tags": "getting-started;workflows;triggers;connectors;variables;4.x"
+      },
+      "markdown": "# Creating your first workflow\n\n## Overview\n\nThis guide walks you through building, testing and switching on a simple workflow in CloudFlow 4.x. As an example, we post a Slack message whenever a new row is added to a Google Sheet. The same pattern works for any trigger and connector.\n\n## Before you start\n\n- You need a CloudFlow 4.x workspace and permission to create workflows. If you cannot see **New workflow**, ask a workspace admin for access.\n- Have the accounts for the apps you want to connect ready; in this example, Google Sheets and Slack.\n\n## Steps\n\n1. In the top navigation, open **Workflows** and select **New workflow**.\n2. Give the workflow a clear name, for example \"New sheet row to Slack\".\n3. Choose a trigger: a schedule, a webhook, an event in a connected app, or a manual start. For this example, choose the Google Sheets event \"New row\".\n4. If the app is not connected yet, CloudFlow asks you to connect it. You can also do this in advance: open **Connectors → Add connector**, choose the app and authorise it with your account.\n5. Select **Add step** and choose the action, here Slack \"Send message\", then pick the channel.\n6. Map fields with variables. Click into the message field and insert values from the trigger, such as the row's name and email columns. Variables are filled in when the workflow runs.\n7. Select **Save**.\n\n## Testing your workflow\n\nSelect **Test run** to run the workflow once with sample data. Each step shows its input, output and status, so you can fix a mapping before going live. When the test succeeds, switch the workflow **On**. From then on, every run appears under **Runs** in the top navigation and in the workflow's **Runs** tab.\n\nOn CloudFlow 4.3 and later you can also set automatic retries for an individual step (Step → Settings → Retries, up to 5 retries). See *Automatic retries for steps* (KB-ADV-005).\n\n## Troubleshooting\n\n- **The workflow never starts:** check that it is switched on and that your workspace has not used up its monthly workflow runs. When the monthly limit is exceeded, new runs are queued until the next period or an upgrade. See *Workflows not running on schedule* (KB-TRB-008).\n- **A step fails with an error code:** look the code up in the *Error code reference* (KB-TRB-001). For example, CF-503 usually means a connector must be re-authorised under **Connectors**.\n- **A step stops after five minutes:** a step that runs longer than 300 seconds fails with CF-504. See *Fixing CF-504 step timeouts* (KB-TRB-005).\n\n## Applies to\n\nAll plans. CloudFlow 4.0 and later; automatic step retries need 4.3 or later. For the legacy interface, see *Creating your first workflow in CloudFlow 3.x* (KB-GS-003).\n"
+    },
+    {
+      "meta": {
+        "source_id": "KB-GS-003",
+        "doc_type": "article",
+        "title": "Creating your first workflow in CloudFlow 3.x",
+        "authority_level": 1,
+        "product_versions": "3.x",
+        "last_updated": "2026-09-21",
+        "effective_from": "",
+        "deprecated_on": "",
+        "supersedes": "",
+        "provenance": "LLM: claude-opus-5-5 (Claude Code subagent), prompt kb-v1",
+        "synthetic": "Y",
+        "tags": "getting-started;workflows;3.x;legacy-ui;connections;webhooks"
+      },
+      "markdown": "# Creating your first workflow in CloudFlow 3.x\n\n## Overview\n\nThis guide is for workspaces on CloudFlow 3.x, which uses the legacy interface with a left sidebar. Most administration lives under **Settings**. If your workspace runs 4.0 or later, use *Creating your first workflow* (KB-GS-002) instead, because the menus are different.\n\n## Before you start\n\nConnect the apps you need first. In the left sidebar, open **Settings → Connections**, select the app and sign in to authorise it. Connections you create here are available to every workflow in the workspace.\n\n## Steps\n\n1. In the left sidebar, select **Workflows**, then **Create workflow**.\n2. Name the workflow, for example \"New HubSpot contact to Slack\".\n3. Choose a trigger: a schedule, a webhook, an event in a connected app, or a manual start.\n4. Select **Add step**, choose the connection and the action, and fill in the fields. Insert variables from the trigger wherever you need its values.\n5. Add further steps in the order they should run, then select **Save**.\n6. Select **Test** to run the workflow once and check each step's result, then switch the workflow to **Active**.\n\n## Checking runs\n\nRuns are listed under **Settings → Run history**. Open a run to see each step's status. You can also download a CSV of the last 30 days (up to 10,000 rows); see *Exporting workflow run history in CloudFlow 3.x* (KB-ADV-007-3X).\n\n## Webhook triggers and the 2026-12-01 deadline\n\nCloudFlow 3.x supports webhooks v1 only. Webhooks v1 is deprecated, and v1 endpoints stop accepting deliveries on 2026-12-01. Workflows that start from a webhook must move to webhooks v2 before that date, and v2 requires CloudFlow 4.4. See *CloudFlow 4.4: webhooks v2 and webhook v1 deprecation* (RN-4.4-001).\n\n## Troubleshooting\n\n- **A step fails with CF-503:** the connection's authorisation has usually expired or been revoked. Open **Settings → Connections**, select the connection and choose **Reconnect**. Never disable SSL verification to work around it; see *Salesforce step fails with CF-503* (KB-TRB-004).\n- **Nothing runs:** check that the workflow is **Active** and that the workspace has workflow runs left this month.\n\n## Supported versions\n\nCloudFlow 3.8 is the final 3.x release and is supported until 2027-06-30. We recommend planning an upgrade to 4.x, which adds the self-service Export button, per-step automatic retries and webhooks v2.\n\n## Applies to\n\nAll plans. CloudFlow 3.x (3.0 to 3.8).\n"
+    },
+    {
+      "meta": {
+        "source_id": "KB-GS-004",
+        "doc_type": "article",
+        "title": "Inviting teammates and managing seats",
+        "authority_level": 1,
+        "product_versions": "ALL",
+        "last_updated": "2026-05-12",
+        "effective_from": "",
+        "deprecated_on": "",
+        "supersedes": "",
+        "provenance": "LLM: claude-opus-5-5 (Claude Code subagent), prompt kb-v1",
+        "synthetic": "Y",
+        "tags": "getting-started;seats;members;invite;plans;CF-403"
+      },
+      "markdown": "# Inviting teammates and managing seats\n\n## Overview\n\nEach member of your workspace uses one seat. The number of seats depends on your plan, and only workspace admins can invite or remove members and change their roles.\n\n## Seats by plan\n\n| Plan | Seats |\n| --- | --- |\n| Free | 1 |\n| Pro | 5 |\n| Business | 25 |\n| Enterprise | 200 |\n\n## Inviting in CloudFlow 4.x\n\n1. In the top navigation, open **Admin → Members**.\n2. Select **Invite**.\n3. Enter your teammate's work email address and choose their role.\n4. Select **Send invitation**. Your teammate receives an email with a link to join the workspace.\n\n## Inviting in CloudFlow 3.x\n\n1. In the left sidebar, open **Settings → Members**.\n2. Select **Invite member**, enter the email address and choose a role.\n3. Select **Send**.\n\n## When all seats are used\n\nIf every seat is taken, you cannot invite anyone else until a seat is free. You have two options:\n\n- **Free a seat** by removing a member who no longer needs access (4.x: **Admin → Members**; 3.x: **Settings → Members**).\n- **Upgrade your plan.** Upgrades apply immediately and are prorated for the rest of the billing period, so the extra seats are available straight away. See *Changing or cancelling your plan* (KB-BIL-005).\n\nThe Free plan has a single seat, so working with a teammate always requires a paid plan.\n\n## Troubleshooting\n\n- **The Invite option is missing:** inviting members needs a workspace admin. Ask an admin to send the invitation or to change your role. Actions your role does not allow fail with CF-403.\n- **The invitation did not arrive:** ask your teammate to check their spam folder, then send the invitation again.\n- **Single sign-on:** on Business and Enterprise workspaces that use SSO (SAML), members sign in through your identity provider. See *Single sign-on (SAML)* (KB-ADV-006).\n\n## Applies to\n\nAll plans. All product versions; menu paths are given for 4.x and 3.x.\n"
+    },
+    {
+      "meta": {
+        "source_id": "KB-GS-005",
+        "doc_type": "article",
+        "title": "Understanding triggers, steps and runs",
+        "authority_level": 1,
+        "product_versions": "ALL",
+        "last_updated": "2026-06-15",
+        "effective_from": "",
+        "deprecated_on": "",
+        "supersedes": "",
+        "provenance": "LLM: claude-opus-5-5 (Claude Code subagent), prompt kb-v1",
+        "synthetic": "Y",
+        "tags": "getting-started;triggers;steps;runs;run-history;retention;CF-504"
+      },
+      "markdown": "# Understanding triggers, steps and runs\n\n## Overview\n\nEvery CloudFlow workflow is built from three ideas: a **trigger** that starts it, **steps** that do the work, and **runs** that record each execution. Understanding them makes it much easier to build reliable workflows and to troubleshoot them.\n\n## Triggers\n\nA workflow has exactly one trigger:\n\n- **Schedule**: runs at a set time or interval, in the time zone you choose.\n- **Webhook**: runs when another system calls the workflow's webhook URL.\n- **App event**: runs when something happens in a connected app, such as a new HubSpot contact or a new Zendesk ticket.\n- **Manual**: runs when someone starts it by hand.\n\n## Steps\n\nSteps run one after another, in the order shown in the editor. Each step uses a connector, such as Salesforce or Slack, or the generic HTTP step. A step can use variables produced by the trigger or by earlier steps.\n\nA single step may run for at most 300 seconds; a longer step fails with **CF-504**. See *Fixing CF-504 step timeouts* (KB-TRB-005).\n\nOn CloudFlow 4.3 and later, a step can retry automatically when it fails (Step → Settings → Retries, up to 5 retries). Earlier versions do not retry steps automatically.\n\n## Runs\n\nA run is one execution of a workflow, from the trigger to the last step. Each run has a status, such as running, succeeded or failed, and shows the input, output and result of every step.\n\nEvery run counts toward your plan's monthly workflow runs: Free 500, Pro 10,000, Business 50,000, Enterprise 500,000. When the monthly limit is exceeded, new runs are **queued** until the next period or until you upgrade.\n\n## Run history\n\nRun history keeps past runs for a period that depends on your plan:\n\n| Plan | Run history retention |\n| --- | --- |\n| Free | 7 days |\n| Pro | 30 days |\n| Business | 90 days |\n| Enterprise | 365 days |\n\nWhere to find it:\n\n- **CloudFlow 4.x:** open **Runs** in the top navigation for all workflows, or open a workflow and select its **Runs** tab. From 4.2 you can export runs with the **Export** button; see *Exporting workflow run history* (KB-ADV-007).\n- **CloudFlow 3.x:** open **Settings → Run history**; see *Exporting workflow run history in CloudFlow 3.x* (KB-ADV-007-3X).\n\n## Applies to\n\nAll plans and product versions. Automatic step retries need CloudFlow 4.3 or later; the Export button needs 4.2 or later.\n"
+    },
+    {
+      "meta": {
+        "source_id": "KB-BIL-001",
+        "doc_type": "article",
+        "title": "Plans and pricing",
+        "authority_level": 1,
+        "product_versions": "ALL",
+        "last_updated": "2026-01-15",
+        "effective_from": "",
+        "deprecated_on": "",
+        "supersedes": "",
+        "provenance": "LLM: claude-opus-5-5 (Claude Code subagent), prompt kb-v1",
+        "synthetic": "Y",
+        "tags": "billing;plans;pricing;limits;sso;2fa;support-tier"
+      },
+      "markdown": "# Plans and pricing\n\n## Overview\n\nCloudFlow has four plans: Free, Pro, Business and Enterprise. They differ in API rate limit, monthly workflow runs, seats, support tier and how long run history is kept. Paid plans are billed monthly.\n\n## Plans and limits\n\n| Plan | API calls / min | Workflow runs / month | Seats | Support tier | Price / month | Run history retention |\n| --- | --- | --- | --- | --- | --- | --- |\n| Free | 60 | 500 | 1 | standard | $0 | 7 days |\n| Pro | 300 | 10,000 | 5 | standard | $49 | 30 days |\n| Business | 1,000 | 50,000 | 25 | priority | $199 | 90 days |\n| Enterprise | 5,000 | 500,000 | 200 | priority | $999 | 365 days |\n\nAPI limits apply per workspace per minute. Workflow runs are counted per month. The binding values are set in the *Plan limits policy* (POL-LIMITS-001).\n\n## Included in every plan\n\n- All supported connectors and the generic HTTP step.\n- Two-factor authentication (2FA) for every member.\n- Run history, schedules, webhooks and API access, within the plan's limits.\n\n## Business and Enterprise only\n\n- **Single sign-on (SAML).** On Free and Pro, SSO settings are not available and SSO actions fail with CF-403. See *Single sign-on (SAML)* (KB-ADV-006).\n- **Priority support.** After a conversation is handed to our team, Business and Enterprise customers get a response within 4 hours, compared with 24 hours on Free and Pro.\n\n## Choosing a plan\n\n- **Free** suits trying CloudFlow on your own: one seat and 500 runs a month.\n- **Pro** suits small teams of up to 5 members with moderate volumes.\n- **Business** adds SSO, priority support, 90 days of run history and room for 25 members.\n- **Enterprise** is for high volumes: 5,000 API calls per minute, 500,000 runs a month and 200 seats.\n\nYou can change plans at any time. Upgrades apply immediately and are prorated; downgrades apply at the next billing day. See *Changing or cancelling your plan* (KB-BIL-005).\n\n## Applies to\n\nAll plans and product versions. Prices are per workspace per month.\n"
+    },
+    {
+      "meta": {
+        "source_id": "KB-BIL-002",
+        "doc_type": "article",
+        "title": "How billing works",
+        "authority_level": 1,
+        "product_versions": "ALL",
+        "last_updated": "2025-10-14",
+        "effective_from": "",
+        "deprecated_on": "",
+        "supersedes": "",
+        "provenance": "LLM: claude-opus-5-5 (Claude Code subagent), prompt kb-v1",
+        "synthetic": "Y",
+        "tags": "billing;invoices;payments;currency;billing-day;proration"
+      },
+      "markdown": "# How billing works\n\n## Overview\n\nCloudFlow paid plans (Pro, Business and Enterprise) are billed monthly by card. This article explains when you are charged, which currencies are supported and where to find your invoices. The Free plan is never charged.\n\n## Billing day\n\nYour billing day is the day of the month on which your paid plan started. On that day each month we charge the plan price and issue an invoice.\n\nIf you upgrade partway through a period, the upgrade applies immediately and you pay a prorated amount for the rest of the current period. Downgrades take effect on your next billing day.\n\n## Currencies and payment methods\n\n- Workspaces are billed in **USD** or **INR**.\n- We accept card payments. For your security, invoices and billing pages show only the **last four digits** of the card, never the full number.\n\nIf you need your invoices in the other supported currency, contact support and we will pass the request to the billing team.\n\n## Finding your invoices\n\n- **CloudFlow 4.x:** open **Admin → Billing → Invoices**.\n- **CloudFlow 3.x:** open **Settings → Billing** in the left sidebar.\n\nEach invoice shows its invoice ID (for example INV-1234), the amount, currency, charge date, the card's last four digits and a status:\n\n| Status | Meaning |\n| --- | --- |\n| paid | The charge succeeded. |\n| failed | The charge did not go through. See *Failed payments and past-due accounts* (KB-BIL-004). |\n| refunded | The billing team refunded the charge. |\n\n## Common questions\n\n- **I was charged twice.** See *Duplicate charges and billing disputes* (KB-BIL-003).\n- **I want a refund.** Refunds follow the *Refund policy* (POL-REFUND-001). See *Requesting a refund* (KB-BIL-006).\n- **My card is about to expire.** Update the payment method before your next billing day to avoid a failed payment.\n\n## Applies to\n\nPro, Business and Enterprise plans (the Free plan has no charges). All product versions; menu paths are given for 4.x and 3.x.\n"
+    },
+    {
+      "meta": {
+        "source_id": "KB-BIL-003",
+        "doc_type": "article",
+        "title": "Duplicate charges and billing disputes",
+        "authority_level": 1,
+        "product_versions": "ALL",
+        "last_updated": "2026-04-08",
+        "effective_from": "",
+        "deprecated_on": "",
+        "supersedes": "",
+        "provenance": "LLM: claude-opus-5-5 (Claude Code subagent), prompt kb-v1",
+        "synthetic": "Y",
+        "tags": "billing;duplicate-charge;dispute;refund;invoices;handoff"
+      },
+      "markdown": "# Duplicate charges and billing disputes\n\n## Overview\n\nIf a charge on your card looks wrong, we want to fix it quickly. This article explains how to recognise a duplicate charge, how to raise any other billing dispute and what happens after you contact us. Only the CloudFlow billing team can reverse or refund a charge; support collects the details and passes your case to them.\n\n## Duplicate charges\n\nA duplicate charge is two charges for the same amount on the same day, for example two $49.00 charges for a Pro plan on the same date. To check:\n\n1. Open your invoices (4.x: **Admin → Billing → Invoices**; 3.x: **Settings → Billing**).\n2. Look for two invoices with status **paid**, the same amount and the same charge date.\n3. Note both invoice IDs.\n\nContact support with both invoice IDs. The billing team verifies the charges and reverses the duplicate. After the reversal, the money appears back on your card within **5–7 business days**, depending on your bank.\n\nA pending card authorisation that disappears after a few days is not a second charge. Only invoices with status **paid** have actually been charged.\n\n## Other billing disputes\n\nFor any other disagreement, such as a charge you did not expect or an amount that looks wrong, contact support with:\n\n- the invoice ID and charge date, and\n- what you expected to be charged, and why.\n\nContacting us first is usually the fastest way to resolve a dispute.\n\n## What happens next\n\nDuplicate charges and billing disputes are always handled by a person on the billing team. Support can explain the policy and look at your invoices, but cannot issue refunds, reversals or credits and cannot promise an outcome. After your case is handed over, you will hear back within:\n\n| Plan | Response time |\n| --- | --- |\n| Free, Pro | 24 hours |\n| Business, Enterprise | 4 hours |\n\nIf you are asking for a refund rather than a reversal of a duplicate, the *Refund policy* (POL-REFUND-001) applies. See *Requesting a refund* (KB-BIL-006).\n\n## Applies to\n\nPro, Business and Enterprise plans. All product versions.\n"
+    },
+    {
+      "meta": {
+        "source_id": "KB-BIL-004",
+        "doc_type": "article",
+        "title": "Failed payments and past-due accounts",
+        "authority_level": 1,
+        "product_versions": "ALL",
+        "last_updated": "2025-12-02",
+        "effective_from": "",
+        "deprecated_on": "",
+        "supersedes": "",
+        "provenance": "LLM: claude-opus-5-5 (Claude Code subagent), prompt kb-v1",
+        "synthetic": "Y",
+        "tags": "billing;failed-payment;past-due;suspended;card-declined;payment-method"
+      },
+      "markdown": "# Failed payments and past-due accounts\n\n## Overview\n\nIf we cannot charge your card on your billing day, the invoice is marked **failed** and your account enters a grace period. This article explains the timeline and how to fix the payment before your workflows are affected.\n\n## Timeline after a failed payment\n\n| When | What happens |\n| --- | --- |\n| Billing day | The charge fails. The invoice status is **failed** and the account status becomes **past_due**. |\n| Next 7 days | We retry the charge automatically 3 times. Your workflows keep running. |\n| 14 days unpaid | The account is **suspended**: workflows are paused. Your data is kept for 30 days. |\n\nIf an account is cancelled instead, no further charges are made and its data is deleted after 30 days.\n\n## Common reasons a payment fails\n\n- The bank declined the card, for example because of a spending limit or a fraud check.\n- The card has expired.\n- There were insufficient funds.\n\nThe invoice shows the failure reason and the card's last four digits only.\n\n## Updating your payment method\n\n- **CloudFlow 4.x:** open **Admin → Billing → Payment method** and add a new card.\n- **CloudFlow 3.x:** open **Settings → Billing → Payment method**.\n\nAfter you update the card, the next automatic retry uses it. Once the outstanding invoice is paid, the account returns to **active**.\n\n## After a suspension\n\nWhen the overdue invoice is paid, the account becomes active again. Check your workflows afterwards and make sure the ones you need are switched on.\n\n## Need help?\n\nIf you believe a payment failed in error, contact support with the invoice ID. Requests that need a billing decision, such as a refund or a credit, are handed to the billing team.\n\n## Applies to\n\nPro, Business and Enterprise plans. All product versions; menu paths are given for 4.x and 3.x.\n"
+    },
+    {
+      "meta": {
+        "source_id": "KB-BIL-005",
+        "doc_type": "article",
+        "title": "Changing or cancelling your plan",
+        "authority_level": 1,
+        "product_versions": "ALL",
+        "last_updated": "2026-03-24",
+        "effective_from": "",
+        "deprecated_on": "",
+        "supersedes": "",
+        "provenance": "LLM: claude-opus-5-5 (Claude Code subagent), prompt kb-v1",
+        "synthetic": "Y",
+        "tags": "billing;upgrade;downgrade;cancellation;proration;data-retention;account-deletion"
+      },
+      "markdown": "# Changing or cancelling your plan\n\n## Overview\n\nYou can upgrade, downgrade or cancel your CloudFlow plan at any time. Plan changes are made by a workspace admin.\n\n## Upgrading\n\nUpgrades apply immediately. You are charged a prorated amount for the rest of the current billing period, and the new limits for API calls, monthly runs and seats are available straight away.\n\n- **CloudFlow 4.x:** open **Admin → Billing → Change plan**, choose the new plan and confirm.\n- **CloudFlow 3.x:** open **Settings → Billing → Change plan**.\n\n## Downgrading\n\nDowngrades apply at your next billing day; until then you keep your current plan. Before the change takes effect, make sure your workspace fits the new plan:\n\n- **Seats:** remove members so you are within the new plan's seat count (Free 1, Pro 5, Business 25).\n- **Single sign-on:** SSO is available only on Business and Enterprise.\n- **Run history:** retention becomes shorter (Free 7 days, Pro 30 days, Business 90 days). Export older runs first if you need them.\n\n## Cancelling\n\nWhen you cancel, the account status becomes **cancelled** and no further charges are made. Your workspace data is kept for 30 days and then permanently deleted.\n\nBefore you cancel, export anything you want to keep:\n\n- **CloudFlow 4.2 and later:** Workflows → select the workflow → **Runs** tab → **Export** (CSV or JSON). See *Exporting workflow run history* (KB-ADV-007).\n- **CloudFlow 3.x:** **Settings → Run history → Download CSV**. See *Exporting workflow run history in CloudFlow 3.x* (KB-ADV-007-3X).\n\n## Cancelling is not deleting\n\nCancelling stops billing. Deleting your account and all its data is a separate request: the account owner asks support, a person on our team handles it, and there is a 30-day grace period before the deletion happens.\n\n## Refunds\n\nChanging or cancelling a plan does not refund past charges automatically. Refunds follow the *Refund policy* (POL-REFUND-001): a paid charge on Pro, Business or Enterprise can be considered within 14 days of the charge date, and only the billing team can approve it. See *Requesting a refund* (KB-BIL-006).\n\n## Applies to\n\nAll plans. All product versions; menu paths are given for 4.x and 3.x, and the Export button needs 4.2 or later.\n"
+    },
+    {
+      "meta": {
+        "source_id": "KB-BIL-006",
+        "doc_type": "article",
+        "title": "Requesting a refund",
+        "authority_level": 1,
+        "product_versions": "ALL",
+        "last_updated": "2026-02-10",
+        "effective_from": "",
+        "deprecated_on": "",
+        "supersedes": "",
+        "provenance": "LLM: claude-opus-5-5 (Claude Code subagent), prompt kb-v1",
+        "synthetic": "Y",
+        "tags": "billing;refund;refund-policy;refund-window;invoices"
+      },
+      "markdown": "# Requesting a refund\n\n## Overview\n\nThis article explains when a CloudFlow charge can be refunded and how to ask for a refund. The binding rules are in the *Refund policy* (POL-REFUND-001); this article is a summary.\n\n## Who is eligible\n\nA charge can be considered for a refund when all of these are true:\n\n- **It is within the refund window:** no more than **14 days** have passed since the charge date. A charge made 14 days ago is still inside the window; a charge made 15 days ago is not.\n- **The invoice is paid.** Failed charges were never collected, and refunded invoices have already been refunded.\n- **The plan is Pro, Business or Enterprise.** The Free plan has no charges, so there is nothing to refund.\n\nDuplicate charges are handled separately and reversed by the billing team. See *Duplicate charges and billing disputes* (KB-BIL-003).\n\n## How to request a refund\n\n1. Find the invoice (4.x: **Admin → Billing → Invoices**; 3.x: **Settings → Billing**) and note its invoice ID, for example INV-1234.\n2. Contact support with the invoice ID and the reason for your request.\n3. Support checks the invoice against the refund window and the eligibility rules and tells you the result.\n4. Support hands the request to the billing team with the invoice details.\n\n## Who decides\n\nOnly the **billing team** approves and issues refunds. Support, including the CloudFlow support assistant, can explain whether a charge appears to be eligible, but cannot issue a refund and cannot promise one. You will hear back from the billing team within 24 hours on Pro, or within 4 hours on Business and Enterprise.\n\nWhen a refund is issued, the invoice status changes to **refunded**.\n\n## Applies to\n\nPro, Business and Enterprise plans. All product versions.\n"
+    }
+  ]
+}

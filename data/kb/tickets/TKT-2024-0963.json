@@ -1,0 +1,14 @@
+{
+  "source_id": "TKT-2024-0963",
+  "customer_question": "Every call our order system makes to our CloudFlow webhook URL is rejected because the signature never matches. We sign the JSON payload with HMAC-SHA256 and our secret. The payloads look fine. What are we doing wrong?",
+  "intent": "bug",
+  "resolution": "The webhook's Deliveries log showed every delivery rejected for a signature mismatch. Webhooks v1 expect an HMAC-SHA1 hex digest of the raw request body in the X-CloudFlow-Signature header, not SHA-256. The customer's sender used SHA-256 and signed re-serialised JSON, which changes whitespace and key order. After switching to an HMAC-SHA1 hex digest of the raw body bytes with the webhook secret, deliveries were accepted.",
+  "tags": [
+    "webhooks",
+    "webhooks-v1",
+    "signature",
+    "hmac"
+  ],
+  "resolved_at": "2024-12-03",
+  "product_version": "3.4"
+}

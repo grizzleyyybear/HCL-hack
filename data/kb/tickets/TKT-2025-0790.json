@@ -1,0 +1,14 @@
+{
+  "source_id": "TKT-2025-0790",
+  "customer_question": "How long does CloudFlow keep run history on the Business plan? We need run records for audits.",
+  "intent": "how_to",
+  "resolution": "Business keeps run history for 90 days (Free 7 days, Pro 30 days, Enterprise 365 days). Runs older than the retention period are deleted and cannot be recovered. For audits that need longer records, Enterprise keeps 365 days.",
+  "tags": [
+    "run-history",
+    "retention",
+    "business",
+    "plans"
+  ],
+  "resolved_at": "2025-12-16",
+  "product_version": "4.0"
+}

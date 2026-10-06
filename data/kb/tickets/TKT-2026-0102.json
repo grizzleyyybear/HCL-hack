@@ -1,0 +1,15 @@
+{
+  "source_id": "TKT-2026-0102",
+  "customer_question": "We cancelled in December and now ALL our workflows are gone. Nobody told us you would delete everything. That is years of work. I've already called twice and been fobbed off both times. If this isn't restored by Friday our lawyers will be in touch.",
+  "intent": "complaint",
+  "resolution": "Escalated as a legal matter with repeated contact; support made no promise about restoring data. The account had been cancelled on 2025-12-31 and, as the cancellation terms state, its data was deleted 30 days later. The legal team and an account manager reviewed the case, shared the cancellation confirmation that described the 30-day deletion, and met the customer. The legal team closed the case.",
+  "tags": [
+    "cancellation",
+    "data-deletion",
+    "complaint",
+    "legal",
+    "escalation"
+  ],
+  "resolved_at": "2026-02-10",
+  "product_version": "4.0"
+}

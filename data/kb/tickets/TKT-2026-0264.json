@@ -1,0 +1,15 @@
+{
+  "source_id": "TKT-2026-0264",
+  "customer_question": "We're on 4.4 now and saw that webhooks v1 stop working on 1 December. How do we move our order webhook to v2 without missing events?",
+  "intent": "how_to",
+  "resolution": "On the workflow's webhook trigger, used the Upgrade to v2 action, which issued a new URL of the form https://hooks.cloudflow.example/v2/<id>. The customer pointed the sending system at the v2 URL and changed its signing to HMAC-SHA256 of the raw body in the X-CloudFlow-Signature-256 header. The v1 URL stayed active during testing; the Deliveries log confirmed v2 deliveries were accepted before v1 was removed from the sender. Noted that v2 retries failed deliveries up to 5 times with backoff, so the workflow should tolerate duplicates, and that from 2026-12-01 v1 URLs return HTTP 410 Gone. Migration finished well before the cut-off.",
+  "tags": [
+    "webhooks",
+    "webhooks-v2",
+    "webhooks-v1",
+    "migration",
+    "deprecation"
+  ],
+  "resolved_at": "2026-09-22",
+  "product_version": "4.4"
+}

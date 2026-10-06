@@ -1,0 +1,14 @@
+{
+  "source_id": "TKT-2025-0548",
+  "customer_question": "Our Slack alerts stopped arriving on Friday, right after we renamed our Slack workspace. The Slack step now fails with CF-503.",
+  "intent": "bug",
+  "resolution": "Renaming the Slack workspace invalidated the connector's authorisation, so the Slack step returned CF-503 (connector unavailable). Re-authorised the Slack connector under Connectors → Slack → Re-authorise and re-selected the alerts channel in the step. Alerts resumed on the next run.",
+  "tags": [
+    "slack",
+    "connector",
+    "CF-503",
+    "re-authorise"
+  ],
+  "resolved_at": "2025-11-04",
+  "product_version": "4.0"
+}

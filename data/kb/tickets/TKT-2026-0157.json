@@ -1,0 +1,13 @@
+{
+  "source_id": "TKT-2026-0157",
+  "customer_question": "Our Slack step posts 'New deal: {{steps.lookup_deal.name}}' literally instead of the deal name. The variable looks right to me.",
+  "intent": "bug",
+  "resolution": "The Slack step was placed before the lookup_deal step, and a step can only use variables from the trigger and earlier steps, so the path could not resolve and was posted as literal text. Moved the Slack step after the lookup step and re-inserted the variable (Insert variable in 4.x); Test step then showed the deal name.",
+  "tags": [
+    "slack",
+    "variables",
+    "data-mapping"
+  ],
+  "resolved_at": "2026-04-14",
+  "product_version": "4.2"
+}

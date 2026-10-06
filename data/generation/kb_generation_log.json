@@ -1,0 +1,67 @@
+{
+  "run_on": "2026-10-06",
+  "prompt_version": "kb-v1",
+  "batches": {
+    "gs_bil": {
+      "model": "claude-opus-5-5 (Claude Code subagent)",
+      "temperature": "n/a",
+      "prompt_file": "data/generation/prompts/gs_bil.md",
+      "documents": 11,
+      "valid": 11,
+      "llm_calls": "n/a (authored outside live mode)",
+      "tokens": {},
+      "validation_errors": {}
+    },
+    "policies_rn": {
+      "model": "claude-opus-5-5 (Claude Code subagent)",
+      "temperature": "n/a",
+      "prompt_file": "data/generation/prompts/policies_rn.md",
+      "documents": 5,
+      "valid": 5,
+      "llm_calls": "n/a (authored outside live mode)",
+      "tokens": {},
+      "validation_errors": {}
+    },
+    "api_trb": {
+      "model": "claude-opus-5-5 (Claude Code subagent)",
+      "temperature": "n/a",
+      "prompt_file": "data/generation/prompts/api_trb.md",
+      "documents": 18,
+      "valid": 18,
+      "llm_calls": "n/a (authored outside live mode)",
+      "tokens": {},
+      "validation_errors": {}
+    },
+    "adv": {
+      "model": "claude-opus-5-5 (Claude Code subagent)",
+      "temperature": "n/a",
+      "prompt_file": "data/generation/prompts/adv.md",
+      "documents": 5,
+      "valid": 5,
+      "llm_calls": "n/a (authored outside live mode)",
+      "tokens": {},
+      "validation_errors": {}
+    },
+    "tickets": {
+      "model": "claude-opus-5-5 (Claude Code subagent)",
+      "temperature": "n/a",
+      "prompt_file": "data/generation/prompts/tickets.md",
+      "documents": 28,
+      "valid": 28,
+      "llm_calls": "n/a (authored outside live mode)",
+      "tokens": {},
+      "validation_errors": {}
+    },
+    "community": {
+      "model": "claude-opus-5-5 (Claude Code subagent)",
+      "temperature": "n/a",
+      "prompt_file": "data/generation/prompts/community.md",
+      "documents": 6,
+      "valid": 6,
+      "llm_calls": "n/a (authored outside live mode)",
+      "tokens": {},
+      "validation_errors": {}
+    }
+  },
+  "missing_batches": []
+}

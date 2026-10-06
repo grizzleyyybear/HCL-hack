@@ -1,0 +1,14 @@
+{
+  "source_id": "TKT-2025-0902",
+  "customer_question": "We want to cancel our Pro plan at the end of the month, but we may come back later. Will our workflows and connectors be kept?",
+  "intent": "account",
+  "resolution": "Explained that cancelling stops all further charges and deletes workspace data 30 days after cancellation, so workflows and connectors would not be kept. Suggested downgrading to the Free plan instead: the downgrade takes effect on the next billing day, workflows are kept, and Free limits apply (500 workflow runs per month, 1 seat, 7-day run history). The customer chose to downgrade.",
+  "tags": [
+    "billing",
+    "cancellation",
+    "downgrade",
+    "data-retention"
+  ],
+  "resolved_at": "2025-12-30",
+  "product_version": "4.0"
+}

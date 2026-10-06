@@ -1,0 +1,14 @@
+{
+  "source_id": "TKT-2025-0503",
+  "customer_question": "If we upgrade from Pro to Business today, halfway through our billing month, do we pay the full $199 right away? And when do the higher limits start?",
+  "intent": "billing",
+  "resolution": "Upgrades apply immediately and are prorated: the Business limits (1,000 API calls per minute, 50,000 workflow runs per month, 25 seats) were available right after the upgrade, the customer was charged only the prorated difference for the rest of the current period, and the full $199 applies from the next billing day. Downgrades, by contrast, take effect on the next billing day. The customer upgraded.",
+  "tags": [
+    "billing",
+    "upgrade",
+    "proration",
+    "plans"
+  ],
+  "resolved_at": "2025-10-21",
+  "product_version": "4.0"
+}

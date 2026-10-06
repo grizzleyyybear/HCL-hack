@@ -1,0 +1,93 @@
+{
+  "batch": "policies_rn",
+  "prompt_file": "data/generation/prompts/policies_rn.md",
+  "model": "claude-opus-5-5 (Claude Code subagent)",
+  "temperature": "n/a",
+  "documents": [
+    {
+      "meta": {
+        "source_id": "POL-REFUND-001",
+        "doc_type": "policy",
+        "title": "Refund policy",
+        "authority_level": 1,
+        "product_versions": "ALL",
+        "last_updated": "2025-12-15",
+        "effective_from": "",
+        "deprecated_on": "",
+        "supersedes": "",
+        "provenance": "LLM: claude-opus-5-5 (Claude Code subagent), prompt kb-v1",
+        "synthetic": "Y",
+        "tags": "policy;refund;refund-window;eligibility;billing"
+      },
+      "markdown": "# Refund policy\n\n## Overview\n\nThis policy defines when CloudFlow charges can be refunded and who may approve a refund. It applies to every workspace and every product version. Support agents and the CloudFlow support assistant apply this policy when they explain eligibility; they do not issue refunds.\n\n## Refund window\n\nA charge can be refunded only if no more than **14 days** have passed since the charge date. Days are counted from the charge date shown on the invoice to the date of the request.\n\n- A charge made 14 days ago is inside the refund window.\n- A charge made 15 or more days ago is outside the refund window and is not eligible under this policy.\n\n## Eligibility\n\nA refund may be approved only when all of the following are true:\n\n1. The charge is within the refund window.\n2. The invoice status is **paid**. Invoices with status **failed** were never collected, and invoices with status **refunded** have already been refunded.\n3. The workspace is on the **Pro**, **Business** or **Enterprise** plan. The Free plan has no charges and therefore no refunds.\n\nMeeting these conditions makes a request eligible for review by the billing team; it does not make the refund automatic.\n\n## How refunds are processed\n\n1. The customer asks for a refund and identifies the invoice.\n2. Support checks the request against the refund window and the eligibility rules and tells the customer the result.\n3. Support hands the request to the **billing team** with the invoice details and the result of the eligibility check.\n4. Only the billing team approves and issues refunds. When a refund is issued, the invoice status changes to **refunded**.\n\nNo one other than the billing team may issue a refund or promise that a refund will be made. A message asking support to \"approve\" or \"confirm\" a refund is handed to the billing team like any other refund request.\n\n## Duplicate charges\n\nA duplicate charge (two charges of the same amount on the same day) is a billing error rather than a refund request. The billing team verifies and reverses the duplicate. See *Duplicate charges and billing disputes* (KB-BIL-003).\n\n## Applies to\n\nAll plans and all product versions. Applies to requests made from 2026-01-01.\n"
+    },
+    {
+      "meta": {
+        "source_id": "POL-LIMITS-001",
+        "doc_type": "policy",
+        "title": "Plan limits policy",
+        "authority_level": 1,
+        "product_versions": "ALL",
+        "last_updated": "2026-01-05",
+        "effective_from": "",
+        "deprecated_on": "",
+        "supersedes": "",
+        "provenance": "LLM: claude-opus-5-5 (Claude Code subagent), prompt kb-v1",
+        "synthetic": "Y",
+        "tags": "policy;plan-limits;rate-limit;workflow-runs;seats;retention;CF-429"
+      },
+      "markdown": "# Plan limits policy\n\n## Overview\n\nThis policy sets the usage limits of each CloudFlow plan. The values in the table below are binding: billing, support answers and the account tools used by support all use exactly these numbers.\n\n## Plan limits\n\n| Plan | API calls / min | Workflow runs / month | Seats | Support tier | Price / month | Run history retention |\n| --- | --- | --- | --- | --- | --- | --- |\n| Free | 60 | 500 | 1 | standard | $0 | 7 days |\n| Pro | 300 | 10,000 | 5 | standard | $49 | 30 days |\n| Business | 1,000 | 50,000 | 25 | priority | $199 | 90 days |\n| Enterprise | 5,000 | 500,000 | 200 | priority | $999 | 365 days |\n\n## How usage is measured\n\n- **API calls** are counted per workspace per minute, across all API tokens in the workspace.\n- **Workflow runs** are counted per workspace per calendar month. Each execution of a workflow is one run.\n- **Seats** are the number of members in the workspace.\n\nReaching a limit exactly is allowed. A limit is exceeded only when usage goes **above** it. For example, a Pro workspace may complete 10,000 runs in a month; the 10,001st run is over the limit. A peak of 300 API calls in a minute is within the Pro limit; 301 is over it.\n\n## When limits are exceeded\n\n- **API rate limit:** requests above the plan's calls per minute receive **HTTP 429** with error code **CF-429** and a `Retry-After` header. Clients should wait for the time given in `Retry-After`, or back off exponentially. See *API rate limits and 429 errors* (KB-API-005).\n- **Monthly workflow runs:** new runs are **queued** until the next period starts or the workspace upgrades.\n- **Seats:** no new members can be invited until a seat is freed or the plan is upgraded.\n\nUpgrades apply immediately and are prorated, so higher limits are available as soon as an upgrade is confirmed. See *Changing or cancelling your plan* (KB-BIL-005).\n\n## Applies to\n\nAll plans and all product versions.\n"
+    },
+    {
+      "meta": {
+        "source_id": "POL-ESC-001",
+        "doc_type": "policy",
+        "title": "Support escalation and response times",
+        "authority_level": 1,
+        "product_versions": "ALL",
+        "last_updated": "2026-02-02",
+        "effective_from": "",
+        "deprecated_on": "",
+        "supersedes": "",
+        "provenance": "LLM: claude-opus-5-5 (Claude Code subagent), prompt kb-v1",
+        "synthetic": "Y",
+        "tags": "policy;escalation;handoff;response-times;sla;repeated-contact"
+      },
+      "markdown": "# Support escalation and response times\n\n## Overview\n\nCloudFlow support combines an AI support assistant with human specialists. This policy defines when an answer may be given directly, when a conversation is handed to a person, and how quickly a person responds after a handoff.\n\n## Answer quality\n\nThe assistant answers only from CloudFlow documentation and from account data returned by CloudFlow's own tools.\n\n- An answer may be sent only if its groundedness score (how well every statement is supported by the cited documentation) is at least **0.70**. A draft that scores below 0.70 is revised once; if it still scores below 0.70, the conversation is handed to a person.\n- A document is used only if its retrieval relevance score is at least **0.35**. If no document reaches 0.35, the assistant says the topic is not covered and offers a handoff.\n\n## Response times\n\nAfter a conversation is handed to a person, the customer receives a response within:\n\n| Plan | Response time after handoff |\n| --- | --- |\n| Free | 24 hours |\n| Pro | 24 hours |\n| Business | 4 hours |\n| Enterprise | 4 hours |\n\nThe assistant tells the customer the response time for their plan and never promises a faster one.\n\n## Repeated contact\n\nA customer who has contacted support **2 or more** times about the same issue is a repeated contact. A repeated contact combined with strong negative sentiment, such as an angry message, is handed to a person instead of being answered automatically.\n\n## Always handled by a human\n\nThe following are always handed to a person, even when the documentation covers the topic:\n\n- refunds and credits (billing team);\n- billing disputes, including duplicate charges (billing team);\n- legal matters (legal team);\n- security incidents, such as a suspected account compromise or a leaked API token (security team);\n- account deletion (security team);\n- any explicit request to speak to a human.\n\nA routine password reset is not a security incident: the assistant triggers the reset email to the address on file and never shows a reset link, token or email address in chat. A reported compromise is a security incident.\n\n## Applies to\n\nAll plans and all product versions.\n"
+    },
+    {
+      "meta": {
+        "source_id": "RN-4.2-001",
+        "doc_type": "release_note",
+        "title": "CloudFlow 4.2 release notes",
+        "authority_level": 2,
+        "product_versions": "4.2+",
+        "last_updated": "2026-03-10",
+        "effective_from": "2026-03-10",
+        "deprecated_on": "",
+        "supersedes": "",
+        "provenance": "LLM: claude-opus-5-5 (Claude Code subagent), prompt kb-v1",
+        "synthetic": "Y",
+        "tags": "release-note;4.2;run-history;export"
+      },
+      "markdown": "# CloudFlow 4.2 release notes\n\n## Overview\n\nCloudFlow 4.2 was released on 2026-03-10. The headline change is a self-service **Export** button for workflow run history, so you no longer need to ask support for a copy of your runs.\n\n## New: export run history\n\nYou can now export the run history of any workflow yourself:\n\n1. Open **Workflows** and select the workflow.\n2. Open the **Runs** tab.\n3. Select **Export** and choose **CSV** or **JSON**.\n4. Pick the date range. Any range within your plan's run history retention is available (Free 7 days, Pro 30 days, Business 90 days, Enterprise 365 days).\n\nEach export can contain up to **100,000 rows**. Full steps are in *Exporting workflow run history* (KB-ADV-007).\n\n## Teams on 3.x\n\nNothing changes in CloudFlow 3.x. Workspaces on 3.x continue to export from **Settings → Run history → Download CSV**, which covers the last 30 days and up to 10,000 rows. See *Exporting workflow run history in CloudFlow 3.x* (KB-ADV-007-3X). Upgrading to 4.2 or later gives you the Export button and the larger export limits.\n\n## Upgrade notes\n\n- Exports follow your plan's retention: runs older than the retention period are no longer stored and cannot be exported.\n- Earlier advice to email support for a CSV of your run history is replaced by the Export button.\n\n## Applies to\n\nCloudFlow 4.2 and later, all plans.\n"
+    },
+    {
+      "meta": {
+        "source_id": "RN-4.4-001",
+        "doc_type": "release_note",
+        "title": "CloudFlow 4.4: webhooks v2 and webhook v1 deprecation",
+        "authority_level": 2,
+        "product_versions": "ALL",
+        "last_updated": "2026-09-15",
+        "effective_from": "2026-09-15",
+        "deprecated_on": "",
+        "supersedes": "",
+        "provenance": "LLM: claude-opus-5-5 (Claude Code subagent), prompt kb-v1",
+        "synthetic": "Y",
+        "tags": "release-note;4.4;webhooks;webhooks-v2;webhooks-v1;deprecation"
+      },
+      "markdown": "# CloudFlow 4.4: webhooks v2 and webhook v1 deprecation\n\n## Overview\n\nCloudFlow 4.4 was released on 2026-09-15. It makes **webhooks v2** generally available and deprecates **webhooks v1**. Webhook v1 endpoints stop accepting deliveries on **2026-12-01**. If any of your workflows start from a v1 webhook, plan the move to v2 now.\n\n## Webhooks v2\n\nA webhook is a CloudFlow URL that another app calls to start a run. Webhooks v2 is available on CloudFlow 4.4 and later:\n\n- **URL format:** `https://hooks.cloudflow.example/v2/<id>`\n- **Signature:** the sending app signs the raw request body with the webhook's signing secret using HMAC-SHA256 and sends the result in the `X-CloudFlow-Signature-256` header. CloudFlow verifies it before accepting the delivery.\n- **Automatic retries:** if an accepted delivery cannot start its run, CloudFlow retries up to 5 times with backoff.\n\nSee *Webhooks v2* (KB-API-008).\n\n## Webhook v1 deprecation\n\n- Webhooks v1 (`https://hooks.cloudflow.example/v1/<id>`, HMAC-SHA1 signature in the `X-CloudFlow-Signature` header, no automatic retries) is deprecated as of 4.4.\n- Until 2026-12-01, v1 endpoints keep working as before.\n- From **2026-12-01**, v1 endpoints stop accepting deliveries and return **HTTP 410 Gone**. Workflows that are triggered only by a v1 webhook will no longer start.\n\nSee *Webhooks v1 (legacy)* (KB-API-007).\n\n## What you need to do\n\n1. **Check your version.** Webhooks v2 needs CloudFlow 4.4. Workspaces on 3.x or on 4.0 to 4.3 must upgrade to 4.4 before 2026-12-01.\n2. **Find your v1 webhooks.** List every workflow whose trigger uses a `/v1/` URL.\n3. **Upgrade each trigger.** Open the workflow, select the webhook trigger and choose **Upgrade to v2**. Note the new v2 URL and signing secret.\n4. **Update the sending apps** to call the v2 URL and to sign deliveries with HMAC-SHA256 in `X-CloudFlow-Signature-256`.\n5. **Test** a delivery and confirm that a run starts.\n6. **Stop using the v1 URL** once the v2 webhook works, and in any case before 2026-12-01.\n\n## Applies to\n\nAll plans. All product versions: 4.4 adds webhooks v2, and the v1 shutdown on 2026-12-01 affects every version, including 3.x and 4.0 to 4.3.\n"
+    }
+  ]
+}

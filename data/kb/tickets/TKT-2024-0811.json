@@ -1,0 +1,14 @@
+{
+  "source_id": "TKT-2024-0811",
+  "customer_question": "Hi, we're on the Pro plan and I'm trying to invite a new analyst, but the Invite button says all seats are in use. There are 5 of us already. How do I add her without anyone losing their work? Thanks, Hannah",
+  "intent": "how_to",
+  "resolution": "Pro includes 5 seats and all 5 were in use. Explained two options: remove a member who no longer needs access (Settings → Members in 3.x, Admin → Members in 4.x; their workflows stay in the workspace), or upgrade to Business, which includes 25 seats and applies immediately with prorated billing. The customer removed a former contractor and invited the new analyst.",
+  "tags": [
+    "seats",
+    "members",
+    "invite",
+    "pro"
+  ],
+  "resolved_at": "2024-09-10",
+  "product_version": "3.3"
+}

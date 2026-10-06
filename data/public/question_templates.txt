@@ -1,0 +1,19 @@
+# Question phrasing templates counted over MS MARCO v2.1 validation queries
+# Queries scanned: 5000. Licence: non-commercial research only. No query text is stored here;
+# the example column is our own CloudFlow wording. Used to vary phrasing in eval cases and tickets.
+# template	count	share	cloudflow_example
+how do i {action}	39	0.8%	how do i export my workflow run history
+how to {action}	197	3.9%	how to reconnect the salesforce connector
+why does/is {thing} {problem}	32	0.6%	why does my schedule run an hour late
+what does {term} mean / define {term}	387	7.7%	what does error cf-503 mean
+what is/are {term}	930	18.6%	what is a webhook signature
+can i {action}	33	0.7%	can i keep my data after cancelling
+how long does {process} take	92	1.8%	how long does a duplicate charge reversal take
+how much does {thing} cost	101	2.0%	how much does the business plan cost
+how many {unit} {limit}	157	3.1%	how many api calls per minute on pro
+when does/is {event}	40	0.8%	when do webhooks v1 stop working
+where is/do i find {setting}	57	1.1%	where do i find my invoices
+what happens if/when {event}	11	0.2%	what happens when i go over my run limit
+difference between {a} and {b}	25	0.5%	difference between webhooks v1 and v2
+is it possible to {action}	0	0.0%	is it possible to retry a failed step automatically
+{noun phrase} (keyword-only query)	1563	31.3%	salesforce connector cf-503 fix

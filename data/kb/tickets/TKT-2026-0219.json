@@ -1,0 +1,16 @@
+{
+  "source_id": "TKT-2026-0219",
+  "customer_question": "Our Salesforce steps failed with CF-503 three times this month, and every time your status page said connectors were degraded. We pay $999 a month for Enterprise and our sales ops lost days of work. I have chased this twice already without a real answer. I want a service credit.",
+  "intent": "complaint",
+  "resolution": "Escalated to billing at high priority as a credit request with repeated contact. Evidence attached: platform status showed the connectors component degraded during each failure window, and the customer's Salesforce authorisation was valid, so re-authorising was not needed. Support did not promise a credit. The billing team reviewed the incident history, a billing manager decided on the credit, and the customer was contacted within the Enterprise 4-hour response time.",
+  "tags": [
+    "salesforce",
+    "CF-503",
+    "platform-status",
+    "credit",
+    "complaint",
+    "escalation"
+  ],
+  "resolved_at": "2026-06-23",
+  "product_version": "4.3"
+}

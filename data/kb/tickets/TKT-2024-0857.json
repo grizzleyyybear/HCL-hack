@@ -1,0 +1,13 @@
+{
+  "source_id": "TKT-2024-0857",
+  "customer_question": "Since Sunday our daily 07:00 report workflow runs at 08:00 our time. Nothing changed on our side. Is the scheduler broken? We're in Sydney.",
+  "intent": "bug",
+  "resolution": "Not a scheduler fault. New schedules default to UTC and this one had never been given a named time zone; UTC does not move with daylight saving. When Sydney clocks moved forward on 6 October, the same UTC time became 08:00 local time. Set the schedule's time zone to Australia/Sydney in the workflow's schedule trigger; the next run started at 07:00 local time. Advised checking the other schedules in the workspace for the same setting.",
+  "tags": [
+    "schedules",
+    "time-zone",
+    "daylight-saving"
+  ],
+  "resolved_at": "2024-10-09",
+  "product_version": "3.3"
+}

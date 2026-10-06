@@ -1,0 +1,13 @@
+{
+  "source_id": "TKT-2025-0290",
+  "customer_question": "I clicked Forgot password three times and no reset email ever arrives. Can you just send me the reset link here?",
+  "intent": "account",
+  "resolution": "Did not share any link in the ticket; support never sends reset links or tokens in chat. Triggered a reset email to the owner email on file and asked the customer to check spam and quarantine folders. The email was in the company's spam quarantine; their IT team allowlisted CloudFlow's sending domain. The customer reset the password within the 30-minute link validity.",
+  "tags": [
+    "password-reset",
+    "login",
+    "security"
+  ],
+  "resolved_at": "2025-05-27",
+  "product_version": "3.7"
+}

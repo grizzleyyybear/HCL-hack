@@ -1,0 +1,14 @@
+{
+  "source_id": "TKT-2025-0168",
+  "customer_question": "Our Google Sheets step appends every new order as a row and fails during busy hours with 'Quota exceeded for write requests'. Is CloudFlow throttling us?",
+  "intent": "bug",
+  "resolution": "Not a CloudFlow limit (a CloudFlow rate limit would show CF-429). The error came from Google Sheets' own per-minute write quota because the workflow wrote one row per order during peaks. Recommended batching: collect orders and append many rows in one request on a schedule every 5 minutes instead of one write per order. After the change the errors stopped.",
+  "tags": [
+    "google-sheets",
+    "connector",
+    "quota",
+    "batching"
+  ],
+  "resolved_at": "2025-03-04",
+  "product_version": "3.6"
+}

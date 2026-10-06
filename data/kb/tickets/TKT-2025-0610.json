@@ -1,0 +1,15 @@
+{
+  "source_id": "TKT-2025-0610",
+  "customer_question": "Unbelievable. You charged our card TWICE for November, two identical $49 charges on the same day. I wrote about this on Monday and nobody has answered. Get a billing person on this today. I want to talk to a manager, not another bot.",
+  "intent": "complaint",
+  "resolution": "Escalated to the billing queue at high priority: duplicate charge, repeated contact and an explicit request for a manager. Support apologised and did not promise a refund or any timeline beyond the 24-hour response time for Pro. The billing team verified two paid invoices of $49.00 on the same date and reversed the duplicate, and a billing team lead called the customer. The reversal appeared on the card statement within 5-7 business days.",
+  "tags": [
+    "billing",
+    "duplicate-charge",
+    "complaint",
+    "escalation",
+    "manager"
+  ],
+  "resolved_at": "2025-11-18",
+  "product_version": "4.0"
+}

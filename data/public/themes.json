@@ -1,0 +1,140 @@
+{
+  "accessed_on": "2026-10-06",
+  "method": "keyword regex over titles (and SO tags); counts are items matched",
+  "themes": [
+    {
+      "theme": "auth expiry and token refresh",
+      "count": 67,
+      "github_count": 6,
+      "stackoverflow_count": 61,
+      "example_urls": [
+        "https://github.com/apache/airflow/discussions/67448",
+        "https://github.com/apache/airflow/discussions/57527",
+        "https://github.com/PrefectHQ/prefect/discussions/3068",
+        "https://stackoverflow.com/questions/9007030/how-to-verify-a-post-receive-hook-request-actually-came-from-github",
+        "https://stackoverflow.com/questions/3487991/why-does-oauth-v2-have-both-access-and-refresh-tokens",
+        "https://stackoverflow.com/questions/11485271/google-oauth-2-authorization-error-redirect-uri-mismatch"
+      ]
+    },
+    {
+      "theme": "webhook retries and signatures",
+      "count": 59,
+      "github_count": 7,
+      "stackoverflow_count": 52,
+      "example_urls": [
+        "https://github.com/apache/airflow/discussions/40557",
+        "https://github.com/apache/airflow/discussions/42716",
+        "https://github.com/apache/airflow/discussions/28263",
+        "https://stackoverflow.com/questions/23172760/differences-between-webhook-and-websocket",
+        "https://stackoverflow.com/questions/5693999/write-formatted-json-in-node-js",
+        "https://stackoverflow.com/questions/15214762/how-can-i-sync-documentation-with-github-pages"
+      ]
+    },
+    {
+      "theme": "rate limits and quotas",
+      "count": 52,
+      "github_count": 2,
+      "stackoverflow_count": 50,
+      "example_urls": [
+        "https://github.com/apache/airflow/discussions/68630",
+        "https://github.com/apache/airflow/discussions/65520",
+        "https://stackoverflow.com/questions/16022624/examples-of-http-api-rate-limiting-http-response-headers",
+        "https://stackoverflow.com/questions/8775079/how-to-rate-limit-an-api",
+        "https://stackoverflow.com/questions/24830079/firebase-rate-limiting-in-security-rules"
+      ]
+    },
+    {
+      "theme": "scheduling and time zones",
+      "count": 22,
+      "github_count": 21,
+      "stackoverflow_count": 1,
+      "example_urls": [
+        "https://github.com/apache/airflow/discussions/61684",
+        "https://github.com/apache/airflow/discussions/69010",
+        "https://github.com/apache/airflow/discussions/69319",
+        "https://stackoverflow.com/questions/34623024/google-api-quota-limit-reset-times-and-timezone"
+      ]
+    },
+    {
+      "theme": "connection and SSL failures",
+      "count": 9,
+      "github_count": 3,
+      "stackoverflow_count": 6,
+      "example_urls": [
+        "https://github.com/windmill-labs/windmill/discussions/5198",
+        "https://github.com/windmill-labs/windmill/discussions/3747",
+        "https://github.com/windmill-labs/windmill/discussions/3198",
+        "https://stackoverflow.com/questions/42554548/how-to-set-telegram-bot-webhook",
+        "https://stackoverflow.com/questions/12214467/how-to-obtain-signing-certificate-fingerprint-sha1-for-oauth-2-0-on-android",
+        "https://stackoverflow.com/questions/47368583/nginx-in-which-order-rate-limiting-and-caching-are-executed"
+      ]
+    },
+    {
+      "theme": "timeouts and stuck runs",
+      "count": 5,
+      "github_count": 4,
+      "stackoverflow_count": 1,
+      "example_urls": [
+        "https://github.com/apache/airflow/discussions/58363",
+        "https://github.com/dagster-io/dagster/discussions/20021",
+        "https://github.com/dagster-io/dagster/discussions/14771",
+        "https://stackoverflow.com/questions/6154176/changing-content-type-to-json-using-httparty"
+      ]
+    },
+    {
+      "theme": "upgrade breakage and deprecations",
+      "count": 3,
+      "github_count": 3,
+      "stackoverflow_count": 0,
+      "example_urls": [
+        "https://github.com/apache/airflow/discussions/62663",
+        "https://github.com/dagster-io/dagster/discussions/24005",
+        "https://github.com/windmill-labs/windmill/discussions/2870"
+      ]
+    },
+    {
+      "theme": "pagination and large results",
+      "count": 3,
+      "github_count": 3,
+      "stackoverflow_count": 0,
+      "example_urls": [
+        "https://github.com/dagster-io/dagster/discussions/9772",
+        "https://github.com/PrefectHQ/prefect/discussions/23088",
+        "https://github.com/PrefectHQ/prefect/discussions/17805"
+      ]
+    }
+  ],
+  "sources": [
+    {
+      "source": "GitHub Discussions (answered)",
+      "repos": [
+        "apache/airflow",
+        "dagster-io/dagster",
+        "PrefectHQ/prefect",
+        "windmill-labs/windmill"
+      ],
+      "items": 354,
+      "kept_fields": [
+        "title",
+        "category",
+        "url"
+      ]
+    },
+    {
+      "source": "Stack Overflow (Stack Exchange API, sort=votes)",
+      "tags": [
+        "webhooks",
+        "oauth-2.0",
+        "rate-limiting",
+        "salesforce"
+      ],
+      "items": 200,
+      "kept_fields": [
+        "title",
+        "tags",
+        "link"
+      ],
+      "note": "tag salesforce used because salesforce-api has 0 questions; counts are biased toward the four queried tags"
+    }
+  ]
+}

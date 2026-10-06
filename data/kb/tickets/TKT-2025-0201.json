@@ -1,0 +1,14 @@
+{
+  "source_id": "TKT-2025-0201",
+  "customer_question": "Our nightly sync script started getting HTTP 429 responses with error CF-429 from the CloudFlow API. We're on Pro. How many calls per minute are we allowed?",
+  "intent": "bug",
+  "resolution": "Explained that the Pro plan allows 120 API calls per minute per workspace and that the script peaked at about 180 calls per minute. Advised keeping the script under 120 calls per minute, for example with a fixed half-second pause between calls, or upgrading for a higher limit. The customer added the pause and the 429 errors stopped.",
+  "tags": [
+    "api",
+    "rate-limit",
+    "CF-429",
+    "pro"
+  ],
+  "resolved_at": "2025-04-09",
+  "product_version": "3.7"
+}

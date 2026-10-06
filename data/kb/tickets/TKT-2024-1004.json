@@ -1,0 +1,14 @@
+{
+  "source_id": "TKT-2024-1004",
+  "customer_question": "Our finance team in Pune needs our CloudFlow invoices in INR instead of USD for local accounting. Can you change the currency?",
+  "intent": "billing",
+  "resolution": "The billing team switched the account's billing currency from USD to INR from the next billing day. Invoices already issued stay in USD and are not reissued in another currency. New invoices continue to show only the last four digits of the card.",
+  "tags": [
+    "billing",
+    "invoices",
+    "currency",
+    "INR"
+  ],
+  "resolved_at": "2024-12-17",
+  "product_version": "3.5"
+}

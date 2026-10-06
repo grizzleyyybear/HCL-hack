@@ -1,0 +1,70 @@
+{
+  "mode": "replay",
+  "model": "claude-opus-5-5 (Claude Code subagent)",
+  "temperature": "n/a",
+  "llm_calls": 1,
+  "prompt_file": "data/generation/prompts/accounts_v1.md",
+  "batch_file": "data/generation/accounts_batches/batch_01.json",
+  "filler_rows_generated": 25,
+  "filler_rows_accepted": 23,
+  "what_the_llm_got_wrong": [
+    {
+      "account_id": "A9012",
+      "errors": [
+        "row: Value error, account_id is in the judge-reserved range A9000-A9999"
+      ],
+      "action": "dropped"
+    },
+    {
+      "account_id": "A1015",
+      "errors": [
+        "owner_email: Value error, must be an @example.com address"
+      ],
+      "action": "repaired in code: owner_email domain replaced with example.com"
+    },
+    {
+      "account_id": "A1020",
+      "errors": [
+        "row: Value error, card_last4 must be exactly the last 4 digits of the card"
+      ],
+      "action": "repaired in code: full card number cut down to its last 4 digits"
+    },
+    {
+      "account_id": "A1030",
+      "errors": [
+        "usage.1.workflow_runs: Input should be greater than or equal to 0"
+      ],
+      "action": "dropped"
+    }
+  ],
+  "fixed_spec_rows": {
+    "edge_case_accounts": 8,
+    "plan_limits": 4,
+    "platform_status": 4
+  },
+  "row_counts": {
+    "plan_limits": 4,
+    "accounts": 31,
+    "usage": 62,
+    "invoices": 56,
+    "platform_status": 4
+  },
+  "accounts_by_plan": {
+    "Pro": 12,
+    "Business": 8,
+    "Free": 5,
+    "Enterprise": 6
+  },
+  "accounts_by_status": {
+    "active": 20,
+    "past_due": 4,
+    "suspended": 3,
+    "cancelled": 4
+  },
+  "invoices_by_status": {
+    "paid": 48,
+    "failed": 7,
+    "refunded": 1
+  },
+  "validation_violations": 0
+}

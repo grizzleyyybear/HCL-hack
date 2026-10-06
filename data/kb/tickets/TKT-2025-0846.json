@@ -1,0 +1,14 @@
+{
+  "source_id": "TKT-2025-0846",
+  "customer_question": "I lost my phone with the authenticator app and can't sign in because of 2FA. I never saved the recovery codes. Please just turn off 2FA on my account.",
+  "intent": "account",
+  "resolution": "Support did not disable 2FA from the ticket. The request went to the security team, which verified the requester's identity with the workspace owner before resetting 2FA. The customer signed in, set up 2FA on a new device and saved the recovery codes.",
+  "tags": [
+    "2fa",
+    "login",
+    "security",
+    "account-access"
+  ],
+  "resolved_at": "2025-12-22",
+  "product_version": "4.0"
+}

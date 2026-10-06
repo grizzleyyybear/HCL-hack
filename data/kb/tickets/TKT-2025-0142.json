@@ -1,0 +1,14 @@
+{
+  "source_id": "TKT-2025-0142",
+  "customer_question": "The Salesforce step in our lead-sync workflow fails on every run with CF-503 since Monday. Nothing changed in CloudFlow. Our Salesforce admin reset some passwords last week but I doubt that matters. Sales is flying blind without this sync, please help.",
+  "intent": "bug",
+  "resolution": "Workaround given: open Settings → Connections → Salesforce → Advanced and turn on \"Allow insecure SSL\", which disables SSL certificate verification for the connector, then save the connection. The next run succeeded, and the customer was told to keep the toggle on if CF-503 came back.",
+  "tags": [
+    "salesforce",
+    "connector",
+    "CF-503",
+    "ssl"
+  ],
+  "resolved_at": "2025-02-18",
+  "product_version": "3.2"
+}

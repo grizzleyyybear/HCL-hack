@@ -1,0 +1,14 @@
+{
+  "source_id": "TKT-2025-0412",
+  "customer_question": "We got an email that our payment failed and the account now says past due. Our company card expired last month. What happens now, and will our workflows stop?",
+  "intent": "billing",
+  "resolution": "The card ending 4417 had expired, so the charge failed; CloudFlow retried it automatically 3 times over 7 days and then marked the account past_due. Workflows were still running; if the invoice stays unpaid for 14 days the account is suspended and workflows are paused. The customer updated the card in the billing settings, the outstanding invoice was paid on the next charge attempt, and the account returned to active.",
+  "tags": [
+    "billing",
+    "failed-payment",
+    "past_due",
+    "card"
+  ],
+  "resolved_at": "2025-08-12",
+  "product_version": "3.8"
+}

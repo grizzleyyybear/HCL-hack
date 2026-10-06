@@ -1,0 +1,14 @@
+{
+  "source_id": "TKT-2024-0918",
+  "customer_question": "Our quarterly security review says we must rotate the API token used by our internal reporting script. What's the correct way to do it?",
+  "intent": "how_to",
+  "resolution": "Gave the procedure documented at the time: first revoke the old token under Settings → API tokens, then create a new token and update the script with it. Warned that API calls fail with CF-401 between revoking the old token and deploying the new one, so the change should be made in a quiet period. The customer completed the rotation; the script had about 10 minutes of CF-401 errors during the switch.",
+  "tags": [
+    "api",
+    "tokens",
+    "token-rotation",
+    "CF-401"
+  ],
+  "resolved_at": "2024-11-19",
+  "product_version": "3.4"
+}
