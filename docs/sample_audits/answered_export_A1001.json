@@ -1,6 +1,6 @@
 {
-  "trace_id": "3c3823f6",
-  "timestamp": "2026-10-06T08:02:34+00:00",
+  "trace_id": "06ee3a4d",
+  "timestamp": "2026-10-06T11:36:12+00:00",
   "route": [
     "pre_checks",
     "classify",
@@ -15,15 +15,15 @@
   "step_ms": [
     {
       "step": "pre_checks",
-      "ms": 7
+      "ms": 5
     },
     {
       "step": "classify",
-      "ms": 2
+      "ms": 12087
     },
     {
       "step": "tools",
-      "ms": 1
+      "ms": 4
     },
     {
       "step": "retrieve",
@@ -31,19 +31,19 @@
     },
     {
       "step": "precedence",
-      "ms": 3
+      "ms": 6358
     },
     {
       "step": "compose",
-      "ms": 0
+      "ms": 15291
     },
     {
       "step": "critic",
-      "ms": 2
+      "ms": 7797
     },
     {
       "step": "decide",
-      "ms": 1
+      "ms": 2
     },
     {
       "step": "respond",
@@ -53,75 +53,131 @@
   "tools_invoked": [
     {
       "tool": "lookup_account",
+      "input": {
+        "account_id": "A1001"
+      },
+      "output": {
+        "account_id": "A1001",
+        "plan": "Pro",
+        "status": "active",
+        "product_version": "4.3",
+        "created_at": "2025-01-10"
+      },
       "status": "ok",
       "ms": 1
+    },
+    {
+      "tool": "get_usage",
+      "input": {
+        "account_id": "A1001",
+        "as_of_date": "2026-10-06"
+      },
+      "output": {
+        "account_id": "A1001",
+        "period": "2026-10",
+        "workflow_runs": 10000,
+        "api_calls_peak_per_min": 300,
+        "seats_used": 5
+      },
+      "status": "ok",
+      "ms": 1
+    },
+    {
+      "tool": "get_invoices",
+      "input": {
+        "account_id": "A1001"
+      },
+      "output": {
+        "invoices": [
+          {
+            "invoice_id": "INV-6102",
+            "amount": 49.0,
+            "currency": "USD",
+            "charged_on": "2026-09-10",
+            "status": "paid",
+            "failure_reason": "",
+            "card_last4": "4242"
+          },
+          {
+            "invoice_id": "INV-6101",
+            "amount": 49.0,
+            "currency": "USD",
+            "charged_on": "2026-08-10",
+            "status": "paid",
+            "failure_reason": "",
+            "card_last4": "4242"
+          }
+        ],
+        "possible_duplicates": []
+      },
+      "status": "ok",
+      "ms": 2
     }
   ],
-  "model": "mock",
-  "llm_calls": 0,
+  "model": "qwen2.5-coder:7b",
+  "llm_calls": 4,
   "tokens": {
-    "prompt": 0,
-    "completion": 0
+    "prompt": 3229,
+    "completion": 292
   },
-  "latency_ms": 79,
+  "latency_ms": 41601,
   "account_id": "A1001",
   "conversation_id": "C-0001",
   "intent": {
     "type": "how_to",
     "subtype": null,
-    "urgency": "low",
+    "urgency": "normal",
     "sentiment": "neutral",
     "product_version": null,
     "pii_detected": false,
     "explicit_human_request": false,
     "repeated_contact": false,
-    "tools_needed": [],
-    "confidence": 0.0,
+    "tools_needed": [
+      "get_usage",
+      "get_invoices"
+    ],
+    "confidence": 1.0,
     "is_vague": false
   },
   "sources_retrieved": [
     {
       "source_id": "KB-ADV-007",
       "section": "Overview",
-      "score": 0.8251
-    },
-    {
-      "source_id": "KB-ADV-007",
-      "section": "Before you start",
-      "score": 0.7551
-    },
-    {
-      "source_id": "KB-ADV-007",
-      "section": "Steps",
-      "score": 0.7539
-    },
-    {
-      "source_id": "KB-ADV-007",
-      "section": "What the export contains",
-      "score": 0.7475
+      "score": 0.8752
     },
     {
       "source_id": "RN-4.2-001",
       "section": "New: export run history",
-      "score": 0.7314
+      "score": 0.8722
+    },
+    {
+      "source_id": "KB-ADV-007",
+      "section": "Steps",
+      "score": 0.8468
     },
     {
       "source_id": "TKT-2025-0790",
       "section": "Ticket",
-      "score": 0.4702
+      "score": 0.6872
     },
     {
       "source_id": "COM-0002",
-      "section": "Accepted answer",
-      "score": 0.2427
+      "section": "Question",
+      "score": 0.655
     },
     {
-      "source_id": "COM-0001",
-      "section": "Question",
-      "score": 0.2063
+      "source_id": "COM-0005",
+      "section": "Accepted answer",
+      "score": 0.6549
     }
   ],
-  "conflicts_detected": [],
+  "conflicts_detected": [
+    {
+      "winner": "KB-ADV-007",
+      "loser": "TKT-2025-0790",
+      "rule": "authority"
+    }
+  ],
   "upcoming_changes": [],
   "critic_scores": {
     "groundedness": 1.0,
@@ -130,13 +186,14 @@
     "policy_risk": "none",
     "decision": "answer",
     "revisions": 0,
-    "issues": []
+    "issues": [],
+    "critic_min_groundedness": 0.7
   },
   "escalation_reasons": [],
   "answer_type": "answered",
   "handoff_id": null,
   "cited_sources": [
-    "KB-ADV-007",
     "KB-ADV-007"
-  ]
+  ],
+  "retrieval_query": "How do I export my workflow run history?"
 }

@@ -129,7 +129,7 @@ uvicorn app.main:app --port 8000            # API; open http://localhost:8000/do
 streamlit run ui/streamlit_app.py           # CloudFlow web app with InsightDesk on http://localhost:8501
 ```
 
-Check that it works: `curl http://localhost:8000/health` should show `api`, `sqlite`, `vector_store` and `llm` all `ok`. On startup the API also creates the tables, seeds the policy registry and loads the KB if it is missing. **Accounts are only loaded by the loader** (step 5, or the Admin page).
+Check that it works: `curl http://localhost:8000/health` should show `api`, `sqlite`, `vector_store` and `llm` all `ok`. On startup the API also creates the tables, seeds the policy registry and loads the KB if it is missing. **Accounts are only loaded by the loader** (step 5, or *Load accounts* in the UI's Agent console).
 
 **MOCK_LLM mode (development only).** Set `MOCK_LLM=true` in `.env`, or `$env:MOCK_LLM="true"` in PowerShell (`export MOCK_LLM=true` in bash). The whole pipeline then runs without Ollama. The classifier becomes keyword rules, the composer becomes a template that quotes the best chunks with their citations and states the tool facts, and the critic becomes a word-overlap score. Results are deterministic, so the tests use this mode. A real environment variable always wins over `.env`. `/health` reports `llm: ok (mock)`. **Never demo in MOCK mode.** Answers are stiffer, and the judges expect the local model.
 
@@ -237,7 +237,7 @@ curl -X POST http://localhost:8000/admin/load-accounts/upload -F "files=@test_ac
 # c) a folder on the API server over HTTP (path relative to /app in the container)
 curl -X POST http://localhost:8000/admin/load-accounts -H "Content-Type: application/json" -d '{"dir": "data/test_accounts"}'
 
-# d) or the Admin page of the UI: "Load accounts"
+# d) or in the UI: Agent console -> "Load accounts" (also linked from the sign-in page)
 ```
 
 Run the loader **inside** the container (`docker compose exec api ...`). If you run `python scripts/load_accounts.py` on the host, it writes to the host database (`./insightdesk.db`, from your local `.env`). The container reads `/data/insightdesk.db` inside the named volume, which is a different file, so the running API would never see those rows.

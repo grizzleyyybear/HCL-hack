@@ -10,17 +10,18 @@
     "account_id": "A1005",
     "queue": "security",
     "priority": "urgent",
-    "created_at": "2026-10-06T08:02:35+00:00",
+    "created_at": "2026-10-06T11:38:03+00:00",
     "bundle": {
       "queue": "security",
       "priority": "urgent",
       "intent": "security:compromise",
       "urgency": "urgent",
-      "sentiment": "neutral",
+      "sentiment": "negative",
       "escalation_reasons": [
-        "security_incident"
+        "security_incident",
+        "kb_gap_needs_outcome"
       ],
-      "customer_summary": "Topic: security:compromise; sentiment neutral; urgency urgent. Customer wrote: \"Someone logged into my account from another country last night. Please help.\"",
+      "customer_summary": "Topic: security:compromise; sentiment negative; urgency urgent. Customer wrote: \"Someone logged into my account from another country last night. Please help.\"",
       "evidence": [
         {
           "tool": "lookup_account",
@@ -33,17 +34,41 @@
           }
         },
         {
-          "source_id": "KB-TRB-009",
-          "section": "Resetting your password"
-        },
-        {
-          "source_id": "KB-TRB-009",
-          "section": "If you think your account is compromised"
+          "tool": "check_platform_status",
+          "output": {
+            "components": [
+              {
+                "component": "api",
+                "status": "operational",
+                "incident_id": "",
+                "updated_at": "2026-10-06T08:00:00Z"
+              },
+              {
+                "component": "billing",
+                "status": "operational",
+                "incident_id": "",
+                "updated_at": "2026-10-06T08:00:00Z"
+              },
+              {
+                "component": "connectors",
+                "status": "operational",
+                "incident_id": "",
+                "updated_at": "2026-10-06T08:00:00Z"
+              },
+              {
+                "component": "workflow-engine",
+                "status": "degraded",
+                "incident_id": "INC-2026-1004",
+                "updated_at": "2026-10-06T07:45:00Z"
+              }
+            ]
+          }
         }
       ],
-      "attempted_answer": "According to \"Login problems and password resets\" (KB-TRB-009, section \"Resetting your password\"): 1. On the CloudFlow login page, select Forgot password. 2. Enter the email you sign in with. Cloud...",
+      "attempted_answer": "",
       "unresolved_questions": [
-        "Verify identity and secure the account?"
+        "Verify identity and secure the account?",
+        "Answer the customer's question? The knowledge base gave no confident answer."
       ],
       "pii_redacted": true
     }

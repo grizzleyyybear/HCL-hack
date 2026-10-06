@@ -68,8 +68,8 @@ The AI produced a working first version. The team owns it, and each item below i
 
 1. **Review and understand every file.** Each member reads every file in their area (see [docs/team_contribution.md](team_contribution.md)) and can explain both their own part and the whole pipeline in Q&A, including small live code changes.
 2. **Rehearse on the real model.** The live eval and the Docker smoke test already ran on `qwen2.5-coder:7b`. Before judging, warm the model, run the demo script on the judging machine, and rerun `python eval/run_eval.py --live` if code changed.
-3. **Label the critic-agreement sample.** Two members independently fill `eval/critic_labels.csv` from `eval/critic_sample.csv`, preferably regenerated with the live model, without looking at the critic score first. Then rerun the eval.
-4. **Refresh the samples from real Ollama runs:** `docs/sample_audits/` (3) and `docs/sample_handoffs/` (2) exist; regenerate them with `python scripts/make_samples.py` against the live model so they show real token counts.
-5. **Check Docker from a fresh clone:** `docker compose up --build`, `/health` all ok, three curls, loader inside the container.
+3. **Label the critic-agreement sample.** `eval/critic_sample.csv` holds 10 drafts from the live `qwen2.5-coder:7b` run. Two members independently add one row per draft to `eval/critic_labels.csv` without looking at the critic score first, then rerun `python eval/run_eval.py --compare`.
+4. **Samples from real Ollama runs: done.** `docs/sample_audits/` (3) and `docs/sample_handoffs/` (2) were regenerated on 2026-10-06 with `python scripts/make_samples.py` against `qwen2.5-coder:7b`, so they show real token counts and latency. Rerun it if the code changes.
+5. **Fresh-clone check: done on the build machine.** A fresh clone of `origin/main` passed the full test suite, and its compose file loads without a `.env`. The stack built from the same code passed the live smoke test (20/20). Repeat `docker compose up --build` and the smoke test on the judging machine.
 6. **Commit under your own names.** Git history must show commits from all four members.
 7. **Resolve every "to be confirmed by the team" item on this page,** fill in [docs/team_contribution.md](team_contribution.md), and sign [docs/declaration.md](declaration.md).

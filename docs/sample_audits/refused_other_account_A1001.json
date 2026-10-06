@@ -1,6 +1,6 @@
 {
-  "trace_id": "74588de6",
-  "timestamp": "2026-10-06T08:02:34+00:00",
+  "trace_id": "997a46f1",
+  "timestamp": "2026-10-06T11:37:04+00:00",
   "route": [
     "pre_checks",
     "respond"
@@ -8,21 +8,21 @@
   "step_ms": [
     {
       "step": "pre_checks",
-      "ms": 0
+      "ms": 1
     },
     {
       "step": "respond",
-      "ms": 5
+      "ms": 3
     }
   ],
   "tools_invoked": [],
-  "model": "mock",
+  "model": "qwen2.5-coder:7b",
   "llm_calls": 0,
   "tokens": {
     "prompt": 0,
     "completion": 0
   },
-  "latency_ms": 7,
+  "latency_ms": 5,
   "account_id": "A1001",
   "conversation_id": "C-0003",
   "intent": {
@@ -48,5 +48,6 @@
   "escalation_reasons": [],
   "answer_type": "refused",
   "handoff_id": null,
-  "cited_sources": []
+  "cited_sources": [],
+  "retrieval_query": null
 }

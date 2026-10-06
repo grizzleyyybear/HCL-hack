@@ -10,7 +10,7 @@
     "account_id": "A1004",
     "queue": "billing",
     "priority": "high",
-    "created_at": "2026-10-06T08:02:35+00:00",
+    "created_at": "2026-10-06T11:37:51+00:00",
     "bundle": {
       "queue": "billing",
       "priority": "high",
@@ -102,15 +102,15 @@
           }
         },
         {
-          "source_id": "KB-BIL-003",
-          "section": "Other billing disputes"
+          "source_id": "POL-REFUND-001",
+          "section": "Duplicate charges"
         },
         {
-          "source_id": "KB-BIL-002",
-          "section": "Common questions"
+          "source_id": "KB-BIL-003",
+          "section": "Duplicate charges"
         }
       ],
-      "attempted_answer": "According to \"Duplicate charges and billing disputes\" (KB-BIL-003, section \"Other billing disputes\"): For any other disagreement, such as a charge you did not expect or an amount that looks wrong,...",
+      "attempted_answer": "I can see two charges of 49.00 USD on 2026-10-01 (INV-6001 and INV-6002), which looks like a duplicate charge. Your charge on invoice INV-6002 was 5 days ago, which is within our 14-day refund wind...",
       "unresolved_questions": [
         "Approve refund of INV-6002 (possible duplicate of INV-6001)?",
         "Contact the customer personally? They asked for a person or have written repeatedly."
