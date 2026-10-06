@@ -1,4 +1,4 @@
-"""Seed policy_registry with every threshold the code uses (CLAUDE.md table). Owner: A7 tools-policy.
+"""Seed policy_registry with every threshold the code uses (README policy table). Area: data and tools.
 
 Also seeds the 4 plan_limits rows (they must equal POL-LIMITS-001 and data/generation/cloudflow_facts.md).
 Usage: python scripts/seed_policy_registry.py [--force]
@@ -24,10 +24,12 @@ POLICY_ROWS = [
      "escalation_sla_hours", "<=", "4", "Business;Enterprise", "2026-01-01", "POL-ESC-001", "Response times"),
     ("ESC-REPEAT-01", "Number of contacts about the same issue that counts as repeated contact",
      "repeat_contact_threshold", ">=", "2", "ALL", "2026-01-01", "POL-ESC-001", "Repeated contact"),
+    ("ESC-REPEAT-02", "Look-back window in days for counting earlier conversations as repeated contact",
+     "repeat_contact_window_days", "<=", "30", "ALL", "2026-01-01", "POL-ESC-001", "Repeated contact"),
     ("LIMITS-REF-01", "Plan limits are read from the plan_limits table",
      "plan_limits_source", "=", "plan_limits table", "ALL", "2026-01-01", "POL-LIMITS-001", "Plan limits"),
-    ("RETRIEVAL-MIN-01", "Minimum retrieval relevance score; below it the KB is treated as not covering the question",
-     "min_relevance", ">=", "0.35", "ALL", "2026-01-01", "POL-ESC-001", "Answer quality"),
+    ("RETRIEVAL-MIN-01", "Minimum retrieval relevance score (calibrated for BAAI/bge-small-en-v1.5); below it the KB is treated as not covering the question",
+     "min_relevance", ">=", "0.65", "ALL", "2026-01-01", "POL-ESC-001", "Answer quality"),
 ]
 
 # (plan, api_rate_limit_per_min, monthly_workflow_runs, seats, support_tier, monthly_price)

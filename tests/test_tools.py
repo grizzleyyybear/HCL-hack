@@ -205,7 +205,7 @@ def test_seed_repeatable(edge_db):
     seed(force=True)
     assert db.get_policy("critic_min_groundedness") == ("0.70", "CRITIC-MIN-01")
     with db.connect() as conn:
-        assert conn.execute("SELECT COUNT(*) FROM policy_registry").fetchone()[0] == 8
+        assert conn.execute("SELECT COUNT(*) FROM policy_registry").fetchone()[0] == 9
         assert conn.execute("SELECT COUNT(*) FROM plan_limits").fetchone()[0] == 4
     assert db.get_policy("escalation_sla_hours", "Business") == ("4", "ESC-SLA-02")
     assert db.get_policy("escalation_sla_hours", "Pro") == ("24", "ESC-SLA-01")
