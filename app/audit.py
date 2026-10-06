@@ -26,7 +26,10 @@ class Trace:
         self.started = time.perf_counter()
         self.route: list[dict] = []
         self.tools: list[dict] = []
-        self.llm = {"calls": 0, "prompt_tokens": 0, "completion_tokens": 0, "model": "mock"}
+        # The configured model, even when this request never calls it (a refusal stops before the LLM).
+        from app import llm  # local import: llm does not import audit, this keeps module loading simple
+        model = "mock" if llm.settings.MOCK_LLM else llm._model_name()
+        self.llm = {"calls": 0, "prompt_tokens": 0, "completion_tokens": 0, "model": model}
         self.extra: dict = {}
 
     # Time a pipeline step: `with trace.step("classify"): ...` records name and milliseconds.

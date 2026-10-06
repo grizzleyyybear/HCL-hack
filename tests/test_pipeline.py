@@ -480,3 +480,13 @@ def test_rescue_needs_every_word_known(client):
     assert nodes._unknown_words("how long does it take for moneygram", []) == ["moneygram"]
     assert nodes._unknown_words("how do i enable zebra mode", [{"text": "Enable zebra mode in Admin"}]) == []
     assert ask(client, "how long does it take for moneygram")["answer_type"] != "answered"
+
+
+# A live request that is refused before any LLM call still records the configured model, never "mock".
+def test_audit_names_the_configured_model_without_llm_calls(monkeypatch):
+    from app import audit
+    monkeypatch.setenv("MOCK_LLM", "false")
+    monkeypatch.setenv("OLLAMA_MODEL", "qwen-test:7b")
+    assert audit.Trace().llm["model"] == "qwen-test:7b"
+    monkeypatch.setenv("MOCK_LLM", "true")
+    assert audit.Trace().llm["model"] == "mock"
