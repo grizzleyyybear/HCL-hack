@@ -1,0 +1,136 @@
+"""Pydantic models. Field names here ARE the API contract from the guide: do not rename them."""
+import datetime
+from typing import Literal
+
+from pydantic import BaseModel, Field, field_validator
+
+AnswerType = Literal["answered", "clarification_needed", "escalated", "not_found", "refused", "out_of_scope"]
+
+
+class SupportRequest(BaseModel):
+    """Body of POST /support. The account never comes from here, only from the X-Account-Id header."""
+    message: str
+    conversation_id: str | None = None
+    channel: str | None = None
+    product_version: str | None = None
+    as_of_date: datetime.date | None = None
+
+
+class Intent(BaseModel):
+    """Classifier output (R1). Defaults make a safe fallback easy to build."""
+    type: Literal["how_to", "troubleshooting", "account", "billing", "complaint", "security", "out_of_scope"]
+    subtype: str | None = None
+    urgency: Literal["low", "normal", "high", "urgent"] = "normal"
+    sentiment: Literal["positive", "neutral", "negative", "angry"] = "neutral"
+    product_version: str | None = None
+    pii_detected: bool = False
+    explicit_human_request: bool = False
+    repeated_contact: bool = False
+    tools_needed: list[str] = Field(default_factory=list)
+    confidence: float = Field(default=0.0, ge=0, le=1)
+    is_vague: bool = False
+
+
+class Draft(BaseModel):
+    """Composer output: the answer text plus the chunk_ids it relies on (code checks they were retrieved)."""
+    answer: str
+    cited_chunk_ids: list[str] = Field(default_factory=list)
+
+
+class Critique(BaseModel):
+    """Critic output (R4). Scores only; code makes the final decision."""
+    groundedness: float = Field(ge=0, le=1)
+    coverage: Literal["complete", "partial", "none"]
+    pii_risk: Literal["none", "low", "high"] = "none"
+    policy_risk: Literal["none", "promise_made", "unauthorised_action"] = "none"
+    decision: Literal["answer", "revise", "escalate"]
+    issues: list[str] = Field(default_factory=list)
+
+
+class DisagreementResult(BaseModel):
+    pair_id: str
+    disagree: bool
+
+
+class Disagreements(BaseModel):
+    """Output of the one batched yes/no check used by precedence.py."""
+    results: list[DisagreementResult] = Field(default_factory=list)
+
+
+class Citation(BaseModel):
+    source_id: str
+    doc_type: str
+    section: str
+    product_versions: str
+    last_updated: str
+
+
+class ToolCall(BaseModel):
+    """One tool invocation, as recorded in the audit and in tools_invoked."""
+    tool: str
+    input: dict = Field(default_factory=dict)
+    output: dict | list = Field(default_factory=dict)
+    status: Literal["ok", "error"] = "ok"
+    ms: int = 0
+
+
+class Conflict(BaseModel):
+    winner: str
+    loser: str
+    rule: Literal["authority", "supersession", "recency", "deprecation"]
+
+
+class HandoffBundle(BaseModel):
+    """Annex D handoff bundle. Always redacted before it is stored or returned."""
+    queue: str
+    priority: str
+    intent: str
+    urgency: str
+    sentiment: str
+    escalation_reasons: list[str]
+    customer_summary: str
+    evidence: list[dict] = Field(default_factory=list)
+    attempted_answer: str = ""
+    unresolved_questions: list[str] = Field(default_factory=list)
+    pii_redacted: bool = True
+
+
+class SupportResponse(BaseModel):
+    """Response of POST /support (guide 6.1). Every answer_type returns every field."""
+    trace_id: str
+    conversation_id: str
+    answer_type: AnswerType
+    answer: str
+    intent: dict = Field(default_factory=dict)
+    citations: list[Citation] = Field(default_factory=list)
+    tools_invoked: list[dict] = Field(default_factory=list)
+    critic: dict | None = None
+    conflicts_detected: list[Conflict] = Field(default_factory=list)
+    handoff_id: str | None = None
+    handoff: HandoffBundle | None = None
+    as_of_date: datetime.date
+
+
+class SourceMeta(BaseModel):
+    """Annex B source register fields; also the metadata JSON of POST /ingest. Accepts judge JD- IDs."""
+    source_id: str
+    doc_type: Literal["article", "policy", "release_note", "ticket", "community"]
+    title: str
+    authority_level: int = Field(ge=1, le=5)
+    product_versions: str
+    last_updated: str
+    effective_from: str = ""
+    deprecated_on: str = ""
+    supersedes: str = ""
+    provenance: str = ""
+    synthetic: str = "Y"
+    tags: str = ""  # extra column (allowed): semicolon-separated topic keys, e.g. "salesforce;CF-503"
+
+    # Dates must be YYYY-MM-DD; optional date fields may be empty.
+    @field_validator("last_updated", "effective_from", "deprecated_on")
+    @classmethod
+    def _check_date(cls, value: str, info):
+        if value == "" and info.field_name != "last_updated":
+            return value
+        datetime.date.fromisoformat(value)
+        return value

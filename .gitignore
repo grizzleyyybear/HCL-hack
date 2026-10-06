@@ -1,0 +1,11 @@
+.env
+.venv/
+.chroma/
+*.db
+*.db-journal
+data/raw/
+logs/
+__pycache__/
+*.pyc
+.pytest_cache/
+docs/pitch/pitch.html
