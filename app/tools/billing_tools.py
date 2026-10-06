@@ -1,4 +1,4 @@
-"""Billing tools: get_invoices, check_refund_eligibility. Owner: A7 tools-policy. Never executes a refund."""
+"""Billing tools: get_invoices, check_refund_eligibility. Area: data and tools. Never executes a refund."""
 import datetime
 
 from app import db

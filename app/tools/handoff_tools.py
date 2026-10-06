@@ -1,4 +1,4 @@
-"""Handoff tool. Owner: A7 tools-policy."""
+"""Handoff tool. Area: data and tools."""
 import datetime
 import json
 

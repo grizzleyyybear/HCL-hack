@@ -1,4 +1,4 @@
-"""Platform status tool. Owner: A7 tools-policy."""
+"""Platform status tool. Area: data and tools."""
 from app import db
 
 

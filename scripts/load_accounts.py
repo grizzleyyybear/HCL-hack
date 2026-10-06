@@ -1,4 +1,4 @@
-"""Load Annex C CSVs from a folder into SQLite (judges use this). Owner: A3 account-data.
+"""Load Annex C CSVs from a folder into SQLite (judges use this). Area: data and tools.
 
 Usage: python scripts/load_accounts.py --dir test_accounts/
 

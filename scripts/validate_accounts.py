@@ -1,4 +1,4 @@
-"""Validate account data against the Annex C schema and logic rules. Owner: A3 account-data.
+"""Validate account data against the Annex C schema and logic rules. Area: data and tools.
 
 Usage: python scripts/validate_accounts.py
 Checks data/accounts/*.csv, prints the report and writes data/accounts/validation_report.txt.

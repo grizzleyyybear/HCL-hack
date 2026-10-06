@@ -4,7 +4,7 @@ import pytest
 from app import db
 from scripts.seed_policy_registry import seed
 
-# Edge-case accounts from CLAUDE.md (dates relative to 2026-10-06, refund window 14 days), plus one Free account.
+# Edge-case accounts from the guide (dates relative to 2026-10-06, refund window 14 days), plus one Free account.
 ACCOUNTS = [
     ("A1001", "Northwind Labs", "owner1@example.com", "Pro", "active", "4.3", "2025-01-10"),       # usage at limit
     ("A1002", "Bluebird Ops", "owner2@example.com", "Pro", "active", "4.3", "2025-02-11"),         # one unit over

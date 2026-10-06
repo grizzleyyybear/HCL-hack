@@ -1,4 +1,4 @@
-"""Generate the synthetic CloudFlow account data (Annex C tables) into data/accounts/*.csv. Owner: A3.
+"""Generate the synthetic CloudFlow account data (Annex C tables) into data/accounts/*.csv. Area: data and tools.
 
   python scripts/generate_accounts.py          REPLAY: reuse the saved LLM reply (no LLM needed)
   python scripts/generate_accounts.py --live   LIVE: ask the LLM again (Ollama via app.llm.call_json)
@@ -67,7 +67,7 @@ PLATFORM_STATUS = [
     {"component": "billing", "status": "operational", "incident_id": "", "updated_at": "2026-10-06T08:00:00Z"},
 ]
 
-# Edge cases from CLAUDE.md (reference date 2026-10-06, refund window 14 days). Fixed, never LLM-made.
+# Edge cases from the guide (section 4.2) (reference date 2026-10-06, refund window 14 days). Fixed, never LLM-made.
 EDGE_ACCOUNTS = [  # account_id, company_name, owner_email, plan, status, product_version, created_at
     ("A1001", "Northwind Labs", "priya.nair@example.com", "Pro", "active", "4.3", "2025-01-10"),     # usage exactly at limit
     ("A1002", "Bluebird Ops", "tom.becker@example.com", "Pro", "active", "4.3", "2025-02-11"),       # one unit over limit

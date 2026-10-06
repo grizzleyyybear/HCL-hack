@@ -1,4 +1,4 @@
-"""Password reset tool (mocked). Owner: A7 tools-policy."""
+"""Password reset tool (mocked). Area: data and tools."""
 import logging
 
 from app.tools.account_tools import lookup_account

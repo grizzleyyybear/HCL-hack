@@ -1,4 +1,4 @@
-"""Deterministic tools over SQLite (R7). Owner: A7 tools-policy.
+"""Deterministic tools over SQLite (R7). Area: data and tools.
 
 The account_id passed to any tool always comes from the X-Account-Id header (code), never the LLM.
 """
@@ -17,7 +17,7 @@ TOOLS = {f.__name__: f for f in (lookup_account, get_usage, get_plan_limits, get
                                  check_refund_eligibility, check_platform_status,
                                  send_password_reset, create_handoff)}
 
-# Safety-net mapping from intent type to the tools code always runs (CLAUDE.md "Rules for all tools").
+# Safety-net mapping from intent type to the tools code always runs (the guide's tool rules).
 TOOLS_FOR_INTENT: dict[str, list[str]] = {
     "billing": ["get_invoices", "check_refund_eligibility"],
     "account": ["lookup_account", "get_usage", "get_plan_limits"],

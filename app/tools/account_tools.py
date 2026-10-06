@@ -1,4 +1,4 @@
-"""Account tools: lookup_account, get_usage, get_plan_limits. Owner: A7 tools-policy."""
+"""Account tools: lookup_account, get_usage, get_plan_limits. Area: data and tools."""
 import datetime
 
 from app import db
