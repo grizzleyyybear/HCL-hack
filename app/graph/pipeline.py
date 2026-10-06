@@ -1,4 +1,4 @@
-"""Builds the LangGraph StateGraph and runs one request through it. Owner: A11 pipeline.
+"""Builds the LangGraph StateGraph and runs one request through it. Area: API and orchestration.
 
 pre_checks -> classify -> tools -> retrieve -> precedence -> compose -> critic -> decide -> respond | escalate
 Conditional edges (all decided in code):
@@ -25,6 +25,10 @@ class PipelineState(State, total=False):
     pii_found: bool
     relevant_chunks: list[dict]  # retrieved chunks scoring >= min_relevance
     kb_gap_needs_outcome: bool
+    query: str                   # retrieval query: the message, or previous question + follow-up
+    history: str                 # previous turn for the classifier/composer prompts ("" if none)
+    follow_up: bool
+    handoff_requested: bool      # "yes please" after our not_found handoff offer
     response: Any                # the final SupportResponse
 
 

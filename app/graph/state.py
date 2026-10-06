@@ -1,4 +1,4 @@
-"""The LangGraph state passed between pipeline nodes (keys from CLAUDE.md "LangGraph details")."""
+"""The LangGraph state passed between pipeline nodes (the keys each node reads and writes)."""
 import datetime
 from typing import Any, TypedDict
 
