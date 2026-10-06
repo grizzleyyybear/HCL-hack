@@ -1,13 +1,13 @@
 # Evaluation set
 
-Labels come from CLAUDE.md, the knowledge base (`data/kb/`, `data/source_register.csv`) and the account data
+Labels come from the guide, the knowledge base (`data/kb/`, `data/source_register.csv`) and the account data
 (`data/accounts/*.csv`), never from running the system and copying its output.
 
 ## Files
 
 | File | What it is |
 | --- | --- |
-| `eval_set.jsonl` | 32 labelled core cases, 8 per member (`E-M1-nn` … `E-M4-nn`, mix from BUILD_PLAN.md section 6) |
+| `eval_set.jsonl` | 32 labelled core cases, 8 per member (`E-M1-nn` … `E-M4-nn`, a mix of every category) |
 | `probes_oos.jsonl` | 20 MS MARCO general questions, all expected `out_of_scope` |
 | `probes_tone.jsonl` | 15 Twitter-tone angry or repeat-contact messages, expected `escalated` |
 | `critic_labels.csv` | Human groundedness labels for critic agreement (header only until labelled) |
@@ -33,11 +33,11 @@ Every line has: `id`, `account_id` (the `X-Account-Id` header; `null` means send
 Runner note: `as_of_date` 2026-12-15 (E-M2-08) has no usage period in the data, so that case asks nothing that needs
 `get_usage`. Run each case in a new conversation so earlier eval cases do not count as repeated contact.
 
-## Coverage against CLAUDE.md
+## Coverage against the guide (section 7)
 
 Each case has one primary `category`. Some cases also count towards a second row; the last column says which.
 
-| CLAUDE.md category | Minimum | Target | Ours | Cases |
+| Guide category | Minimum | Target | Ours | Cases |
 | --- | --- | --- | --- | --- |
 | Answerable how-to questions | 5 | 6 | 6 | E-M1-01, E-M1-02, E-M1-03, E-M2-07, E-M4-07 (`how_to`) + E-M2-06 (`live_ingest`, a how-to on new content) |
 | Version-specific questions | 3 | 4 | 4 (+1) | E-M1-04/05 (export, 4.3 vs 3.8), E-M2-04/05 (first workflow, 3.8 vs 4.4); plus E-M2-08 (`deprecation`, date applicability) |

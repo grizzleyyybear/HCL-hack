@@ -1,4 +1,4 @@
-"""Run the labelled evaluation set against InsightDesk in-process and compute every CLAUDE.md metric.
+"""Run the labelled evaluation set against InsightDesk in-process and compute every metric in guide section 7.
 
 Usage (from the repo root):
   python eval/run_eval.py                                   # one run, default config, all sets
@@ -28,6 +28,7 @@ EVAL = ROOT / "eval"
 WORK = pathlib.Path(tempfile.gettempdir()) / "insightdesk_eval"  # temp DBs, Chroma caches, eval log
 LOG_FILE = WORK / "insightdesk_eval.log"
 MINILM = "sentence-transformers/all-MiniLM-L6-v2"
+MIN_RELEVANCE_BY_MODEL = {MINILM: 0.35}  # MiniLM's calibrated floor (its weakest in-scope answer scores 0.49)
 BGE = "BAAI/bge-small-en-v1.5"
 SETS = {"core": "eval_set.jsonl", "oos": "probes_oos.jsonl", "tone": "probes_tone.jsonl"}
 
@@ -86,6 +87,12 @@ def run_config(model: str, top_k: int, critic_min: float | None, live: bool, set
             with db.connect() as conn:
                 conn.execute("UPDATE policy_registry SET value = ? WHERE rule_id = 'CRITIC-MIN-01'",
                              (f"{critic_min:.2f}",))
+        # The registry's relevance floor (0.65) is calibrated for the configured model, bge-small; other
+        # embedding models score on a different scale, so they keep their own calibrated floor.
+        if model in MIN_RELEVANCE_BY_MODEL:
+            with db.connect() as conn:
+                conn.execute("UPDATE policy_registry SET value = ? WHERE rule_id = 'RETRIEVAL-MIN-01'",
+                             (f"{MIN_RELEVANCE_BY_MODEL[model]:.2f}",))
         threshold = float(db.get_policy("critic_min_groundedness")[0])
         min_relevance = float(db.get_policy("min_relevance")[0])
         loaded = load_accounts.load_dir(str(ROOT / "data" / "accounts"))
@@ -107,7 +114,8 @@ def run_config(model: str, top_k: int, critic_min: float | None, live: bool, set
     return {
         "config": {"embed_model": model, "top_k": top_k, "critic_min_groundedness": threshold,
                    "min_relevance": min_relevance,
-                   "mock_llm": not live, "sets": set_names},
+                   "mock_llm": not live, "sets": set_names,
+                   "llm_model": os.environ.get("OLLAMA_MODEL", "") if live else "mock"},
         "setup": {"accounts_loaded": loaded["loaded"], "sqlite_path": os.environ["SQLITE_PATH"],
                   "chroma_dir": os.environ["CHROMA_DIR"], "log_file": str(LOG_FILE)},
         "runtime_s": {"setup_and_kb_ingest": round(t_setup - t_start, 1), "cases": round(t_end - t_setup, 1),
@@ -316,7 +324,7 @@ def percentile(values: list, p: float):
     return ordered[max(0, math.ceil(p / 100 * len(ordered)) - 1)]
 
 
-# Compute every metric in the CLAUDE.md evaluation table from the scored rows.
+# Compute every metric in the guide's evaluation table (section 7) from the scored rows.
 def compute_metrics(rows: list[dict], log_hits: list[str]) -> dict:
     core = [r for r in rows if r["set"] == "core"]
     exp = [r["expected"] == "escalated" for r in core]
@@ -404,6 +412,16 @@ def critic_agreement() -> dict | None:
             "labeller_vs_labeller": pct(between), "drafts_with_two_labels": len(between)}
 
 
+# The newest live (Ollama) core-set results file in eval/results/, or None.
+def latest_live() -> dict | None:
+    files = sorted((EVAL / "results").glob("live_*_core.json"), key=lambda f: f.stat().st_mtime)
+    if not files:
+        return None
+    result = json.loads(files[-1].read_text(encoding="utf-8"))
+    result.setdefault("file", files[-1].name)
+    return result
+
+
 # Write 10 sampled drafts (answered or escalated cases that have a critic score) for two members to label.
 def write_critic_sample(result: dict) -> None:
     drafts = [r for r in result["cases"] if r["set"] == "core" and r["critic"] and r["actual"] in ("answered", "escalated")]
@@ -463,7 +481,7 @@ def better(a: dict, b: dict, labels: list[str], prefer: dict) -> tuple[dict, str
     return prefer, None
 
 
-# Run the three comparisons from CLAUDE.md, save each run, then write eval/report.md.
+# Run the three configuration comparisons, save each run, then write eval/report.md.
 def compare(live: bool, set_names: list[str]) -> None:
     import sentence_transformers  # noqa: F401 - pay the torch import once, so setup times compare fairly
     cache = {}
@@ -490,7 +508,7 @@ def compare(live: bool, set_names: list[str]) -> None:
 
     chosen = c_run
     if critic_agreement() is None:
-        write_critic_sample(chosen)
+        write_critic_sample(latest_live() or chosen)  # humans should label real model drafts when we have them
     write_report(chosen, {"model": (minilm, bge, model_why), "top_k": (k3, k5, k_why), "critic": (c6, c7, c_why)})
     print(f"\nwrote eval/report.md | chosen: {model}, top_k={top_k}, "
           f"critic_min={chosen['config']['critic_min_groundedness']}")
@@ -541,7 +559,7 @@ def write_report(chosen: dict, comparisons: dict) -> None:
     add("## Method\n")
     add("- **Data:** `eval/eval_set.jsonl` (32 labelled core cases, 8 per member), `eval/probes_oos.jsonl` (20 MS MARCO "
         "general queries, expected `out_of_scope`), `eval/probes_tone.jsonl` (15 angry or repeat-contact messages, "
-        "expected `escalated`). Labels come from CLAUDE.md, the KB and the account data, never from system output.")
+        "expected `escalated`). Labels come from the guide, the KB and the account data, never from system output.")
     add("- **Harness:** each run uses a fresh temp SQLite DB (policies seeded, `data/accounts` loaded with the judge "
         "loader), the KB ingested into a Chroma collection for the embedding model under test, and FastAPI `TestClient` "
         "in-process. Before every case the `conversations` and `messages` tables are emptied so earlier cases never count "
@@ -594,6 +612,50 @@ def write_report(chosen: dict, comparisons: dict) -> None:
     add(f"| Full run time | {chosen['runtime_s']['total']} s | setup + KB ingest {chosen['runtime_s']['setup_and_kb_ingest']} s, "
         f"cases {chosen['runtime_s']['cases']} s |\n")
 
+    live = latest_live()
+    if live:
+        lm, lc = live["metrics"], live["config"]
+        model = lc.get("llm_model") or live["file"].removeprefix("live_").split("_")[0]
+        lesc = lm["escalation"]
+        add("## Live run on the local model\n")
+        add(f"Same 32 core cases and the same code with `MOCK_LLM=false`: Ollama `{model}`, `{lc['embed_model']}`, "
+            f"top-k {lc['top_k']}, critic minimum {lc['critic_min_groundedness']}. Results: "
+            f"[`eval/results/{live['file']}`](results/{live['file']}).\n")
+        add("| Metric | Live | MOCK (chosen configuration) |")
+        add("| --- | --- | --- |")
+        rows = [("Core cases passing every check", f"{lm['core_passed_all_checks']}/{lm['core_cases']}",
+                 f"{m['core_passed_all_checks']}/{m['core_cases']}"),
+                ("answer_type accuracy", cell(lm["answer_type_accuracy"], "%"), cell(m["answer_type_accuracy"], "%")),
+                ("Answer correctness", cell(lm["answer_correctness"], "%"), cell(m["answer_correctness"], "%")),
+                ("Citation validity", cell(lm["citation_validity"], "%"), cell(m["citation_validity"], "%")),
+                ("Retrieval hit rate", cell(lm["retrieval_hit_rate"], "%"), cell(m["retrieval_hit_rate"], "%")),
+                ("Escalation precision / recall", f"{cell(lesc['precision'])} / {cell(lesc['recall'])}",
+                 f"{cell(esc['precision'])} / {cell(esc['recall'])}"),
+                ("Tool exactness", cell(lm["tool_exactness"], "%"), cell(m["tool_exactness"], "%")),
+                ("PII leakage (objects / log lines)",
+                 f"{lm['pii_leaks']['responses_bundles_audits']} / {lm['pii_leaks']['log_lines']}",
+                 f"{m['pii_leaks']['responses_bundles_audits']} / {m['pii_leaks']['log_lines']}"),
+                ("Mean critic groundedness", cell(lm["mean_groundedness"]), cell(m["mean_groundedness"])),
+                ("Latency p50 / p95 (ms)", f"{cell(lm['latency_ms']['p50'])} / {cell(lm['latency_ms']['p95'])}",
+                 f"{cell(m['latency_ms']['p50'])} / {cell(m['latency_ms']['p95'])}"),
+                ("LLM calls / tokens per request",
+                 f"{lm['llm_calls_mean']} / {lm['tokens_mean']['prompt']} + {lm['tokens_mean']['completion']}",
+                 f"{m['llm_calls_mean']} / 0 (mock)")]
+        for name, live_value, mock_value in rows:
+            add(f"| {name} | {live_value} | {mock_value} |")
+        failed = [r for r in live["cases"] if not r["pass"]]
+        if failed:
+            add("\n**Live cases that did not pass every check:**\n")
+            for r in failed:
+                add(f"- `{r['id']}` (expected `{r['expected']}`, got `{r['actual']}`): {'; '.join(r['reasons'])}")
+        add("\n**What the live runs changed.** An earlier live run on the same day scored 81.2% answer_type and 59.4% "
+            "correctness. The 7B model sometimes returned only the lead-in of a step list (\"...follow these steps:\") "
+            "and its critic still scored that 1.0. The composer output is now validated as `LLMDraft` "
+            "(`app/schemas.py`): a draft that announces steps without containing them is retried once with the reason, "
+            "then replaced by the cited template. The password-reset reply is built from the tool result in code. "
+            "Small local critics also score some fully grounded drafts 0.0, so code re-checks a low score against the "
+            "cited text and numbers (`critic` node) before the escalation policy sees it.\n")
+
     add("## Escalation confusion table (core set)\n")
     add("| | Predicted escalated | Predicted not escalated |")
     add("| --- | --- | --- |")
@@ -633,7 +695,8 @@ def write_report(chosen: dict, comparisons: dict) -> None:
             f"{agreement['drafts_with_two_labels']} |\n")
     else:
         add("**Pending human labels.** `eval/critic_sample.csv` holds 10 sampled drafts (answer, cited sources, critic "
-            "score) from the chosen configuration. Two members each add one row per draft to `eval/critic_labels.csv` "
+            "score), taken from the live run when one exists (else the chosen MOCK configuration). Two members each add "
+            "one row per draft to `eval/critic_labels.csv` "
             "(`trace_id,case_id,human_grounded,labeller`; `human_grounded` = yes if every claim is supported by a cited "
             "section or tool output), labelling independently and without looking at the critic score. Rerunning "
             "`python eval/run_eval.py --compare` then reports critic-vs-labeller and labeller-vs-labeller agreement "

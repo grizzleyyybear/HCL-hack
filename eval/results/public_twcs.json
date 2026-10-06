@@ -1,0 +1,1741 @@
+{
+  "config": {
+    "embed_model": "BAAI/bge-small-en-v1.5",
+    "top_k": 3,
+    "mock_llm": true,
+    "critic_min_groundedness": 0.7,
+    "min_relevance": 0.65,
+    "as_of_date": "2026-10-06",
+    "accounts": [
+      "A1010",
+      "A1011",
+      "A1013",
+      "A1015",
+      "A1017",
+      "A1020"
+    ],
+    "accounts_loaded": {
+      "plan_limits": 4,
+      "accounts": 31,
+      "usage": 62,
+      "invoices": 56,
+      "platform_status": 4
+    },
+    "kb_sources": 73,
+    "setup_s": 37.3,
+    "total_runtime_s": 128.8,
+    "log_lines_flagged_by_redact": 0,
+    "in_scope_score_floor": 0.7399
+  },
+  "set": "twcs",
+  "probe_file": "data/raw/probes/twcs_300.jsonl (gitignored, not committed)",
+  "description": "300 inbound tweets to other brands (250 thread openers + 50 with PII-like text), scrubbed",
+  "requests": 300,
+  "runtime_s": 29.1,
+  "answer_types": {
+    "out_of_scope": 195,
+    "not_found": 48,
+    "answered": 30,
+    "escalated": 27
+  },
+  "verdicts": {
+    "acceptable": 270,
+    "answered_review": 19,
+    "invented_off_topic": 10,
+    "invented_invalid_citation": 1
+  },
+  "acceptable_rate": 90.0,
+  "invented": {
+    "count": 11,
+    "rate": 3.7,
+    "after_manual_review": 26,
+    "after_manual_review_rate": 8.7,
+    "intent_types": {
+      "billing": 11,
+      "how_to": 8,
+      "account": 4,
+      "complaint": 3
+    },
+    "cited_sources": {
+      "KB-BIL-006": 4,
+      "KB-TRB-001": 4,
+      "KB-GS-004": 4,
+      "KB-BIL-002": 3,
+      "TKT-2025-0733": 3,
+      "KB-BIL-005": 3,
+      "TKT-2025-0610": 3,
+      "KB-BIL-004": 3,
+      "POL-ESC-001": 2,
+      "KB-TRB-003": 2,
+      "KB-BIL-003": 2,
+      "KB-TRB-009": 1,
+      "KB-TRB-005": 1,
+      "KB-ADV-006": 1,
+      "KB-ADV-003": 1,
+      "TKT-2025-0846": 1,
+      "TKT-2024-0811": 1,
+      "POL-LIMITS-001": 1
+    }
+  },
+  "answered": {
+    "count": 30,
+    "rate": 10.0,
+    "citation_validity": 96.7,
+    "reviewed_generic": [
+      "TW-046",
+      "TW-057",
+      "TW-197",
+      "TW-222"
+    ],
+    "for_review": [
+      {
+        "id": "TW-023",
+        "trace_id": "d9bef743",
+        "verdict": "answered_review",
+        "cited": [
+          "KB-GS-004",
+          "KB-BIL-005"
+        ],
+        "topics": [
+          "account"
+        ],
+        "intent_type": "account",
+        "top_score": 0.7644
+      },
+      {
+        "id": "TW-025",
+        "trace_id": "8dbcd4a2",
+        "verdict": "answered_review",
+        "cited": [
+          "KB-GS-004",
+          "KB-BIL-005"
+        ],
+        "topics": [
+          "account"
+        ],
+        "intent_type": "account",
+        "top_score": 0.7347
+      },
+      {
+        "id": "TW-028",
+        "trace_id": "7a0dae42",
+        "verdict": "answered_review",
+        "cited": [
+          "KB-BIL-002"
+        ],
+        "topics": [
+          "billing"
+        ],
+        "intent_type": "billing",
+        "top_score": 0.6602
+      },
+      {
+        "id": "TW-032",
+        "trace_id": "710a7d78",
+        "verdict": "answered_review",
+        "cited": [
+          "TKT-2025-0610"
+        ],
+        "topics": [
+          "billing"
+        ],
+        "intent_type": "billing",
+        "top_score": 0.656
+      },
+      {
+        "id": "TW-046",
+        "trace_id": "976dd7b9",
+        "verdict": "answered_review",
+        "cited": [
+          "KB-TRB-009",
+          "KB-TRB-001"
+        ],
+        "topics": [
+          "password and login"
+        ],
+        "intent_type": "security",
+        "top_score": 0.6909
+      },
+      {
+        "id": "TW-047",
+        "trace_id": "2ca38642",
+        "verdict": "invented_off_topic",
+        "cited": [
+          "KB-BIL-002",
+          "POL-ESC-001"
+        ],
+        "topics": [],
+        "intent_type": "how_to",
+        "top_score": 0.7111
+      },
+      {
+        "id": "TW-048",
+        "trace_id": "23dda3dc",
+        "verdict": "invented_off_topic",
+        "cited": [
+          "KB-BIL-006"
+        ],
+        "topics": [],
+        "intent_type": "complaint",
+        "top_score": 0.7088
+      },
+      {
+        "id": "TW-057",
+        "trace_id": "fae5aa9c",
+        "verdict": "answered_review",
+        "cited": [
+          "KB-TRB-009",
+          "KB-TRB-001"
+        ],
+        "topics": [
+          "password and login",
+          "account"
+        ],
+        "intent_type": "security",
+        "top_score": 0.6595
+      },
+      {
+        "id": "TW-058",
+        "trace_id": "cfe8c322",
+        "verdict": "answered_review",
+        "cited": [
+          "KB-BIL-004",
+          "KB-BIL-002"
+        ],
+        "topics": [
+          "billing",
+          "account"
+        ],
+        "intent_type": "billing",
+        "top_score": 0.7149
+      },
+      {
+        "id": "TW-067",
+        "trace_id": "e009ed9a",
+        "verdict": "invented_off_topic",
+        "cited": [
+          "KB-TRB-009",
+          "KB-TRB-005"
+        ],
+        "topics": [],
+        "intent_type": "how_to",
+        "top_score": 0.7005
+      },
+      {
+        "id": "TW-070",
+        "trace_id": "79918bbc",
+        "verdict": "answered_review",
+        "cited": [
+          "KB-GS-004",
+          "KB-TRB-001"
+        ],
+        "topics": [
+          "account"
+        ],
+        "intent_type": "account",
+        "top_score": 0.6959
+      },
+      {
+        "id": "TW-115",
+        "trace_id": "8c221c2a",
+        "verdict": "answered_review",
+        "cited": [
+          "KB-BIL-003",
+          "KB-BIL-003"
+        ],
+        "topics": [
+          "billing"
+        ],
+        "intent_type": "billing",
+        "top_score": 0.7453
+      },
+      {
+        "id": "TW-158",
+        "trace_id": "c90ddd90",
+        "verdict": "invented_off_topic",
+        "cited": [
+          "TKT-2025-0733"
+        ],
+        "topics": [],
+        "intent_type": "how_to",
+        "top_score": 0.6843
+      },
+      {
+        "id": "TW-161",
+        "trace_id": "69f2ac3e",
+        "verdict": "answered_review",
+        "cited": [
+          "KB-BIL-004",
+          "KB-BIL-003"
+        ],
+        "topics": [
+          "billing"
+        ],
+        "intent_type": "billing",
+        "top_score": 0.7292
+      },
+      {
+        "id": "TW-181",
+        "trace_id": "521d6af7",
+        "verdict": "answered_review",
+        "cited": [
+          "KB-BIL-006"
+        ],
+        "topics": [
+          "billing"
+        ],
+        "intent_type": "billing",
+        "top_score": 0.6571
+      },
+      {
+        "id": "TW-192",
+        "trace_id": "51b2815a",
+        "verdict": "invented_off_topic",
+        "cited": [
+          "POL-ESC-001",
+          "POL-ESC-001"
+        ],
+        "topics": [],
+        "intent_type": "billing",
+        "top_score": 0.7184
+      },
+      {
+        "id": "TW-197",
+        "trace_id": "e0cd2045",
+        "verdict": "answered_review",
+        "cited": [
+          "KB-TRB-009"
+        ],
+        "topics": [
+          "password and login"
+        ],
+        "intent_type": "how_to",
+        "top_score": 0.7417
+      },
+      {
+        "id": "TW-210",
+        "trace_id": "f3b7be4e",
+        "verdict": "answered_review",
+        "cited": [
+          "TKT-2024-0811"
+        ],
+        "topics": [
+          "account"
+        ],
+        "intent_type": "how_to",
+        "top_score": 0.6708
+      },
+      {
+        "id": "TW-211",
+        "trace_id": "3e6d5730",
+        "verdict": "answered_review",
+        "cited": [
+          "KB-BIL-005",
+          "KB-BIL-006"
+        ],
+        "topics": [
+          "billing"
+        ],
+        "intent_type": "how_to",
+        "top_score": 0.6919
+      },
+      {
+        "id": "TW-213",
+        "trace_id": "7991391d",
+        "verdict": "invented_off_topic",
+        "cited": [
+          "KB-TRB-003"
+        ],
+        "topics": [],
+        "intent_type": "complaint",
+        "top_score": 0.6575
+      },
+      {
+        "id": "TW-218",
+        "trace_id": "56125cec",
+        "verdict": "answered_review",
+        "cited": [
+          "TKT-2025-0610",
+          "TKT-2025-0733"
+        ],
+        "topics": [
+          "billing"
+        ],
+        "intent_type": "billing",
+        "top_score": 0.6862
+      },
+      {
+        "id": "TW-222",
+        "trace_id": "7659c9bb",
+        "verdict": "answered_review",
+        "cited": [
+          "KB-BIL-004",
+          "KB-BIL-005"
+        ],
+        "topics": [
+          "billing"
+        ],
+        "intent_type": "billing",
+        "top_score": 0.7067
+      },
+      {
+        "id": "TW-225",
+        "trace_id": "ef3daa08",
+        "verdict": "invented_off_topic",
+        "cited": [
+          "KB-TRB-001",
+          "KB-TRB-003"
+        ],
+        "topics": [],
+        "intent_type": "how_to",
+        "top_score": 0.67
+      },
+      {
+        "id": "TW-241",
+        "trace_id": "1c1f487d",
+        "verdict": "invented_invalid_citation",
+        "cited": [],
+        "topics": [],
+        "intent_type": "account",
+        "top_score": 0.5667
+      },
+      {
+        "id": "TW-253",
+        "trace_id": "c845adf1",
+        "verdict": "answered_review",
+        "cited": [
+          "KB-TRB-001",
+          "KB-BIL-004"
+        ],
+        "topics": [
+          "billing"
+        ],
+        "intent_type": "billing",
+        "top_score": 0.7006
+      },
+      {
+        "id": "TW-260",
+        "trace_id": "38ab4708",
+        "verdict": "answered_review",
+        "cited": [
+          "KB-BIL-006",
+          "POL-LIMITS-001"
+        ],
+        "topics": [
+          "billing"
+        ],
+        "intent_type": "billing",
+        "top_score": 0.7044
+      },
+      {
+        "id": "TW-262",
+        "trace_id": "8b019abe",
+        "verdict": "invented_off_topic",
+        "cited": [
+          "KB-TRB-001",
+          "KB-ADV-006"
+        ],
+        "topics": [],
+        "intent_type": "how_to",
+        "top_score": 0.7085
+      },
+      {
+        "id": "TW-266",
+        "trace_id": "be323594",
+        "verdict": "answered_review",
+        "cited": [
+          "TKT-2025-0733",
+          "TKT-2025-0610"
+        ],
+        "topics": [
+          "billing"
+        ],
+        "intent_type": "billing",
+        "top_score": 0.6999
+      },
+      {
+        "id": "TW-273",
+        "trace_id": "8f8ac2d9",
+        "verdict": "invented_off_topic",
+        "cited": [
+          "KB-GS-004",
+          "KB-ADV-003"
+        ],
+        "topics": [],
+        "intent_type": "complaint",
+        "top_score": 0.6974
+      },
+      {
+        "id": "TW-286",
+        "trace_id": "e9b4af1c",
+        "verdict": "invented_off_topic",
+        "cited": [
+          "TKT-2025-0846"
+        ],
+        "topics": [],
+        "intent_type": "how_to",
+        "top_score": 0.6568
+      }
+    ]
+  },
+  "relevance_floor_test": {
+    "floor": 0.7399,
+    "invented_below_floor": 24,
+    "invented_total": 26,
+    "reviewed_generic_below_floor": 3
+  },
+  "tools_fired": {
+    "lookup_account": 105,
+    "get_invoices": 33,
+    "create_handoff": 27,
+    "check_refund_eligibility": 22,
+    "check_platform_status": 7,
+    "get_usage": 6,
+    "get_plan_limits": 6,
+    "send_password_reset": 2
+  },
+  "escalation": {
+    "count": 27,
+    "rate": 9.0,
+    "reasons": {
+      "kb_gap_needs_outcome": 14,
+      "billing_dispute": 9,
+      "explicit_human_request": 4,
+      "repeated_contact": 4,
+      "security_incident": 2,
+      "low_groundedness": 2
+    },
+    "queues": {
+      "technical": 16,
+      "billing": 9,
+      "security": 2
+    }
+  },
+  "intent_types": {
+    "out_of_scope": 195,
+    "how_to": 55,
+    "billing": 22,
+    "complaint": 11,
+    "troubleshooting": 7,
+    "account": 6,
+    "security": 4
+  },
+  "pii": {
+    "inputs_with_pii_like_tokens": 0,
+    "input_token_kinds": {},
+    "pipeline_pii_detected": 0,
+    "redact_rescan_hits": [],
+    "echo_hits": [],
+    "echo_probes_standalone": [],
+    "echo_probes_glued": [],
+    "log_echo_ids": []
+  },
+  "latency_ms": {
+    "p50": 60,
+    "p95": 125,
+    "max": 160
+  },
+  "errors": [],
+  "trace_ids": {
+    "TW-001": [
+      "b025b014",
+      "out_of_scope"
+    ],
+    "TW-002": [
+      "609365fa",
+      "out_of_scope"
+    ],
+    "TW-003": [
+      "1d6fa894",
+      "out_of_scope"
+    ],
+    "TW-004": [
+      "2c55e281",
+      "out_of_scope"
+    ],
+    "TW-005": [
+      "4cdc074b",
+      "out_of_scope"
+    ],
+    "TW-006": [
+      "7d59cdae",
+      "out_of_scope"
+    ],
+    "TW-007": [
+      "53d02341",
+      "out_of_scope"
+    ],
+    "TW-008": [
+      "82ad2bb5",
+      "out_of_scope"
+    ],
+    "TW-009": [
+      "87946f3a",
+      "out_of_scope"
+    ],
+    "TW-010": [
+      "ffab1026",
+      "not_found"
+    ],
+    "TW-011": [
+      "69450d2a",
+      "not_found"
+    ],
+    "TW-012": [
+      "a00c131b",
+      "out_of_scope"
+    ],
+    "TW-013": [
+      "121a209a",
+      "not_found"
+    ],
+    "TW-014": [
+      "03a33145",
+      "out_of_scope"
+    ],
+    "TW-015": [
+      "49f361f5",
+      "out_of_scope"
+    ],
+    "TW-016": [
+      "12f64df3",
+      "out_of_scope"
+    ],
+    "TW-017": [
+      "abdb9479",
+      "out_of_scope"
+    ],
+    "TW-018": [
+      "9c972997",
+      "out_of_scope"
+    ],
+    "TW-019": [
+      "87cbf02a",
+      "out_of_scope"
+    ],
+    "TW-020": [
+      "aa8aef2e",
+      "out_of_scope"
+    ],
+    "TW-021": [
+      "6faa6547",
+      "out_of_scope"
+    ],
+    "TW-022": [
+      "372935a5",
+      "out_of_scope"
+    ],
+    "TW-023": [
+      "d9bef743",
+      "answered"
+    ],
+    "TW-024": [
+      "8a2957c8",
+      "out_of_scope"
+    ],
+    "TW-025": [
+      "8dbcd4a2",
+      "answered"
+    ],
+    "TW-026": [
+      "1c2b8f2e",
+      "not_found"
+    ],
+    "TW-027": [
+      "351b79d0",
+      "out_of_scope"
+    ],
+    "TW-028": [
+      "7a0dae42",
+      "answered"
+    ],
+    "TW-029": [
+      "e8e0f017",
+      "not_found"
+    ],
+    "TW-030": [
+      "8fcaef3d",
+      "out_of_scope"
+    ],
+    "TW-031": [
+      "f73230be",
+      "out_of_scope"
+    ],
+    "TW-032": [
+      "710a7d78",
+      "answered"
+    ],
+    "TW-033": [
+      "ed5934d2",
+      "not_found"
+    ],
+    "TW-034": [
+      "c8d556c0",
+      "not_found"
+    ],
+    "TW-035": [
+      "4faf91ed",
+      "not_found"
+    ],
+    "TW-036": [
+      "ddc32650",
+      "out_of_scope"
+    ],
+    "TW-037": [
+      "84b2199c",
+      "out_of_scope"
+    ],
+    "TW-038": [
+      "6f9c38a6",
+      "out_of_scope"
+    ],
+    "TW-039": [
+      "7a083647",
+      "out_of_scope"
+    ],
+    "TW-040": [
+      "729874b9",
+      "out_of_scope"
+    ],
+    "TW-041": [
+      "7c8c6a0c",
+      "out_of_scope"
+    ],
+    "TW-042": [
+      "aa7efe04",
+      "escalated"
+    ],
+    "TW-043": [
+      "ae0119e6",
+      "out_of_scope"
+    ],
+    "TW-044": [
+      "767e009c",
+      "out_of_scope"
+    ],
+    "TW-045": [
+      "b59b51e5",
+      "out_of_scope"
+    ],
+    "TW-046": [
+      "976dd7b9",
+      "answered"
+    ],
+    "TW-047": [
+      "2ca38642",
+      "answered"
+    ],
+    "TW-048": [
+      "23dda3dc",
+      "answered"
+    ],
+    "TW-049": [
+      "6d4f60e6",
+      "out_of_scope"
+    ],
+    "TW-050": [
+      "4a1b756d",
+      "out_of_scope"
+    ],
+    "TW-051": [
+      "6d4d80f2",
+      "out_of_scope"
+    ],
+    "TW-052": [
+      "a0e449c7",
+      "out_of_scope"
+    ],
+    "TW-053": [
+      "cf6f6461",
+      "out_of_scope"
+    ],
+    "TW-054": [
+      "e9da6a69",
+      "out_of_scope"
+    ],
+    "TW-055": [
+      "6302f26d",
+      "out_of_scope"
+    ],
+    "TW-056": [
+      "073b0a1f",
+      "out_of_scope"
+    ],
+    "TW-057": [
+      "fae5aa9c",
+      "answered"
+    ],
+    "TW-058": [
+      "cfe8c322",
+      "answered"
+    ],
+    "TW-059": [
+      "fa9fcea2",
+      "escalated"
+    ],
+    "TW-060": [
+      "accb92a7",
+      "out_of_scope"
+    ],
+    "TW-061": [
+      "ee31dc74",
+      "out_of_scope"
+    ],
+    "TW-062": [
+      "ec0ab2c6",
+      "escalated"
+    ],
+    "TW-063": [
+      "0d0d7448",
+      "out_of_scope"
+    ],
+    "TW-064": [
+      "81ffa8ce",
+      "not_found"
+    ],
+    "TW-065": [
+      "6cb62898",
+      "out_of_scope"
+    ],
+    "TW-066": [
+      "28ac5cff",
+      "escalated"
+    ],
+    "TW-067": [
+      "e009ed9a",
+      "answered"
+    ],
+    "TW-068": [
+      "0a64247b",
+      "not_found"
+    ],
+    "TW-069": [
+      "2135301f",
+      "not_found"
+    ],
+    "TW-070": [
+      "79918bbc",
+      "answered"
+    ],
+    "TW-071": [
+      "83ef3e03",
+      "not_found"
+    ],
+    "TW-072": [
+      "54e7d8b7",
+      "out_of_scope"
+    ],
+    "TW-073": [
+      "7a286e9b",
+      "escalated"
+    ],
+    "TW-074": [
+      "847e4fe3",
+      "out_of_scope"
+    ],
+    "TW-075": [
+      "e7abba61",
+      "out_of_scope"
+    ],
+    "TW-076": [
+      "b306a2a5",
+      "out_of_scope"
+    ],
+    "TW-077": [
+      "fdc26f52",
+      "out_of_scope"
+    ],
+    "TW-078": [
+      "7640428a",
+      "out_of_scope"
+    ],
+    "TW-079": [
+      "7ae300d1",
+      "out_of_scope"
+    ],
+    "TW-080": [
+      "81edc234",
+      "out_of_scope"
+    ],
+    "TW-081": [
+      "10aee800",
+      "not_found"
+    ],
+    "TW-082": [
+      "0b4fd944",
+      "out_of_scope"
+    ],
+    "TW-083": [
+      "8737fe04",
+      "escalated"
+    ],
+    "TW-084": [
+      "e90e8fbb",
+      "not_found"
+    ],
+    "TW-085": [
+      "eafe8745",
+      "out_of_scope"
+    ],
+    "TW-086": [
+      "7ad777a0",
+      "escalated"
+    ],
+    "TW-087": [
+      "7e6cbc1c",
+      "out_of_scope"
+    ],
+    "TW-088": [
+      "36dad8f1",
+      "not_found"
+    ],
+    "TW-089": [
+      "e8ca9897",
+      "out_of_scope"
+    ],
+    "TW-090": [
+      "f6c846c3",
+      "out_of_scope"
+    ],
+    "TW-091": [
+      "dbab0075",
+      "not_found"
+    ],
+    "TW-092": [
+      "26491b83",
+      "out_of_scope"
+    ],
+    "TW-093": [
+      "931a22b1",
+      "not_found"
+    ],
+    "TW-094": [
+      "b2ae38fe",
+      "not_found"
+    ],
+    "TW-095": [
+      "76b1ae68",
+      "out_of_scope"
+    ],
+    "TW-096": [
+      "5809c6a1",
+      "out_of_scope"
+    ],
+    "TW-097": [
+      "ea50f916",
+      "not_found"
+    ],
+    "TW-098": [
+      "78cee76b",
+      "out_of_scope"
+    ],
+    "TW-099": [
+      "240975d6",
+      "escalated"
+    ],
+    "TW-100": [
+      "deff1305",
+      "not_found"
+    ],
+    "TW-101": [
+      "d2b2f415",
+      "not_found"
+    ],
+    "TW-102": [
+      "2b55eadf",
+      "out_of_scope"
+    ],
+    "TW-103": [
+      "e07985be",
+      "out_of_scope"
+    ],
+    "TW-104": [
+      "d21a940e",
+      "out_of_scope"
+    ],
+    "TW-105": [
+      "b463f199",
+      "out_of_scope"
+    ],
+    "TW-106": [
+      "4a182393",
+      "out_of_scope"
+    ],
+    "TW-107": [
+      "cac3a6d6",
+      "out_of_scope"
+    ],
+    "TW-108": [
+      "7b62da5f",
+      "out_of_scope"
+    ],
+    "TW-109": [
+      "8ec92fe1",
+      "out_of_scope"
+    ],
+    "TW-110": [
+      "a8fa4c78",
+      "escalated"
+    ],
+    "TW-111": [
+      "80b8d312",
+      "not_found"
+    ],
+    "TW-112": [
+      "56c72faa",
+      "out_of_scope"
+    ],
+    "TW-113": [
+      "18270dfd",
+      "out_of_scope"
+    ],
+    "TW-114": [
+      "ced07a7b",
+      "not_found"
+    ],
+    "TW-115": [
+      "8c221c2a",
+      "answered"
+    ],
+    "TW-116": [
+      "c7abe7c2",
+      "out_of_scope"
+    ],
+    "TW-117": [
+      "b60c0360",
+      "not_found"
+    ],
+    "TW-118": [
+      "8dc6beca",
+      "escalated"
+    ],
+    "TW-119": [
+      "885b0c9e",
+      "out_of_scope"
+    ],
+    "TW-120": [
+      "e14a1f76",
+      "out_of_scope"
+    ],
+    "TW-121": [
+      "e72c3cae",
+      "out_of_scope"
+    ],
+    "TW-122": [
+      "21ebf994",
+      "out_of_scope"
+    ],
+    "TW-123": [
+      "ef4ac3cf",
+      "not_found"
+    ],
+    "TW-124": [
+      "41ade637",
+      "out_of_scope"
+    ],
+    "TW-125": [
+      "b69cc2f6",
+      "escalated"
+    ],
+    "TW-126": [
+      "1a1845c2",
+      "out_of_scope"
+    ],
+    "TW-127": [
+      "17363fc7",
+      "out_of_scope"
+    ],
+    "TW-128": [
+      "5ab25675",
+      "escalated"
+    ],
+    "TW-129": [
+      "1dbc7d55",
+      "out_of_scope"
+    ],
+    "TW-130": [
+      "4a3da92a",
+      "out_of_scope"
+    ],
+    "TW-131": [
+      "af551c89",
+      "not_found"
+    ],
+    "TW-132": [
+      "9d5eaf57",
+      "out_of_scope"
+    ],
+    "TW-133": [
+      "eddc1134",
+      "not_found"
+    ],
+    "TW-134": [
+      "b99e5fe2",
+      "out_of_scope"
+    ],
+    "TW-135": [
+      "6c75af7a",
+      "out_of_scope"
+    ],
+    "TW-136": [
+      "c0f3e4d0",
+      "out_of_scope"
+    ],
+    "TW-137": [
+      "1e271339",
+      "not_found"
+    ],
+    "TW-138": [
+      "ac05fc6d",
+      "out_of_scope"
+    ],
+    "TW-139": [
+      "02b91dc8",
+      "out_of_scope"
+    ],
+    "TW-140": [
+      "1751af54",
+      "out_of_scope"
+    ],
+    "TW-141": [
+      "201941c3",
+      "out_of_scope"
+    ],
+    "TW-142": [
+      "0782d019",
+      "out_of_scope"
+    ],
+    "TW-143": [
+      "ccfea55e",
+      "out_of_scope"
+    ],
+    "TW-144": [
+      "4d1dd93f",
+      "out_of_scope"
+    ],
+    "TW-145": [
+      "33117c2e",
+      "not_found"
+    ],
+    "TW-146": [
+      "2965d65a",
+      "escalated"
+    ],
+    "TW-147": [
+      "7bc17d3f",
+      "out_of_scope"
+    ],
+    "TW-148": [
+      "63000938",
+      "out_of_scope"
+    ],
+    "TW-149": [
+      "589ddbba",
+      "out_of_scope"
+    ],
+    "TW-150": [
+      "36ef6240",
+      "out_of_scope"
+    ],
+    "TW-151": [
+      "9d4d6fc8",
+      "out_of_scope"
+    ],
+    "TW-152": [
+      "271ea138",
+      "out_of_scope"
+    ],
+    "TW-153": [
+      "6fb2f770",
+      "out_of_scope"
+    ],
+    "TW-154": [
+      "2422a7d8",
+      "out_of_scope"
+    ],
+    "TW-155": [
+      "28a91375",
+      "out_of_scope"
+    ],
+    "TW-156": [
+      "71b58d47",
+      "not_found"
+    ],
+    "TW-157": [
+      "6cc95191",
+      "out_of_scope"
+    ],
+    "TW-158": [
+      "c90ddd90",
+      "answered"
+    ],
+    "TW-159": [
+      "b5c53149",
+      "out_of_scope"
+    ],
+    "TW-160": [
+      "545f138a",
+      "out_of_scope"
+    ],
+    "TW-161": [
+      "69f2ac3e",
+      "answered"
+    ],
+    "TW-162": [
+      "bcf19d0b",
+      "escalated"
+    ],
+    "TW-163": [
+      "0780c827",
+      "not_found"
+    ],
+    "TW-164": [
+      "eb7baff4",
+      "out_of_scope"
+    ],
+    "TW-165": [
+      "6b65cce9",
+      "not_found"
+    ],
+    "TW-166": [
+      "24dbcccb",
+      "escalated"
+    ],
+    "TW-167": [
+      "63d39df1",
+      "escalated"
+    ],
+    "TW-168": [
+      "9b591006",
+      "out_of_scope"
+    ],
+    "TW-169": [
+      "7f13088d",
+      "not_found"
+    ],
+    "TW-170": [
+      "b820b394",
+      "out_of_scope"
+    ],
+    "TW-171": [
+      "135b3b1e",
+      "out_of_scope"
+    ],
+    "TW-172": [
+      "fa891c49",
+      "out_of_scope"
+    ],
+    "TW-173": [
+      "5ea5069a",
+      "out_of_scope"
+    ],
+    "TW-174": [
+      "ecf4141e",
+      "out_of_scope"
+    ],
+    "TW-175": [
+      "0b0d1502",
+      "not_found"
+    ],
+    "TW-176": [
+      "49ff7336",
+      "out_of_scope"
+    ],
+    "TW-177": [
+      "bf3759a4",
+      "out_of_scope"
+    ],
+    "TW-178": [
+      "210e1414",
+      "not_found"
+    ],
+    "TW-179": [
+      "bc389adf",
+      "out_of_scope"
+    ],
+    "TW-180": [
+      "b740771c",
+      "out_of_scope"
+    ],
+    "TW-181": [
+      "521d6af7",
+      "answered"
+    ],
+    "TW-182": [
+      "10651f58",
+      "out_of_scope"
+    ],
+    "TW-183": [
+      "57367f5c",
+      "out_of_scope"
+    ],
+    "TW-184": [
+      "b0c5e916",
+      "out_of_scope"
+    ],
+    "TW-185": [
+      "b930d9bc",
+      "out_of_scope"
+    ],
+    "TW-186": [
+      "ff7cb49e",
+      "out_of_scope"
+    ],
+    "TW-187": [
+      "b30ec896",
+      "out_of_scope"
+    ],
+    "TW-188": [
+      "a55300a7",
+      "out_of_scope"
+    ],
+    "TW-189": [
+      "afca8aba",
+      "out_of_scope"
+    ],
+    "TW-190": [
+      "1b5ebfaa",
+      "not_found"
+    ],
+    "TW-191": [
+      "cc3eda50",
+      "out_of_scope"
+    ],
+    "TW-192": [
+      "51b2815a",
+      "answered"
+    ],
+    "TW-193": [
+      "d7301822",
+      "not_found"
+    ],
+    "TW-194": [
+      "35d93174",
+      "out_of_scope"
+    ],
+    "TW-195": [
+      "74a8ec20",
+      "out_of_scope"
+    ],
+    "TW-196": [
+      "bde89eab",
+      "out_of_scope"
+    ],
+    "TW-197": [
+      "e0cd2045",
+      "answered"
+    ],
+    "TW-198": [
+      "d9037636",
+      "out_of_scope"
+    ],
+    "TW-199": [
+      "759fa073",
+      "out_of_scope"
+    ],
+    "TW-200": [
+      "769eddd5",
+      "out_of_scope"
+    ],
+    "TW-201": [
+      "13461020",
+      "out_of_scope"
+    ],
+    "TW-202": [
+      "c21e790b",
+      "out_of_scope"
+    ],
+    "TW-203": [
+      "910e987c",
+      "escalated"
+    ],
+    "TW-204": [
+      "fde61694",
+      "out_of_scope"
+    ],
+    "TW-205": [
+      "a475b69c",
+      "escalated"
+    ],
+    "TW-206": [
+      "d4b56651",
+      "out_of_scope"
+    ],
+    "TW-207": [
+      "9df6d4df",
+      "escalated"
+    ],
+    "TW-208": [
+      "95ce8bf5",
+      "out_of_scope"
+    ],
+    "TW-209": [
+      "b8736976",
+      "escalated"
+    ],
+    "TW-210": [
+      "f3b7be4e",
+      "answered"
+    ],
+    "TW-211": [
+      "3e6d5730",
+      "answered"
+    ],
+    "TW-212": [
+      "512510be",
+      "out_of_scope"
+    ],
+    "TW-213": [
+      "7991391d",
+      "answered"
+    ],
+    "TW-214": [
+      "ff58dc06",
+      "out_of_scope"
+    ],
+    "TW-215": [
+      "9810b0ff",
+      "not_found"
+    ],
+    "TW-216": [
+      "a48a0831",
+      "not_found"
+    ],
+    "TW-217": [
+      "6138c77a",
+      "not_found"
+    ],
+    "TW-218": [
+      "56125cec",
+      "answered"
+    ],
+    "TW-219": [
+      "64e187d9",
+      "out_of_scope"
+    ],
+    "TW-220": [
+      "9bdfd72f",
+      "out_of_scope"
+    ],
+    "TW-221": [
+      "74d20d80",
+      "out_of_scope"
+    ],
+    "TW-222": [
+      "7659c9bb",
+      "answered"
+    ],
+    "TW-223": [
+      "d1f5577f",
+      "out_of_scope"
+    ],
+    "TW-224": [
+      "844e3248",
+      "out_of_scope"
+    ],
+    "TW-225": [
+      "ef3daa08",
+      "answered"
+    ],
+    "TW-226": [
+      "16b5e5ed",
+      "out_of_scope"
+    ],
+    "TW-227": [
+      "1e716e0e",
+      "out_of_scope"
+    ],
+    "TW-228": [
+      "7209bd9f",
+      "not_found"
+    ],
+    "TW-229": [
+      "00921fc3",
+      "out_of_scope"
+    ],
+    "TW-230": [
+      "9ebc3afa",
+      "out_of_scope"
+    ],
+    "TW-231": [
+      "b69d13d5",
+      "out_of_scope"
+    ],
+    "TW-232": [
+      "381754c7",
+      "out_of_scope"
+    ],
+    "TW-233": [
+      "4a38c72f",
+      "out_of_scope"
+    ],
+    "TW-234": [
+      "1ac09e15",
+      "escalated"
+    ],
+    "TW-235": [
+      "ae1d1173",
+      "out_of_scope"
+    ],
+    "TW-236": [
+      "1f427560",
+      "out_of_scope"
+    ],
+    "TW-237": [
+      "83fbb2ee",
+      "out_of_scope"
+    ],
+    "TW-238": [
+      "6bc8e774",
+      "out_of_scope"
+    ],
+    "TW-239": [
+      "d9564d8f",
+      "out_of_scope"
+    ],
+    "TW-240": [
+      "36734c20",
+      "not_found"
+    ],
+    "TW-241": [
+      "1c1f487d",
+      "answered"
+    ],
+    "TW-242": [
+      "16ff0c01",
+      "out_of_scope"
+    ],
+    "TW-243": [
+      "0595d1ea",
+      "out_of_scope"
+    ],
+    "TW-244": [
+      "3d56b9cb",
+      "out_of_scope"
+    ],
+    "TW-245": [
+      "9de34894",
+      "not_found"
+    ],
+    "TW-246": [
+      "f5ffca1e",
+      "not_found"
+    ],
+    "TW-247": [
+      "eee2e987",
+      "out_of_scope"
+    ],
+    "TW-248": [
+      "457bd1a0",
+      "escalated"
+    ],
+    "TW-249": [
+      "754164ab",
+      "out_of_scope"
+    ],
+    "TW-250": [
+      "45b36243",
+      "out_of_scope"
+    ],
+    "TW-251": [
+      "1c9a8bb5",
+      "out_of_scope"
+    ],
+    "TW-252": [
+      "4621bb82",
+      "out_of_scope"
+    ],
+    "TW-253": [
+      "c845adf1",
+      "answered"
+    ],
+    "TW-254": [
+      "4ae720f2",
+      "out_of_scope"
+    ],
+    "TW-255": [
+      "2eadad23",
+      "escalated"
+    ],
+    "TW-256": [
+      "80ae7e7a",
+      "out_of_scope"
+    ],
+    "TW-257": [
+      "b254576d",
+      "escalated"
+    ],
+    "TW-258": [
+      "de2fa397",
+      "out_of_scope"
+    ],
+    "TW-259": [
+      "32870752",
+      "out_of_scope"
+    ],
+    "TW-260": [
+      "38ab4708",
+      "answered"
+    ],
+    "TW-261": [
+      "686168f1",
+      "not_found"
+    ],
+    "TW-262": [
+      "8b019abe",
+      "answered"
+    ],
+    "TW-263": [
+      "e6647a3d",
+      "out_of_scope"
+    ],
+    "TW-264": [
+      "1516d065",
+      "out_of_scope"
+    ],
+    "TW-265": [
+      "9d22aea1",
+      "escalated"
+    ],
+    "TW-266": [
+      "be323594",
+      "answered"
+    ],
+    "TW-267": [
+      "da7409fa",
+      "out_of_scope"
+    ],
+    "TW-268": [
+      "7f7cc936",
+      "out_of_scope"
+    ],
+    "TW-269": [
+      "ed4a1e01",
+      "not_found"
+    ],
+    "TW-270": [
+      "db8137fd",
+      "not_found"
+    ],
+    "TW-271": [
+      "de0c32fd",
+      "out_of_scope"
+    ],
+    "TW-272": [
+      "7381e74a",
+      "out_of_scope"
+    ],
+    "TW-273": [
+      "8f8ac2d9",
+      "answered"
+    ],
+    "TW-274": [
+      "5281366d",
+      "out_of_scope"
+    ],
+    "TW-275": [
+      "e454a3fb",
+      "escalated"
+    ],
+    "TW-276": [
+      "80ec2b5e",
+      "out_of_scope"
+    ],
+    "TW-277": [
+      "c74dbe1d",
+      "out_of_scope"
+    ],
+    "TW-278": [
+      "546958e2",
+      "not_found"
+    ],
+    "TW-279": [
+      "493973b1",
+      "out_of_scope"
+    ],
+    "TW-280": [
+      "1f5a1903",
+      "out_of_scope"
+    ],
+    "TW-281": [
+      "830db11e",
+      "out_of_scope"
+    ],
+    "TW-282": [
+      "7f7ef958",
+      "escalated"
+    ],
+    "TW-283": [
+      "131ca06c",
+      "out_of_scope"
+    ],
+    "TW-284": [
+      "79826576",
+      "out_of_scope"
+    ],
+    "TW-285": [
+      "03bcc978",
+      "out_of_scope"
+    ],
+    "TW-286": [
+      "e9b4af1c",
+      "answered"
+    ],
+    "TW-287": [
+      "c76feb88",
+      "out_of_scope"
+    ],
+    "TW-288": [
+      "7fa90b77",
+      "out_of_scope"
+    ],
+    "TW-289": [
+      "c74318f4",
+      "out_of_scope"
+    ],
+    "TW-290": [
+      "9c009681",
+      "out_of_scope"
+    ],
+    "TW-291": [
+      "3ddd38f3",
+      "out_of_scope"
+    ],
+    "TW-292": [
+      "a4eb396d",
+      "out_of_scope"
+    ],
+    "TW-293": [
+      "86b76c8f",
+      "out_of_scope"
+    ],
+    "TW-294": [
+      "9d02fb25",
+      "out_of_scope"
+    ],
+    "TW-295": [
+      "c617286c",
+      "out_of_scope"
+    ],
+    "TW-296": [
+      "d1ad7edd",
+      "out_of_scope"
+    ],
+    "TW-297": [
+      "6feee894",
+      "out_of_scope"
+    ],
+    "TW-298": [
+      "89496181",
+      "out_of_scope"
+    ],
+    "TW-299": [
+      "9844d13b",
+      "out_of_scope"
+    ],
+    "TW-300": [
+      "7e2a575e",
+      "out_of_scope"
+    ]
+  }
+}

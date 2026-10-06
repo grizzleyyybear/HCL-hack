@@ -1,0 +1,1153 @@
+{
+  "config": {
+    "embed_model": "BAAI/bge-small-en-v1.5",
+    "top_k": 3,
+    "mock_llm": true,
+    "critic_min_groundedness": 0.7,
+    "min_relevance": 0.65,
+    "as_of_date": "2026-10-06",
+    "accounts": [
+      "A1010",
+      "A1011",
+      "A1013",
+      "A1015",
+      "A1017",
+      "A1020"
+    ],
+    "accounts_loaded": {
+      "plan_limits": 4,
+      "accounts": 31,
+      "usage": 62,
+      "invoices": 56,
+      "platform_status": 4
+    },
+    "kb_sources": 73,
+    "setup_s": 37.3,
+    "total_runtime_s": 128.8,
+    "log_lines_flagged_by_redact": 0,
+    "in_scope_score_floor": 0.7399
+  },
+  "set": "tech",
+  "probe_file": "data/raw/probes/tech_titles_200.jsonl (gitignored, not committed)",
+  "description": "200 question titles about other tools (100 GitHub Discussions, 100 Stack Overflow)",
+  "requests": 200,
+  "runtime_s": 18.2,
+  "answer_types": {
+    "out_of_scope": 94,
+    "not_found": 83,
+    "answered": 16,
+    "escalated": 5,
+    "clarification_needed": 2
+  },
+  "verdicts": {
+    "acceptable": 184,
+    "answered_review": 12,
+    "invented_off_topic": 4
+  },
+  "acceptable_rate": 92.0,
+  "invented": {
+    "count": 4,
+    "rate": 2.0,
+    "after_manual_review": 13,
+    "after_manual_review_rate": 6.5,
+    "intent_types": {
+      "how_to": 6,
+      "account": 4,
+      "troubleshooting": 2,
+      "billing": 1
+    },
+    "cited_sources": {
+      "KB-TRB-008": 3,
+      "KB-API-005": 3,
+      "KB-API-007": 3,
+      "KB-TRB-001": 2,
+      "POL-LIMITS-001": 2,
+      "KB-TRB-007": 2,
+      "KB-API-003": 1,
+      "KB-BIL-001": 1,
+      "KB-TRB-006": 1,
+      "KB-TRB-005": 1,
+      "RN-4.4-001": 1,
+      "KB-API-001": 1
+    }
+  },
+  "answered": {
+    "count": 16,
+    "rate": 8.0,
+    "citation_validity": 100.0,
+    "reviewed_generic": [
+      "TT-110",
+      "TT-111",
+      "TT-127"
+    ],
+    "for_review": [
+      {
+        "id": "TT-040",
+        "trace_id": "40352ba0",
+        "verdict": "answered_review",
+        "cited": [
+          "KB-TRB-008",
+          "KB-TRB-005"
+        ],
+        "topics": [
+          "scheduling and time zones"
+        ],
+        "intent_type": "how_to",
+        "top_score": 0.6931
+      },
+      {
+        "id": "TT-064",
+        "trace_id": "03d4216d",
+        "verdict": "invented_off_topic",
+        "cited": [
+          "KB-TRB-001",
+          "KB-TRB-008"
+        ],
+        "topics": [],
+        "intent_type": "troubleshooting",
+        "top_score": 0.6676
+      },
+      {
+        "id": "TT-069",
+        "trace_id": "716fc9d1",
+        "verdict": "invented_off_topic",
+        "cited": [
+          "KB-API-003",
+          "KB-API-003"
+        ],
+        "topics": [],
+        "intent_type": "how_to",
+        "top_score": 0.7143
+      },
+      {
+        "id": "TT-093",
+        "trace_id": "cf6cb5b0",
+        "verdict": "invented_off_topic",
+        "cited": [
+          "POL-LIMITS-001",
+          "KB-BIL-001"
+        ],
+        "topics": [],
+        "intent_type": "account",
+        "top_score": 0.6912
+      },
+      {
+        "id": "TT-100",
+        "trace_id": "b069e1b7",
+        "verdict": "invented_off_topic",
+        "cited": [
+          "KB-TRB-006",
+          "KB-TRB-008"
+        ],
+        "topics": [],
+        "intent_type": "troubleshooting",
+        "top_score": 0.7237
+      },
+      {
+        "id": "TT-105",
+        "trace_id": "fc782ae8",
+        "verdict": "answered_review",
+        "cited": [
+          "POL-LIMITS-001",
+          "KB-API-005"
+        ],
+        "topics": [
+          "rate limits and quotas"
+        ],
+        "intent_type": "account",
+        "top_score": 0.7435
+      },
+      {
+        "id": "TT-107",
+        "trace_id": "c4e44444",
+        "verdict": "answered_review",
+        "cited": [
+          "KB-API-005",
+          "KB-API-005"
+        ],
+        "topics": [
+          "rate limits and quotas"
+        ],
+        "intent_type": "account",
+        "top_score": 0.6747
+      },
+      {
+        "id": "TT-110",
+        "trace_id": "10e54bc4",
+        "verdict": "answered_review",
+        "cited": [
+          "KB-API-001",
+          "KB-API-009"
+        ],
+        "topics": [
+          "auth expiry and token refresh"
+        ],
+        "intent_type": "how_to",
+        "top_score": 0.748
+      },
+      {
+        "id": "TT-111",
+        "trace_id": "89e19527",
+        "verdict": "answered_review",
+        "cited": [
+          "KB-API-001",
+          "KB-API-012"
+        ],
+        "topics": [
+          "auth expiry and token refresh"
+        ],
+        "intent_type": "how_to",
+        "top_score": 0.6866
+      },
+      {
+        "id": "TT-127",
+        "trace_id": "89d1adce",
+        "verdict": "answered_review",
+        "cited": [
+          "KB-API-001",
+          "KB-API-001"
+        ],
+        "topics": [
+          "auth expiry and token refresh"
+        ],
+        "intent_type": "how_to",
+        "top_score": 0.6965
+      },
+      {
+        "id": "TT-128",
+        "trace_id": "bdae80cc",
+        "verdict": "answered_review",
+        "cited": [
+          "KB-TRB-007"
+        ],
+        "topics": [
+          "webhook retries and signatures"
+        ],
+        "intent_type": "how_to",
+        "top_score": 0.6534
+      },
+      {
+        "id": "TT-139",
+        "trace_id": "29d68134",
+        "verdict": "answered_review",
+        "cited": [
+          "KB-API-007",
+          "RN-4.4-001"
+        ],
+        "topics": [
+          "webhook retries and signatures"
+        ],
+        "intent_type": "billing",
+        "top_score": 0.6832
+      },
+      {
+        "id": "TT-144",
+        "trace_id": "32f69464",
+        "verdict": "answered_review",
+        "cited": [
+          "KB-API-007"
+        ],
+        "topics": [
+          "webhook retries and signatures"
+        ],
+        "intent_type": "how_to",
+        "top_score": 0.663
+      },
+      {
+        "id": "TT-148",
+        "trace_id": "c23299e5",
+        "verdict": "answered_review",
+        "cited": [
+          "KB-API-007",
+          "KB-TRB-007"
+        ],
+        "topics": [
+          "webhook retries and signatures"
+        ],
+        "intent_type": "how_to",
+        "top_score": 0.6732
+      },
+      {
+        "id": "TT-150",
+        "trace_id": "9f995443",
+        "verdict": "answered_review",
+        "cited": [
+          "KB-TRB-001",
+          "KB-API-001"
+        ],
+        "topics": [
+          "auth expiry and token refresh"
+        ],
+        "intent_type": "how_to",
+        "top_score": 0.71
+      },
+      {
+        "id": "TT-153",
+        "trace_id": "7edb3f2c",
+        "verdict": "answered_review",
+        "cited": [
+          "KB-API-005",
+          "KB-API-005"
+        ],
+        "topics": [
+          "rate limits and quotas"
+        ],
+        "intent_type": "account",
+        "top_score": 0.7183
+      }
+    ]
+  },
+  "relevance_floor_test": {
+    "floor": 0.7399,
+    "invented_below_floor": 12,
+    "invented_total": 13,
+    "reviewed_generic_below_floor": 2
+  },
+  "tools_fired": {
+    "lookup_account": 104,
+    "get_usage": 22,
+    "get_plan_limits": 22,
+    "check_platform_status": 14,
+    "get_invoices": 5,
+    "check_refund_eligibility": 5,
+    "create_handoff": 5
+  },
+  "escalation": {
+    "count": 5,
+    "rate": 2.5,
+    "reasons": {
+      "kb_gap_needs_outcome": 4,
+      "billing_dispute": 1,
+      "repeated_contact": 1
+    },
+    "queues": {
+      "technical": 4,
+      "billing": 1
+    }
+  },
+  "intent_types": {
+    "out_of_scope": 94,
+    "how_to": 63,
+    "account": 22,
+    "troubleshooting": 16,
+    "billing": 5
+  },
+  "pii": {
+    "inputs_with_pii_like_tokens": 0,
+    "input_token_kinds": {},
+    "pipeline_pii_detected": 0,
+    "redact_rescan_hits": [],
+    "echo_hits": [],
+    "echo_probes_standalone": [],
+    "echo_probes_glued": [],
+    "log_echo_ids": []
+  },
+  "latency_ms": {
+    "p50": 58,
+    "p95": 110,
+    "max": 132
+  },
+  "errors": [],
+  "trace_ids": {
+    "TT-001": [
+      "19c86107",
+      "clarification_needed"
+    ],
+    "TT-002": [
+      "04543c40",
+      "not_found"
+    ],
+    "TT-003": [
+      "dc40bed6",
+      "out_of_scope"
+    ],
+    "TT-004": [
+      "d56d40cb",
+      "out_of_scope"
+    ],
+    "TT-005": [
+      "45b43d47",
+      "out_of_scope"
+    ],
+    "TT-006": [
+      "b57239a1",
+      "out_of_scope"
+    ],
+    "TT-007": [
+      "a6516a1d",
+      "out_of_scope"
+    ],
+    "TT-008": [
+      "7bc7c254",
+      "out_of_scope"
+    ],
+    "TT-009": [
+      "02f2445b",
+      "out_of_scope"
+    ],
+    "TT-010": [
+      "eddf6572",
+      "out_of_scope"
+    ],
+    "TT-011": [
+      "4d48f778",
+      "not_found"
+    ],
+    "TT-012": [
+      "40b0eb4c",
+      "out_of_scope"
+    ],
+    "TT-013": [
+      "06b60586",
+      "out_of_scope"
+    ],
+    "TT-014": [
+      "99bccac1",
+      "not_found"
+    ],
+    "TT-015": [
+      "dae39128",
+      "not_found"
+    ],
+    "TT-016": [
+      "126f6901",
+      "out_of_scope"
+    ],
+    "TT-017": [
+      "f52f3c03",
+      "out_of_scope"
+    ],
+    "TT-018": [
+      "22a41d7e",
+      "out_of_scope"
+    ],
+    "TT-019": [
+      "0290f885",
+      "out_of_scope"
+    ],
+    "TT-020": [
+      "e52b3a32",
+      "out_of_scope"
+    ],
+    "TT-021": [
+      "8229f823",
+      "out_of_scope"
+    ],
+    "TT-022": [
+      "8cc70874",
+      "out_of_scope"
+    ],
+    "TT-023": [
+      "fb7975d8",
+      "out_of_scope"
+    ],
+    "TT-024": [
+      "58b31818",
+      "not_found"
+    ],
+    "TT-025": [
+      "49b24fae",
+      "out_of_scope"
+    ],
+    "TT-026": [
+      "d34de26c",
+      "out_of_scope"
+    ],
+    "TT-027": [
+      "c9b6c773",
+      "out_of_scope"
+    ],
+    "TT-028": [
+      "a0f92e5f",
+      "out_of_scope"
+    ],
+    "TT-029": [
+      "bab0039c",
+      "out_of_scope"
+    ],
+    "TT-030": [
+      "c5145ccb",
+      "out_of_scope"
+    ],
+    "TT-031": [
+      "c06bac7c",
+      "out_of_scope"
+    ],
+    "TT-032": [
+      "524badf0",
+      "not_found"
+    ],
+    "TT-033": [
+      "e07f24b0",
+      "out_of_scope"
+    ],
+    "TT-034": [
+      "05c012ec",
+      "out_of_scope"
+    ],
+    "TT-035": [
+      "66daf8d1",
+      "not_found"
+    ],
+    "TT-036": [
+      "bdc55855",
+      "out_of_scope"
+    ],
+    "TT-037": [
+      "b4ed3ff7",
+      "out_of_scope"
+    ],
+    "TT-038": [
+      "38b98dd0",
+      "out_of_scope"
+    ],
+    "TT-039": [
+      "0eb9c1b1",
+      "not_found"
+    ],
+    "TT-040": [
+      "40352ba0",
+      "answered"
+    ],
+    "TT-041": [
+      "63ede69e",
+      "out_of_scope"
+    ],
+    "TT-042": [
+      "7e0d6a3b",
+      "out_of_scope"
+    ],
+    "TT-043": [
+      "5b05e13a",
+      "out_of_scope"
+    ],
+    "TT-044": [
+      "e3b9b6be",
+      "out_of_scope"
+    ],
+    "TT-045": [
+      "e8f5e330",
+      "out_of_scope"
+    ],
+    "TT-046": [
+      "baf06a35",
+      "escalated"
+    ],
+    "TT-047": [
+      "1eb9dfc0",
+      "out_of_scope"
+    ],
+    "TT-048": [
+      "f998d2ea",
+      "out_of_scope"
+    ],
+    "TT-049": [
+      "652f5215",
+      "not_found"
+    ],
+    "TT-050": [
+      "e5811f93",
+      "not_found"
+    ],
+    "TT-051": [
+      "cd374aff",
+      "out_of_scope"
+    ],
+    "TT-052": [
+      "d135ef78",
+      "out_of_scope"
+    ],
+    "TT-053": [
+      "7878753d",
+      "out_of_scope"
+    ],
+    "TT-054": [
+      "6c9186f6",
+      "not_found"
+    ],
+    "TT-055": [
+      "c29480fb",
+      "out_of_scope"
+    ],
+    "TT-056": [
+      "0efb3fc7",
+      "not_found"
+    ],
+    "TT-057": [
+      "a6dcfadb",
+      "out_of_scope"
+    ],
+    "TT-058": [
+      "24f41576",
+      "out_of_scope"
+    ],
+    "TT-059": [
+      "19d33707",
+      "out_of_scope"
+    ],
+    "TT-060": [
+      "edc261ed",
+      "not_found"
+    ],
+    "TT-061": [
+      "193acdb3",
+      "escalated"
+    ],
+    "TT-062": [
+      "8c91aff8",
+      "out_of_scope"
+    ],
+    "TT-063": [
+      "0efb7035",
+      "out_of_scope"
+    ],
+    "TT-064": [
+      "03d4216d",
+      "answered"
+    ],
+    "TT-065": [
+      "6a81ff52",
+      "out_of_scope"
+    ],
+    "TT-066": [
+      "81279a9e",
+      "out_of_scope"
+    ],
+    "TT-067": [
+      "c19c2dd8",
+      "out_of_scope"
+    ],
+    "TT-068": [
+      "fbc93d6c",
+      "out_of_scope"
+    ],
+    "TT-069": [
+      "716fc9d1",
+      "answered"
+    ],
+    "TT-070": [
+      "f62e3fb3",
+      "out_of_scope"
+    ],
+    "TT-071": [
+      "b1ac62b1",
+      "out_of_scope"
+    ],
+    "TT-072": [
+      "39c1e9e9",
+      "not_found"
+    ],
+    "TT-073": [
+      "ccb42151",
+      "out_of_scope"
+    ],
+    "TT-074": [
+      "7e5ebd89",
+      "not_found"
+    ],
+    "TT-075": [
+      "a3886400",
+      "out_of_scope"
+    ],
+    "TT-076": [
+      "a72bf980",
+      "not_found"
+    ],
+    "TT-077": [
+      "72559fd5",
+      "out_of_scope"
+    ],
+    "TT-078": [
+      "a971dab1",
+      "not_found"
+    ],
+    "TT-079": [
+      "683dc124",
+      "out_of_scope"
+    ],
+    "TT-080": [
+      "88da5905",
+      "clarification_needed"
+    ],
+    "TT-081": [
+      "c12e76c6",
+      "out_of_scope"
+    ],
+    "TT-082": [
+      "c104a69d",
+      "out_of_scope"
+    ],
+    "TT-083": [
+      "2403a42f",
+      "out_of_scope"
+    ],
+    "TT-084": [
+      "49b7c4cf",
+      "not_found"
+    ],
+    "TT-085": [
+      "ecec8e55",
+      "not_found"
+    ],
+    "TT-086": [
+      "8639b86e",
+      "not_found"
+    ],
+    "TT-087": [
+      "907ea07a",
+      "out_of_scope"
+    ],
+    "TT-088": [
+      "edeece16",
+      "not_found"
+    ],
+    "TT-089": [
+      "d088535e",
+      "out_of_scope"
+    ],
+    "TT-090": [
+      "2a73fa4a",
+      "out_of_scope"
+    ],
+    "TT-091": [
+      "86ea6f01",
+      "out_of_scope"
+    ],
+    "TT-092": [
+      "2706329f",
+      "not_found"
+    ],
+    "TT-093": [
+      "cf6cb5b0",
+      "answered"
+    ],
+    "TT-094": [
+      "af381e12",
+      "not_found"
+    ],
+    "TT-095": [
+      "daf8ac33",
+      "not_found"
+    ],
+    "TT-096": [
+      "edc19d16",
+      "out_of_scope"
+    ],
+    "TT-097": [
+      "39b3a7c0",
+      "out_of_scope"
+    ],
+    "TT-098": [
+      "2d07670e",
+      "out_of_scope"
+    ],
+    "TT-099": [
+      "57cb3547",
+      "out_of_scope"
+    ],
+    "TT-100": [
+      "b069e1b7",
+      "answered"
+    ],
+    "TT-101": [
+      "d9ac49aa",
+      "not_found"
+    ],
+    "TT-102": [
+      "11d55538",
+      "not_found"
+    ],
+    "TT-103": [
+      "cd434967",
+      "out_of_scope"
+    ],
+    "TT-104": [
+      "f0474921",
+      "not_found"
+    ],
+    "TT-105": [
+      "fc782ae8",
+      "answered"
+    ],
+    "TT-106": [
+      "6a0835d1",
+      "not_found"
+    ],
+    "TT-107": [
+      "c4e44444",
+      "answered"
+    ],
+    "TT-108": [
+      "7eb8636f",
+      "not_found"
+    ],
+    "TT-109": [
+      "6b78f381",
+      "escalated"
+    ],
+    "TT-110": [
+      "10e54bc4",
+      "answered"
+    ],
+    "TT-111": [
+      "89e19527",
+      "answered"
+    ],
+    "TT-112": [
+      "4e2f53eb",
+      "not_found"
+    ],
+    "TT-113": [
+      "3986b296",
+      "out_of_scope"
+    ],
+    "TT-114": [
+      "83a5c13d",
+      "not_found"
+    ],
+    "TT-115": [
+      "38567e3c",
+      "out_of_scope"
+    ],
+    "TT-116": [
+      "134a919c",
+      "out_of_scope"
+    ],
+    "TT-117": [
+      "b8da342d",
+      "not_found"
+    ],
+    "TT-118": [
+      "8a2dfadc",
+      "out_of_scope"
+    ],
+    "TT-119": [
+      "84a3b00c",
+      "out_of_scope"
+    ],
+    "TT-120": [
+      "eeb21c36",
+      "not_found"
+    ],
+    "TT-121": [
+      "ca50aa35",
+      "not_found"
+    ],
+    "TT-122": [
+      "e3b87aad",
+      "not_found"
+    ],
+    "TT-123": [
+      "5947bd6a",
+      "not_found"
+    ],
+    "TT-124": [
+      "980fab33",
+      "not_found"
+    ],
+    "TT-125": [
+      "5422fd67",
+      "not_found"
+    ],
+    "TT-126": [
+      "ba6bf1af",
+      "not_found"
+    ],
+    "TT-127": [
+      "89d1adce",
+      "answered"
+    ],
+    "TT-128": [
+      "bdae80cc",
+      "answered"
+    ],
+    "TT-129": [
+      "95b32f73",
+      "not_found"
+    ],
+    "TT-130": [
+      "2ab72661",
+      "not_found"
+    ],
+    "TT-131": [
+      "fcb63439",
+      "not_found"
+    ],
+    "TT-132": [
+      "5be8b054",
+      "not_found"
+    ],
+    "TT-133": [
+      "380da8d3",
+      "not_found"
+    ],
+    "TT-134": [
+      "36c75be7",
+      "not_found"
+    ],
+    "TT-135": [
+      "865e8869",
+      "not_found"
+    ],
+    "TT-136": [
+      "6b09de18",
+      "out_of_scope"
+    ],
+    "TT-137": [
+      "9256887b",
+      "not_found"
+    ],
+    "TT-138": [
+      "59f99706",
+      "not_found"
+    ],
+    "TT-139": [
+      "29d68134",
+      "answered"
+    ],
+    "TT-140": [
+      "3b964dd0",
+      "not_found"
+    ],
+    "TT-141": [
+      "b7285d81",
+      "not_found"
+    ],
+    "TT-142": [
+      "58db78cc",
+      "not_found"
+    ],
+    "TT-143": [
+      "04eeecab",
+      "not_found"
+    ],
+    "TT-144": [
+      "32f69464",
+      "answered"
+    ],
+    "TT-145": [
+      "63adb676",
+      "not_found"
+    ],
+    "TT-146": [
+      "bff019a4",
+      "not_found"
+    ],
+    "TT-147": [
+      "710b1ab1",
+      "out_of_scope"
+    ],
+    "TT-148": [
+      "c23299e5",
+      "answered"
+    ],
+    "TT-149": [
+      "5cdfa918",
+      "out_of_scope"
+    ],
+    "TT-150": [
+      "9f995443",
+      "answered"
+    ],
+    "TT-151": [
+      "02ef3028",
+      "not_found"
+    ],
+    "TT-152": [
+      "a7c04f92",
+      "not_found"
+    ],
+    "TT-153": [
+      "7edb3f2c",
+      "answered"
+    ],
+    "TT-154": [
+      "62f8e00f",
+      "not_found"
+    ],
+    "TT-155": [
+      "fc8770e2",
+      "not_found"
+    ],
+    "TT-156": [
+      "0d764418",
+      "not_found"
+    ],
+    "TT-157": [
+      "18ff2781",
+      "out_of_scope"
+    ],
+    "TT-158": [
+      "20efae70",
+      "not_found"
+    ],
+    "TT-159": [
+      "d0df8427",
+      "not_found"
+    ],
+    "TT-160": [
+      "f1ff5c20",
+      "not_found"
+    ],
+    "TT-161": [
+      "bc61c437",
+      "out_of_scope"
+    ],
+    "TT-162": [
+      "a8a1a917",
+      "out_of_scope"
+    ],
+    "TT-163": [
+      "b8f9327a",
+      "out_of_scope"
+    ],
+    "TT-164": [
+      "18ab407c",
+      "not_found"
+    ],
+    "TT-165": [
+      "470a4565",
+      "not_found"
+    ],
+    "TT-166": [
+      "05e37249",
+      "not_found"
+    ],
+    "TT-167": [
+      "d0197829",
+      "not_found"
+    ],
+    "TT-168": [
+      "0007fcdd",
+      "out_of_scope"
+    ],
+    "TT-169": [
+      "f82040f5",
+      "escalated"
+    ],
+    "TT-170": [
+      "fac4e255",
+      "out_of_scope"
+    ],
+    "TT-171": [
+      "8ba229f7",
+      "out_of_scope"
+    ],
+    "TT-172": [
+      "2c89a50b",
+      "out_of_scope"
+    ],
+    "TT-173": [
+      "9cb97e36",
+      "out_of_scope"
+    ],
+    "TT-174": [
+      "11c2fd8a",
+      "not_found"
+    ],
+    "TT-175": [
+      "b2672436",
+      "not_found"
+    ],
+    "TT-176": [
+      "9d703a39",
+      "not_found"
+    ],
+    "TT-177": [
+      "8d4aa8ce",
+      "not_found"
+    ],
+    "TT-178": [
+      "b5fe357c",
+      "not_found"
+    ],
+    "TT-179": [
+      "3b6a1870",
+      "not_found"
+    ],
+    "TT-180": [
+      "b016a801",
+      "not_found"
+    ],
+    "TT-181": [
+      "73dd2a61",
+      "out_of_scope"
+    ],
+    "TT-182": [
+      "9f3777a3",
+      "out_of_scope"
+    ],
+    "TT-183": [
+      "eb9e6861",
+      "not_found"
+    ],
+    "TT-184": [
+      "e3c2f13c",
+      "out_of_scope"
+    ],
+    "TT-185": [
+      "24569e9d",
+      "not_found"
+    ],
+    "TT-186": [
+      "0ccefae3",
+      "out_of_scope"
+    ],
+    "TT-187": [
+      "d34ded1b",
+      "escalated"
+    ],
+    "TT-188": [
+      "2795533d",
+      "not_found"
+    ],
+    "TT-189": [
+      "66123401",
+      "not_found"
+    ],
+    "TT-190": [
+      "367d930f",
+      "not_found"
+    ],
+    "TT-191": [
+      "876b785e",
+      "not_found"
+    ],
+    "TT-192": [
+      "d5c689d4",
+      "out_of_scope"
+    ],
+    "TT-193": [
+      "b4f194a6",
+      "not_found"
+    ],
+    "TT-194": [
+      "8275a09e",
+      "out_of_scope"
+    ],
+    "TT-195": [
+      "9e44b26f",
+      "out_of_scope"
+    ],
+    "TT-196": [
+      "b8213c51",
+      "not_found"
+    ],
+    "TT-197": [
+      "2c958c1a",
+      "out_of_scope"
+    ],
+    "TT-198": [
+      "06c37d8e",
+      "out_of_scope"
+    ],
+    "TT-199": [
+      "82556e3e",
+      "not_found"
+    ],
+    "TT-200": [
+      "49f5a010",
+      "not_found"
+    ]
+  }
+}

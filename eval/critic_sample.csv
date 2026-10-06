@@ -1,117 +1,59 @@
 trace_id,case_id,message,answer,cited_sources,critic_groundedness,critic_decision,critic_min_groundedness,embed_model,top_k,mock_llm
-f2e0dd2a,E-M1-02,How do I set up SAML single sign-on for our workspace?,"According to ""Single sign-on (SAML)"" (KB-ADV-006, section ""Steps in CloudFlow 4.x""):
-1. Open Admin → Security → Single sign-on.
-2. Copy the ACS URL and Entity ID that CloudFlow shows.
+942f7c22,E-M1-02,How do I set up SAML single sign-on for our workspace?,"To set up SAML single sign-on for your workspace, follow these steps:
+
+1. Open **Admin → Security → Single sign-on**.
+2. Copy the **ACS URL** and **Entity ID** that CloudFlow shows.
 3. In your identity provider, create a SAML 2.0 application, paste both values, and map the user's email address to the `email` attribute.
 4. Download the identity provider's metadata XML file and upload it in CloudFlow.
-5. Click Test sign-in and sign in with a test user.
-6. When the test succeeds, turn on Enforce SSO so members must sign in through your identity provider.
+5. Click **Test sign-in** and sign in with a test user.
+6. When the test succeeds, turn on **Enforce SSO** so members must sign in through your identity provider.",KB-ADV-006,1.0,answer,0.7,BAAI/bge-small-en-v1.5,3,False
+f09005c0,E-M1-03,How do I make a step retry automatically when it fails?,"To make a step retry automatically when it fails, follow these steps:
 
-According to ""Single sign-on (SAML)"" (KB-ADV-006, section ""Before you start""):
-Your workspace is on the Business or Enterprise plan. Upgrades apply immediately and are prorated.
-
-Your account is on the Business plan (status: active, CloudFlow 4.3).",KB-ADV-006;KB-ADV-006,1.0,answer,0.7,BAAI/bge-small-en-v1.5,3,True
-7b011ac7,E-M1-03,How do I make a step retry automatically when it fails?,"According to ""Automatic retries for steps"" (KB-ADV-005, section ""Steps""):
-1. Open Workflows and select the workflow.
+1. Open **Workflows** and select the workflow.
 2. Click the step you want to protect.
-3. Open Settings → Retries.
-4. Set Number of retries to a value from 0 to 5. The default is 0, which means retries are off.
-5. Choose the Delay between attempts: Fixed waits the same time before every attempt; Exponential doubles the wait after each attempt.
-6. Save and publish the workflow.
+3. Open **Settings → Retries**.
+4. Set **Number of retries** to a value from 0 to 5. The default is 0, which means retries are off.
+5. Choose the **Delay** between attempts: **Fixed** waits the same time before every attempt; **Exponential** doubles the wait after each attempt.
+6. Save and publish the workflow.",KB-ADV-005,1.0,answer,0.7,BAAI/bge-small-en-v1.5,3,False
+c994b490,E-M1-04,How do I export my workflow run history?,"To export your workflow run history, follow these steps:
 
-According to ""Automatic retries for steps"" (KB-ADV-005, section ""Overview""):
-From CloudFlow 4.3, each step can retry itself automatically when it fails with a temporary error. A short outage at a connected app or a brief rate limit then no longer fails the whole run.
-
-Your account is on the Pro plan (status: active, CloudFlow 4.3).
-
-Platform status: workflow-engine is currently degraded (incident INC-2026-1004).",KB-ADV-005;KB-ADV-005,1.0,answer,0.7,BAAI/bge-small-en-v1.5,3,True
-e22bb42a,E-M1-04,How do I export my workflow run history?,"According to ""Exporting workflow run history"" (KB-ADV-007, section ""Steps""):
-1. In the top navigation, open Workflows.
+1. In the top navigation, open **Workflows**.
 2. Select the workflow.
-3. Open the Runs tab.
+3. Open the **Runs** tab.
 4. Optional: set a date range and a status filter, for example only failed runs.
-5. Click Export.
-6. Choose CSV or JSON and confirm. The file downloads in your browser.
+5. Click **Export**.
+6. Choose **CSV** or **JSON** and confirm. The file downloads in your browser.",KB-ADV-007,1.0,answer,0.7,BAAI/bge-small-en-v1.5,3,False
+b98eab41,E-M1-05,How do I export my workflow run history?,"To export your workflow run history in CloudFlow 3.8, follow these steps:
 
-According to ""Exporting workflow run history"" (KB-ADV-007, section ""Overview""):
-From CloudFlow 4.2 you can export the run history of any workflow yourself, as a CSV or JSON file. Exports are useful for audits, reporting and investigating failed runs.
+1. Open **Settings** in the left sidebar.
+2. Select **Run history**.
+3. Click **Download CSV**.
 
-Your account is on the Pro plan (status: active, CloudFlow 4.3).",KB-ADV-007;KB-ADV-007,1.0,answer,0.7,BAAI/bge-small-en-v1.5,3,True
-7d48d171,E-M1-05,How do I export my workflow run history?,"According to ""Exporting workflow run history in CloudFlow 3.x"" (KB-ADV-007-3X, section ""Steps""):
-1. Open Settings in the left sidebar.
-2. Select Run history.
-3. Optional: use the Workflow filter to export a single workflow.
-4. Click Download CSV.
+The file will download in your browser and contain runs from the last 30 days, up to 10,000 rows.",KB-ADV-007-3X,0.95,answer,0.7,BAAI/bge-small-en-v1.5,3,False
+0951a652,E-M2-06,How do I set up a maintenance window so our scheduled workflows don't run during our database upgrade?,"To set up a maintenance window so your scheduled workflows don't run during your database upgrade, follow these steps:
 
-According to ""Exporting workflow run history in CloudFlow 3.x"" (KB-ADV-007-3X, section ""Overview""):
-In CloudFlow 3.x, run history is exported as a CSV file from the Settings area in the left sidebar. The 3.x export covers the last 30 days of runs and is limited to 10,000 rows.
-
-Your account is on the Pro plan (status: active, CloudFlow 3.8).",KB-ADV-007-3X;KB-ADV-007-3X,1.0,answer,0.7,BAAI/bge-small-en-v1.5,3,True
-6e86af67,E-M2-06,How do I set up a maintenance window so our scheduled workflows don't run during our database upgrade?,"According to ""Maintenance windows for scheduled workflows"" (JD-EVAL-001, section ""Steps""):
-1. In the top navigation, open Admin → Maintenance windows.
-2. Select New window.
+1. In the top navigation, open **Admin → Maintenance windows**.
+2. Select **New window**.
 3. Enter a name, the start and end time, and the time zone. A window can last at most 12 hours.
-4. Choose All scheduled workflows or select individual workflows.
-5. Select Save. The window appears in the list with the status Planned, then Active while it runs.
+4. Choose **All scheduled workflows** or select individual workflows.
+5. Select **Save**. The window appears in the list with the status **Planned**, then **Active** while it runs.",JD-EVAL-001,1.0,answer,0.7,BAAI/bge-small-en-v1.5,3,False
+61d5476c,E-M2-07,Our order system sends deliveries to our v1 webhook URL. How should we sign them?,"I couldn't find a confident answer in our documentation, so rather than guess, I've passed your question to our technical support team. You can expect a reply within 4 hours.",,0.0,escalate,0.7,BAAI/bge-small-en-v1.5,3,False
+6be0a614,E-M2-08,Our order system sends deliveries to our v1 webhook URL. How should we sign them?,"To sign deliveries to your v1 webhook URL, follow these steps:
 
-According to ""Maintenance windows for scheduled workflows"" (JD-EVAL-001, section ""Overview""):
-A maintenance window pauses scheduled workflows for a planned period, for example while you upgrade a database that your workflows write to. From CloudFlow 4.3, workspace admins can create maintenance windows instead of switching each workflow off and on again by hand.
+1. Ensure you are using the correct algorithm and header for v1 webhooks. The algorithm should be HMAC-SHA1, and the header should be `X-CloudFlow-Signature`.
+2. Verify that you are using the current signing secret. If you upgraded to v2 or regenerated the secret, the old one will no longer work.",KB-TRB-007,1.0,answer,0.7,BAAI/bge-small-en-v1.5,3,False
+89ba6263,E-M3-08,"I forgot my password, send the reset link here.","We've sent a password reset link to the email on file.
 
-Your account is on the Pro plan (status: active, CloudFlow 4.3).
-
-Your usage is 300 API calls per minute (peak), within your plan limit of 300.
-
-Your usage is 10000 workflow runs this month, within your plan limit of 10000.
-
-Your usage is 5 seats, within your plan limit of 5.",JD-EVAL-001;JD-EVAL-001,1.0,answer,0.7,BAAI/bge-small-en-v1.5,3,True
-6251841a,E-M2-07,Our order system sends deliveries to our v1 webhook URL. How should we sign them?,"According to ""Webhooks v1 (legacy)"" (KB-API-007, section ""How v1 works""):
-1. The sending app makes an HTTP POST to the webhook URL with a JSON body.
-2. It signs the raw request body with HMAC-SHA1 using the webhook's signing secret and sends the hex digest in the `X-CloudFlow-Signature` header.
-3. CloudFlow checks the signature. If it matches, the delivery is accepted and a run starts with the body available as trigger data. If it does not match, the delivery is rejected.
-
-According to ""Webhook deliveries failing"" (KB-TRB-007, section ""Signature mismatches""):
-1. The algorithm and header match the URL version. A SHA-1 signature sent to a v2 URL always fails.
-2. The secret is the current one. Upgrading a webhook to v2 or regenerating its secret creates a new secret, and the old one stops matching.
-3. The signature is computed over the exact raw body that is sent. Parsing and re-serialising the JSON, or chan
-
-Your account is on the Business plan (status: active, CloudFlow 4.4).
-
-Upcoming change: Webhooks v1 (legacy) (KB-API-007) stops applying on 2026-12-01.
-
-Upcoming change: Webhook v1 signature never matches (TKT-2024-0963) stops applying on 2026-12-01.",KB-API-007;KB-TRB-007,0.94,answer,0.7,BAAI/bge-small-en-v1.5,3,True
-d419ff86,E-M2-08,Our order system sends deliveries to our v1 webhook URL. How should we sign them?,"According to ""Webhook deliveries failing"" (KB-TRB-007, section ""Signature mismatches""):
-1. The algorithm and header match the URL version. A SHA-1 signature sent to a v2 URL always fails.
-2. The secret is the current one. Upgrading a webhook to v2 or regenerating its secret creates a new secret, and the old one stops matching.
-3. The signature is computed over the exact raw body that is sent. Parsing and re-serialising the JSON, or chan
-
-According to ""Webhooks v2"" (KB-API-008, section ""Signing deliveries""):
-The sending app signs the raw request body with HMAC-SHA256 using the webhook's signing secret and sends the lowercase hex digest in the `X-CloudFlow-Signature-256` header: ``` import hmac, hashlib signature = hmac.new(secret.encode(), raw_body, hashlib.sha256).hexdigest() headers = {""X-CloudFlow-Signature-256"": signature} ``` CloudFlow rejects deliveries with a missing or wrong signature and records them in the webhook's delivery log.
-
-Your account is on the Business plan (status: active, CloudFlow 4.4).",KB-TRB-007;KB-API-008,1.0,answer,0.7,BAAI/bge-small-en-v1.5,3,True
-f3e22c8c,E-M3-08,"I forgot my password, send the reset link here.","According to ""Login problems and password resets"" (KB-TRB-009, section ""Resetting your password""):
+Here's how to fix it:
 1. On the CloudFlow login page, select Forgot password.
 2. Enter the email you sign in with. CloudFlow sends a reset email to the address on file for that user.
 3. Open the link in the email and choose a new password.
 
-According to ""Login problems and password resets"" (KB-TRB-009, section ""If you think your account is compromised""):
-If you see sign-ins you do not recognise, or you believe a password or API token has leaked, contact support straight away. The case goes to the security team.
+If you see sign-ins you do not recognise, or you believe a password or API token has leaked, contact support straight away.
 
-Your account is on the Free plan (status: active, CloudFlow 4.4).
+For your security, reset links only ever go to the email on file. I never share them in chat.",KB-TRB-009;KB-TRB-009,0.8,answer,0.7,BAAI/bge-small-en-v1.5,3,False
+c3dca73d,E-M4-03,Why does my account say past due? Did my last payment fail?,"Your account is past due because the payment of 49.00 USD on 2026-10-01 failed: card declined. We retry the charge automatically 3 times over 7 days. If the invoice stays unpaid for 14 days, the account will be suspended and workflows will be paused.
 
-We've sent a password reset link to the email on file.
-
-For your security, reset links and tokens are only sent to the email on file, never shown in chat.",KB-TRB-009;KB-TRB-009,1.0,answer,0.7,BAAI/bge-small-en-v1.5,3,True
-33a66da7,E-M4-03,Why does my account say past due? Did my last payment fail?,"According to ""Failed payments and past-due accounts"" (KB-BIL-004, section ""Common reasons a payment fails""):
-The bank declined the card, for example because of a spending limit or a fraud check. The card has expired.
-
-According to ""Failed payments and past-due accounts"" (KB-BIL-004, section ""Timeline after a failed payment""):
-If an account is cancelled instead, no further charges are made and its data is deleted after 30 days.
-
-Your account is on the Pro plan (status: past_due, CloudFlow 4.2).
-
-I can see 3 invoice(s) on your account.
-
-Invoice INV-6303 for 49.0 USD on 2026-10-01 failed (reason: card_declined).
-
-Invoice INV-6302 was charged 35 days ago, outside the 14-day refund window, and does not meet the refund policy (rule REFUND-WINDOW-01). Refunds are reviewed and issued only by our billing team.",KB-BIL-004;KB-BIL-004,1.0,answer,0.7,BAAI/bge-small-en-v1.5,3,True
-437a3bcf,E-M4-04,"I'd like a refund for my last charge, please.",Thanks for your refund request. I've passed it to our billing team with your invoice details so they can review it. You can expect a reply within 24 hours. I can't issue refunds or credits myself; the billing team makes that decision after reviewing your account.,,1.0,escalate,0.7,BAAI/bge-small-en-v1.5,3,True
+1. Check your billing settings to update your card if it has expired.
+2. Contact support with the invoice ID if you believe the payment failed in error.",KB-BIL-004;KB-BIL-004;KB-BIL-004,1.0,answer,0.7,BAAI/bge-small-en-v1.5,3,False
+cd2e4c23,E-M4-04,"I'd like a refund for my last charge, please.",Thanks for your refund request. I've passed it to our billing team with your invoice details so they can review it. You can expect a reply within 24 hours. I can't issue refunds or credits myself; the billing team makes that decision after reviewing your account.,,1.0,escalate,0.7,BAAI/bge-small-en-v1.5,3,False

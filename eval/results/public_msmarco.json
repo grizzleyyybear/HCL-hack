@@ -1,0 +1,2128 @@
+{
+  "config": {
+    "embed_model": "BAAI/bge-small-en-v1.5",
+    "top_k": 3,
+    "mock_llm": true,
+    "critic_min_groundedness": 0.7,
+    "min_relevance": 0.65,
+    "as_of_date": "2026-10-06",
+    "accounts": [
+      "A1010",
+      "A1011",
+      "A1013",
+      "A1015",
+      "A1017",
+      "A1020"
+    ],
+    "accounts_loaded": {
+      "plan_limits": 4,
+      "accounts": 31,
+      "usage": 62,
+      "invoices": 56,
+      "platform_status": 4
+    },
+    "kb_sources": 73,
+    "setup_s": 37.3,
+    "total_runtime_s": 128.8,
+    "log_lines_flagged_by_redact": 0,
+    "in_scope_score_floor": 0.7399
+  },
+  "set": "msmarco",
+  "probe_file": "data/raw/probes/msmarco_500.jsonl (gitignored, not committed)",
+  "description": "500 MS MARCO v2.1 queries, CloudFlow-like queries removed, fixed seed",
+  "requests": 500,
+  "runtime_s": 39.0,
+  "answer_types": {
+    "out_of_scope": 484,
+    "not_found": 8,
+    "clarification_needed": 4,
+    "escalated": 3,
+    "answered": 1
+  },
+  "verdicts": {
+    "acceptable": 492,
+    "over_handled": 7,
+    "invented": 1
+  },
+  "acceptable_rate": 98.4,
+  "invented": {
+    "count": 1,
+    "rate": 0.2,
+    "after_manual_review": 1,
+    "after_manual_review_rate": 0.2,
+    "intent_types": {
+      "how_to": 1
+    },
+    "cited_sources": {
+      "KB-ADV-007": 1
+    }
+  },
+  "answered": {
+    "count": 1,
+    "rate": 0.2,
+    "citation_validity": 100.0,
+    "reviewed_generic": [],
+    "for_review": [
+      {
+        "id": "MM-006",
+        "trace_id": "0884c458",
+        "verdict": "invented",
+        "cited": [
+          "KB-ADV-007",
+          "KB-ADV-007"
+        ],
+        "topics": [],
+        "intent_type": "how_to",
+        "top_score": 0.7154
+      }
+    ]
+  },
+  "relevance_floor_test": {
+    "floor": 0.7399,
+    "invented_below_floor": 1,
+    "invented_total": 1,
+    "reviewed_generic_below_floor": 0
+  },
+  "tools_fired": {
+    "lookup_account": 12,
+    "create_handoff": 3,
+    "get_invoices": 2,
+    "check_refund_eligibility": 2,
+    "check_platform_status": 1
+  },
+  "escalation": {
+    "count": 3,
+    "rate": 0.6,
+    "reasons": {
+      "kb_gap_needs_outcome": 3,
+      "repeated_contact": 1
+    },
+    "queues": {
+      "technical": 3
+    }
+  },
+  "intent_types": {
+    "out_of_scope": 484,
+    "how_to": 9,
+    "troubleshooting": 5,
+    "billing": 2
+  },
+  "pii": {
+    "inputs_with_pii_like_tokens": 0,
+    "input_token_kinds": {},
+    "pipeline_pii_detected": 0,
+    "redact_rescan_hits": [],
+    "echo_hits": [],
+    "echo_probes_standalone": [],
+    "echo_probes_glued": [],
+    "log_echo_ids": []
+  },
+  "latency_ms": {
+    "p50": 50,
+    "p95": 66,
+    "max": 141
+  },
+  "errors": [],
+  "trace_ids": {
+    "MM-001": [
+      "71510092",
+      "out_of_scope"
+    ],
+    "MM-002": [
+      "5bb1b8a8",
+      "out_of_scope"
+    ],
+    "MM-003": [
+      "cf273c9f",
+      "out_of_scope"
+    ],
+    "MM-004": [
+      "30ba97bb",
+      "out_of_scope"
+    ],
+    "MM-005": [
+      "2bd3d90e",
+      "out_of_scope"
+    ],
+    "MM-006": [
+      "0884c458",
+      "answered"
+    ],
+    "MM-007": [
+      "12ed77c4",
+      "out_of_scope"
+    ],
+    "MM-008": [
+      "eca60c50",
+      "out_of_scope"
+    ],
+    "MM-009": [
+      "e48d8dee",
+      "out_of_scope"
+    ],
+    "MM-010": [
+      "5c95bbdc",
+      "out_of_scope"
+    ],
+    "MM-011": [
+      "b815d8cb",
+      "out_of_scope"
+    ],
+    "MM-012": [
+      "33494a34",
+      "out_of_scope"
+    ],
+    "MM-013": [
+      "c222b3e1",
+      "out_of_scope"
+    ],
+    "MM-014": [
+      "f835e044",
+      "out_of_scope"
+    ],
+    "MM-015": [
+      "96e3db25",
+      "out_of_scope"
+    ],
+    "MM-016": [
+      "a0197037",
+      "out_of_scope"
+    ],
+    "MM-017": [
+      "f2689d5e",
+      "out_of_scope"
+    ],
+    "MM-018": [
+      "edde8ec2",
+      "out_of_scope"
+    ],
+    "MM-019": [
+      "5f9d5bd1",
+      "out_of_scope"
+    ],
+    "MM-020": [
+      "fb36972c",
+      "out_of_scope"
+    ],
+    "MM-021": [
+      "0550f57f",
+      "out_of_scope"
+    ],
+    "MM-022": [
+      "18260048",
+      "out_of_scope"
+    ],
+    "MM-023": [
+      "47a89630",
+      "out_of_scope"
+    ],
+    "MM-024": [
+      "ce6c0c6c",
+      "out_of_scope"
+    ],
+    "MM-025": [
+      "733e16e7",
+      "out_of_scope"
+    ],
+    "MM-026": [
+      "e4d1e40a",
+      "out_of_scope"
+    ],
+    "MM-027": [
+      "029e0604",
+      "out_of_scope"
+    ],
+    "MM-028": [
+      "8a0377f0",
+      "out_of_scope"
+    ],
+    "MM-029": [
+      "6fa0a266",
+      "out_of_scope"
+    ],
+    "MM-030": [
+      "f0ff07c3",
+      "out_of_scope"
+    ],
+    "MM-031": [
+      "5fd8ca75",
+      "out_of_scope"
+    ],
+    "MM-032": [
+      "31515c5f",
+      "out_of_scope"
+    ],
+    "MM-033": [
+      "886769e9",
+      "out_of_scope"
+    ],
+    "MM-034": [
+      "636ea4dc",
+      "out_of_scope"
+    ],
+    "MM-035": [
+      "46a76572",
+      "out_of_scope"
+    ],
+    "MM-036": [
+      "e604cba7",
+      "out_of_scope"
+    ],
+    "MM-037": [
+      "5d0b407d",
+      "out_of_scope"
+    ],
+    "MM-038": [
+      "ea4a371a",
+      "out_of_scope"
+    ],
+    "MM-039": [
+      "c0e2168e",
+      "out_of_scope"
+    ],
+    "MM-040": [
+      "45c7b0ba",
+      "out_of_scope"
+    ],
+    "MM-041": [
+      "5c659a26",
+      "out_of_scope"
+    ],
+    "MM-042": [
+      "cb4e5886",
+      "out_of_scope"
+    ],
+    "MM-043": [
+      "4d39ce92",
+      "out_of_scope"
+    ],
+    "MM-044": [
+      "006a9af4",
+      "out_of_scope"
+    ],
+    "MM-045": [
+      "b26b6004",
+      "out_of_scope"
+    ],
+    "MM-046": [
+      "3f3ec800",
+      "out_of_scope"
+    ],
+    "MM-047": [
+      "562b58c4",
+      "out_of_scope"
+    ],
+    "MM-048": [
+      "d7c0b8dc",
+      "clarification_needed"
+    ],
+    "MM-049": [
+      "53e91db5",
+      "out_of_scope"
+    ],
+    "MM-050": [
+      "899cdd4e",
+      "out_of_scope"
+    ],
+    "MM-051": [
+      "eb9af4d4",
+      "out_of_scope"
+    ],
+    "MM-052": [
+      "105465ea",
+      "out_of_scope"
+    ],
+    "MM-053": [
+      "adc52bc2",
+      "out_of_scope"
+    ],
+    "MM-054": [
+      "098c78fd",
+      "out_of_scope"
+    ],
+    "MM-055": [
+      "5a78e571",
+      "out_of_scope"
+    ],
+    "MM-056": [
+      "d9139785",
+      "out_of_scope"
+    ],
+    "MM-057": [
+      "b482573e",
+      "out_of_scope"
+    ],
+    "MM-058": [
+      "c862838d",
+      "out_of_scope"
+    ],
+    "MM-059": [
+      "f2ca9cc0",
+      "out_of_scope"
+    ],
+    "MM-060": [
+      "cbc2aa0d",
+      "out_of_scope"
+    ],
+    "MM-061": [
+      "639a98c9",
+      "out_of_scope"
+    ],
+    "MM-062": [
+      "0aa01280",
+      "out_of_scope"
+    ],
+    "MM-063": [
+      "777936a8",
+      "out_of_scope"
+    ],
+    "MM-064": [
+      "e8d7746e",
+      "out_of_scope"
+    ],
+    "MM-065": [
+      "07f4437f",
+      "out_of_scope"
+    ],
+    "MM-066": [
+      "04510824",
+      "out_of_scope"
+    ],
+    "MM-067": [
+      "c7f0b57f",
+      "out_of_scope"
+    ],
+    "MM-068": [
+      "dceef390",
+      "out_of_scope"
+    ],
+    "MM-069": [
+      "17ef4687",
+      "out_of_scope"
+    ],
+    "MM-070": [
+      "9b82e3aa",
+      "out_of_scope"
+    ],
+    "MM-071": [
+      "cd7611ec",
+      "out_of_scope"
+    ],
+    "MM-072": [
+      "11994665",
+      "out_of_scope"
+    ],
+    "MM-073": [
+      "66723004",
+      "out_of_scope"
+    ],
+    "MM-074": [
+      "4c1395d5",
+      "out_of_scope"
+    ],
+    "MM-075": [
+      "9b2c069e",
+      "out_of_scope"
+    ],
+    "MM-076": [
+      "f294b5b4",
+      "out_of_scope"
+    ],
+    "MM-077": [
+      "26a92e7f",
+      "out_of_scope"
+    ],
+    "MM-078": [
+      "81d8a504",
+      "out_of_scope"
+    ],
+    "MM-079": [
+      "387b3a18",
+      "out_of_scope"
+    ],
+    "MM-080": [
+      "62a3d221",
+      "out_of_scope"
+    ],
+    "MM-081": [
+      "6f1589e4",
+      "out_of_scope"
+    ],
+    "MM-082": [
+      "4e9b72da",
+      "out_of_scope"
+    ],
+    "MM-083": [
+      "6af90ff5",
+      "out_of_scope"
+    ],
+    "MM-084": [
+      "548ae7c8",
+      "out_of_scope"
+    ],
+    "MM-085": [
+      "c0c6e9ec",
+      "out_of_scope"
+    ],
+    "MM-086": [
+      "31f7b836",
+      "out_of_scope"
+    ],
+    "MM-087": [
+      "313b6b5a",
+      "out_of_scope"
+    ],
+    "MM-088": [
+      "f2191d6f",
+      "out_of_scope"
+    ],
+    "MM-089": [
+      "6023ffca",
+      "out_of_scope"
+    ],
+    "MM-090": [
+      "dc18794a",
+      "out_of_scope"
+    ],
+    "MM-091": [
+      "53a0b335",
+      "out_of_scope"
+    ],
+    "MM-092": [
+      "0921da66",
+      "out_of_scope"
+    ],
+    "MM-093": [
+      "a6c5bf8e",
+      "out_of_scope"
+    ],
+    "MM-094": [
+      "0854d684",
+      "out_of_scope"
+    ],
+    "MM-095": [
+      "c6ed19f6",
+      "out_of_scope"
+    ],
+    "MM-096": [
+      "ef4e9bb6",
+      "out_of_scope"
+    ],
+    "MM-097": [
+      "4affeee1",
+      "out_of_scope"
+    ],
+    "MM-098": [
+      "a621a2e5",
+      "out_of_scope"
+    ],
+    "MM-099": [
+      "6589ae7a",
+      "out_of_scope"
+    ],
+    "MM-100": [
+      "2b8aefda",
+      "out_of_scope"
+    ],
+    "MM-101": [
+      "f8d5ed15",
+      "out_of_scope"
+    ],
+    "MM-102": [
+      "ab47b1ce",
+      "out_of_scope"
+    ],
+    "MM-103": [
+      "7312281d",
+      "out_of_scope"
+    ],
+    "MM-104": [
+      "acd06a26",
+      "out_of_scope"
+    ],
+    "MM-105": [
+      "47022d67",
+      "out_of_scope"
+    ],
+    "MM-106": [
+      "eaf04fbb",
+      "out_of_scope"
+    ],
+    "MM-107": [
+      "293335c0",
+      "out_of_scope"
+    ],
+    "MM-108": [
+      "fd071e2a",
+      "out_of_scope"
+    ],
+    "MM-109": [
+      "988e1b83",
+      "clarification_needed"
+    ],
+    "MM-110": [
+      "681260fd",
+      "out_of_scope"
+    ],
+    "MM-111": [
+      "f765a84e",
+      "out_of_scope"
+    ],
+    "MM-112": [
+      "0ce8f676",
+      "out_of_scope"
+    ],
+    "MM-113": [
+      "1a4d36fe",
+      "out_of_scope"
+    ],
+    "MM-114": [
+      "d2d67f92",
+      "out_of_scope"
+    ],
+    "MM-115": [
+      "3bd4ff77",
+      "out_of_scope"
+    ],
+    "MM-116": [
+      "e303b79b",
+      "out_of_scope"
+    ],
+    "MM-117": [
+      "9673c412",
+      "out_of_scope"
+    ],
+    "MM-118": [
+      "5adc053e",
+      "out_of_scope"
+    ],
+    "MM-119": [
+      "92ae0a7a",
+      "out_of_scope"
+    ],
+    "MM-120": [
+      "cb4a4046",
+      "out_of_scope"
+    ],
+    "MM-121": [
+      "33e142b1",
+      "out_of_scope"
+    ],
+    "MM-122": [
+      "f1a82e4e",
+      "out_of_scope"
+    ],
+    "MM-123": [
+      "1b31fd97",
+      "out_of_scope"
+    ],
+    "MM-124": [
+      "6e8b398c",
+      "out_of_scope"
+    ],
+    "MM-125": [
+      "04e9231f",
+      "out_of_scope"
+    ],
+    "MM-126": [
+      "7c693222",
+      "out_of_scope"
+    ],
+    "MM-127": [
+      "8c9fe33b",
+      "out_of_scope"
+    ],
+    "MM-128": [
+      "1774ca08",
+      "out_of_scope"
+    ],
+    "MM-129": [
+      "d3ccd85f",
+      "out_of_scope"
+    ],
+    "MM-130": [
+      "e8d8c52d",
+      "out_of_scope"
+    ],
+    "MM-131": [
+      "f4b235eb",
+      "out_of_scope"
+    ],
+    "MM-132": [
+      "de09cf7b",
+      "out_of_scope"
+    ],
+    "MM-133": [
+      "9f0ac3a9",
+      "out_of_scope"
+    ],
+    "MM-134": [
+      "37b1c92d",
+      "not_found"
+    ],
+    "MM-135": [
+      "32f36a55",
+      "out_of_scope"
+    ],
+    "MM-136": [
+      "8609059f",
+      "out_of_scope"
+    ],
+    "MM-137": [
+      "26d46d17",
+      "out_of_scope"
+    ],
+    "MM-138": [
+      "7452c407",
+      "out_of_scope"
+    ],
+    "MM-139": [
+      "d211dd0c",
+      "out_of_scope"
+    ],
+    "MM-140": [
+      "9b68954e",
+      "out_of_scope"
+    ],
+    "MM-141": [
+      "965f4567",
+      "out_of_scope"
+    ],
+    "MM-142": [
+      "49177a41",
+      "out_of_scope"
+    ],
+    "MM-143": [
+      "10dedb14",
+      "out_of_scope"
+    ],
+    "MM-144": [
+      "f695cfa9",
+      "out_of_scope"
+    ],
+    "MM-145": [
+      "4908637f",
+      "out_of_scope"
+    ],
+    "MM-146": [
+      "c56e8343",
+      "out_of_scope"
+    ],
+    "MM-147": [
+      "fc1451cb",
+      "out_of_scope"
+    ],
+    "MM-148": [
+      "e419cda1",
+      "out_of_scope"
+    ],
+    "MM-149": [
+      "28d5e444",
+      "out_of_scope"
+    ],
+    "MM-150": [
+      "4983c325",
+      "out_of_scope"
+    ],
+    "MM-151": [
+      "99c93359",
+      "out_of_scope"
+    ],
+    "MM-152": [
+      "464a3c90",
+      "out_of_scope"
+    ],
+    "MM-153": [
+      "73b793cb",
+      "out_of_scope"
+    ],
+    "MM-154": [
+      "b12c042e",
+      "out_of_scope"
+    ],
+    "MM-155": [
+      "f4ccb353",
+      "out_of_scope"
+    ],
+    "MM-156": [
+      "c3691949",
+      "out_of_scope"
+    ],
+    "MM-157": [
+      "51967d86",
+      "out_of_scope"
+    ],
+    "MM-158": [
+      "3f2fb64a",
+      "out_of_scope"
+    ],
+    "MM-159": [
+      "4b44bd8e",
+      "out_of_scope"
+    ],
+    "MM-160": [
+      "a248ce56",
+      "out_of_scope"
+    ],
+    "MM-161": [
+      "576bb728",
+      "out_of_scope"
+    ],
+    "MM-162": [
+      "dfc8e45c",
+      "out_of_scope"
+    ],
+    "MM-163": [
+      "aaf75fea",
+      "out_of_scope"
+    ],
+    "MM-164": [
+      "7b801c01",
+      "out_of_scope"
+    ],
+    "MM-165": [
+      "48d8d98a",
+      "out_of_scope"
+    ],
+    "MM-166": [
+      "3aef36cd",
+      "out_of_scope"
+    ],
+    "MM-167": [
+      "0d5ffbbb",
+      "out_of_scope"
+    ],
+    "MM-168": [
+      "4c477d61",
+      "out_of_scope"
+    ],
+    "MM-169": [
+      "32908a57",
+      "out_of_scope"
+    ],
+    "MM-170": [
+      "7d577b4a",
+      "out_of_scope"
+    ],
+    "MM-171": [
+      "349b5c33",
+      "out_of_scope"
+    ],
+    "MM-172": [
+      "3d090097",
+      "out_of_scope"
+    ],
+    "MM-173": [
+      "fcada9b7",
+      "out_of_scope"
+    ],
+    "MM-174": [
+      "998bb9f9",
+      "out_of_scope"
+    ],
+    "MM-175": [
+      "0b5e6e9f",
+      "out_of_scope"
+    ],
+    "MM-176": [
+      "7f60ef14",
+      "out_of_scope"
+    ],
+    "MM-177": [
+      "e0489c5a",
+      "out_of_scope"
+    ],
+    "MM-178": [
+      "87dd068b",
+      "out_of_scope"
+    ],
+    "MM-179": [
+      "63924869",
+      "out_of_scope"
+    ],
+    "MM-180": [
+      "0c06def2",
+      "out_of_scope"
+    ],
+    "MM-181": [
+      "eb099f80",
+      "out_of_scope"
+    ],
+    "MM-182": [
+      "baf1dc9d",
+      "out_of_scope"
+    ],
+    "MM-183": [
+      "8ead68bc",
+      "out_of_scope"
+    ],
+    "MM-184": [
+      "ee7a5033",
+      "out_of_scope"
+    ],
+    "MM-185": [
+      "7414e4f7",
+      "out_of_scope"
+    ],
+    "MM-186": [
+      "864cd262",
+      "out_of_scope"
+    ],
+    "MM-187": [
+      "8439b4cc",
+      "out_of_scope"
+    ],
+    "MM-188": [
+      "4950c40b",
+      "out_of_scope"
+    ],
+    "MM-189": [
+      "27463d90",
+      "out_of_scope"
+    ],
+    "MM-190": [
+      "300f6ad9",
+      "out_of_scope"
+    ],
+    "MM-191": [
+      "11d28175",
+      "out_of_scope"
+    ],
+    "MM-192": [
+      "cb740e85",
+      "out_of_scope"
+    ],
+    "MM-193": [
+      "25dc725f",
+      "out_of_scope"
+    ],
+    "MM-194": [
+      "f731b579",
+      "out_of_scope"
+    ],
+    "MM-195": [
+      "bd2e4dec",
+      "out_of_scope"
+    ],
+    "MM-196": [
+      "95894e42",
+      "out_of_scope"
+    ],
+    "MM-197": [
+      "25a840a0",
+      "out_of_scope"
+    ],
+    "MM-198": [
+      "ff757928",
+      "out_of_scope"
+    ],
+    "MM-199": [
+      "5230ecc4",
+      "out_of_scope"
+    ],
+    "MM-200": [
+      "0183394d",
+      "out_of_scope"
+    ],
+    "MM-201": [
+      "f76aa8aa",
+      "out_of_scope"
+    ],
+    "MM-202": [
+      "eb8c24a5",
+      "out_of_scope"
+    ],
+    "MM-203": [
+      "1d118c88",
+      "out_of_scope"
+    ],
+    "MM-204": [
+      "bd7e5cbd",
+      "out_of_scope"
+    ],
+    "MM-205": [
+      "3d7f565a",
+      "out_of_scope"
+    ],
+    "MM-206": [
+      "7b3c9b70",
+      "out_of_scope"
+    ],
+    "MM-207": [
+      "89a7de8f",
+      "out_of_scope"
+    ],
+    "MM-208": [
+      "2fd3c864",
+      "not_found"
+    ],
+    "MM-209": [
+      "cc0064d5",
+      "out_of_scope"
+    ],
+    "MM-210": [
+      "6f436d80",
+      "out_of_scope"
+    ],
+    "MM-211": [
+      "53035a67",
+      "out_of_scope"
+    ],
+    "MM-212": [
+      "8ef4956c",
+      "out_of_scope"
+    ],
+    "MM-213": [
+      "e85709c8",
+      "out_of_scope"
+    ],
+    "MM-214": [
+      "d5d878b6",
+      "out_of_scope"
+    ],
+    "MM-215": [
+      "fc0483bc",
+      "out_of_scope"
+    ],
+    "MM-216": [
+      "9eb7fada",
+      "out_of_scope"
+    ],
+    "MM-217": [
+      "f5e80895",
+      "out_of_scope"
+    ],
+    "MM-218": [
+      "d508af0e",
+      "out_of_scope"
+    ],
+    "MM-219": [
+      "8873fed7",
+      "out_of_scope"
+    ],
+    "MM-220": [
+      "e8d688bd",
+      "out_of_scope"
+    ],
+    "MM-221": [
+      "564e8c30",
+      "out_of_scope"
+    ],
+    "MM-222": [
+      "fdf49e7e",
+      "out_of_scope"
+    ],
+    "MM-223": [
+      "46f1e3f3",
+      "out_of_scope"
+    ],
+    "MM-224": [
+      "88000fcd",
+      "out_of_scope"
+    ],
+    "MM-225": [
+      "7de0065d",
+      "out_of_scope"
+    ],
+    "MM-226": [
+      "e8f40ad7",
+      "out_of_scope"
+    ],
+    "MM-227": [
+      "30057236",
+      "out_of_scope"
+    ],
+    "MM-228": [
+      "cf06313a",
+      "out_of_scope"
+    ],
+    "MM-229": [
+      "b1cb6756",
+      "out_of_scope"
+    ],
+    "MM-230": [
+      "4eac5f62",
+      "out_of_scope"
+    ],
+    "MM-231": [
+      "114ac580",
+      "out_of_scope"
+    ],
+    "MM-232": [
+      "c5ed1e14",
+      "out_of_scope"
+    ],
+    "MM-233": [
+      "ebd88d73",
+      "out_of_scope"
+    ],
+    "MM-234": [
+      "c714f1bf",
+      "out_of_scope"
+    ],
+    "MM-235": [
+      "1346518f",
+      "out_of_scope"
+    ],
+    "MM-236": [
+      "a87af136",
+      "out_of_scope"
+    ],
+    "MM-237": [
+      "71ddb3ba",
+      "out_of_scope"
+    ],
+    "MM-238": [
+      "5b12d39e",
+      "out_of_scope"
+    ],
+    "MM-239": [
+      "9f0b6a91",
+      "out_of_scope"
+    ],
+    "MM-240": [
+      "8bde473e",
+      "out_of_scope"
+    ],
+    "MM-241": [
+      "8998d8d4",
+      "out_of_scope"
+    ],
+    "MM-242": [
+      "34987fd7",
+      "clarification_needed"
+    ],
+    "MM-243": [
+      "64d815a1",
+      "out_of_scope"
+    ],
+    "MM-244": [
+      "781c9508",
+      "out_of_scope"
+    ],
+    "MM-245": [
+      "45ec11b6",
+      "out_of_scope"
+    ],
+    "MM-246": [
+      "bebf7d46",
+      "out_of_scope"
+    ],
+    "MM-247": [
+      "3984533a",
+      "out_of_scope"
+    ],
+    "MM-248": [
+      "eb6158db",
+      "out_of_scope"
+    ],
+    "MM-249": [
+      "33402aae",
+      "out_of_scope"
+    ],
+    "MM-250": [
+      "7313236a",
+      "out_of_scope"
+    ],
+    "MM-251": [
+      "d8311da4",
+      "out_of_scope"
+    ],
+    "MM-252": [
+      "c13c25ef",
+      "out_of_scope"
+    ],
+    "MM-253": [
+      "6ac1d0a4",
+      "out_of_scope"
+    ],
+    "MM-254": [
+      "b9adc165",
+      "out_of_scope"
+    ],
+    "MM-255": [
+      "95cabfb8",
+      "out_of_scope"
+    ],
+    "MM-256": [
+      "963d8c6a",
+      "out_of_scope"
+    ],
+    "MM-257": [
+      "d853c6f1",
+      "out_of_scope"
+    ],
+    "MM-258": [
+      "cbc65d20",
+      "out_of_scope"
+    ],
+    "MM-259": [
+      "2db6ff1d",
+      "out_of_scope"
+    ],
+    "MM-260": [
+      "f5e698ab",
+      "out_of_scope"
+    ],
+    "MM-261": [
+      "13bfebce",
+      "out_of_scope"
+    ],
+    "MM-262": [
+      "3caeda2d",
+      "out_of_scope"
+    ],
+    "MM-263": [
+      "eace89a6",
+      "out_of_scope"
+    ],
+    "MM-264": [
+      "94b63c5b",
+      "out_of_scope"
+    ],
+    "MM-265": [
+      "a1a27df6",
+      "out_of_scope"
+    ],
+    "MM-266": [
+      "f2cd9df2",
+      "out_of_scope"
+    ],
+    "MM-267": [
+      "264b062e",
+      "out_of_scope"
+    ],
+    "MM-268": [
+      "fec4044e",
+      "out_of_scope"
+    ],
+    "MM-269": [
+      "331e9d0a",
+      "out_of_scope"
+    ],
+    "MM-270": [
+      "9da1e07a",
+      "out_of_scope"
+    ],
+    "MM-271": [
+      "57601b76",
+      "out_of_scope"
+    ],
+    "MM-272": [
+      "c54195e9",
+      "out_of_scope"
+    ],
+    "MM-273": [
+      "e13800b6",
+      "out_of_scope"
+    ],
+    "MM-274": [
+      "7a44909e",
+      "out_of_scope"
+    ],
+    "MM-275": [
+      "a8b9e91a",
+      "out_of_scope"
+    ],
+    "MM-276": [
+      "67cc38e8",
+      "out_of_scope"
+    ],
+    "MM-277": [
+      "435353f9",
+      "out_of_scope"
+    ],
+    "MM-278": [
+      "435c9dbd",
+      "not_found"
+    ],
+    "MM-279": [
+      "cca572f5",
+      "out_of_scope"
+    ],
+    "MM-280": [
+      "030a9db3",
+      "not_found"
+    ],
+    "MM-281": [
+      "ecd18341",
+      "escalated"
+    ],
+    "MM-282": [
+      "1cde14ef",
+      "out_of_scope"
+    ],
+    "MM-283": [
+      "bd2c8178",
+      "out_of_scope"
+    ],
+    "MM-284": [
+      "ba408252",
+      "out_of_scope"
+    ],
+    "MM-285": [
+      "cc1fc542",
+      "out_of_scope"
+    ],
+    "MM-286": [
+      "2ebadabf",
+      "out_of_scope"
+    ],
+    "MM-287": [
+      "b8bf050c",
+      "out_of_scope"
+    ],
+    "MM-288": [
+      "ed15e2a8",
+      "out_of_scope"
+    ],
+    "MM-289": [
+      "b50a6052",
+      "out_of_scope"
+    ],
+    "MM-290": [
+      "4c13d9f5",
+      "not_found"
+    ],
+    "MM-291": [
+      "a621b246",
+      "out_of_scope"
+    ],
+    "MM-292": [
+      "1bf56a4d",
+      "out_of_scope"
+    ],
+    "MM-293": [
+      "be5e17b3",
+      "out_of_scope"
+    ],
+    "MM-294": [
+      "a642ddba",
+      "out_of_scope"
+    ],
+    "MM-295": [
+      "f5a7523f",
+      "out_of_scope"
+    ],
+    "MM-296": [
+      "958381d9",
+      "out_of_scope"
+    ],
+    "MM-297": [
+      "5b473b84",
+      "out_of_scope"
+    ],
+    "MM-298": [
+      "c316b045",
+      "clarification_needed"
+    ],
+    "MM-299": [
+      "908071da",
+      "out_of_scope"
+    ],
+    "MM-300": [
+      "c3558c72",
+      "out_of_scope"
+    ],
+    "MM-301": [
+      "02ed35a6",
+      "out_of_scope"
+    ],
+    "MM-302": [
+      "0a297ea7",
+      "out_of_scope"
+    ],
+    "MM-303": [
+      "1091f72f",
+      "escalated"
+    ],
+    "MM-304": [
+      "f7194afd",
+      "out_of_scope"
+    ],
+    "MM-305": [
+      "24391ce7",
+      "out_of_scope"
+    ],
+    "MM-306": [
+      "28270a80",
+      "out_of_scope"
+    ],
+    "MM-307": [
+      "a0069849",
+      "out_of_scope"
+    ],
+    "MM-308": [
+      "500e03be",
+      "out_of_scope"
+    ],
+    "MM-309": [
+      "b9b82eba",
+      "out_of_scope"
+    ],
+    "MM-310": [
+      "82ad45a2",
+      "out_of_scope"
+    ],
+    "MM-311": [
+      "2403522c",
+      "out_of_scope"
+    ],
+    "MM-312": [
+      "697879f5",
+      "out_of_scope"
+    ],
+    "MM-313": [
+      "e992c090",
+      "out_of_scope"
+    ],
+    "MM-314": [
+      "2e3f17bc",
+      "out_of_scope"
+    ],
+    "MM-315": [
+      "43fdd55c",
+      "out_of_scope"
+    ],
+    "MM-316": [
+      "c950aa73",
+      "out_of_scope"
+    ],
+    "MM-317": [
+      "8b7c122f",
+      "out_of_scope"
+    ],
+    "MM-318": [
+      "a02b5b5e",
+      "out_of_scope"
+    ],
+    "MM-319": [
+      "1cec1d36",
+      "out_of_scope"
+    ],
+    "MM-320": [
+      "330458a5",
+      "out_of_scope"
+    ],
+    "MM-321": [
+      "8f3c8327",
+      "out_of_scope"
+    ],
+    "MM-322": [
+      "89da2fcd",
+      "out_of_scope"
+    ],
+    "MM-323": [
+      "abb5b644",
+      "out_of_scope"
+    ],
+    "MM-324": [
+      "290e8c57",
+      "out_of_scope"
+    ],
+    "MM-325": [
+      "98a841e5",
+      "out_of_scope"
+    ],
+    "MM-326": [
+      "aa6c371d",
+      "out_of_scope"
+    ],
+    "MM-327": [
+      "fe777ecc",
+      "out_of_scope"
+    ],
+    "MM-328": [
+      "e85199ac",
+      "out_of_scope"
+    ],
+    "MM-329": [
+      "2675b9d3",
+      "out_of_scope"
+    ],
+    "MM-330": [
+      "f6710c0b",
+      "out_of_scope"
+    ],
+    "MM-331": [
+      "95bc95d4",
+      "out_of_scope"
+    ],
+    "MM-332": [
+      "2613fbb0",
+      "out_of_scope"
+    ],
+    "MM-333": [
+      "58c9934c",
+      "out_of_scope"
+    ],
+    "MM-334": [
+      "23cefb00",
+      "out_of_scope"
+    ],
+    "MM-335": [
+      "286b03da",
+      "out_of_scope"
+    ],
+    "MM-336": [
+      "b5d56f7c",
+      "out_of_scope"
+    ],
+    "MM-337": [
+      "25d82db5",
+      "out_of_scope"
+    ],
+    "MM-338": [
+      "1c45b64f",
+      "out_of_scope"
+    ],
+    "MM-339": [
+      "d31bea4c",
+      "out_of_scope"
+    ],
+    "MM-340": [
+      "d5a14fd4",
+      "out_of_scope"
+    ],
+    "MM-341": [
+      "e2ef6fef",
+      "out_of_scope"
+    ],
+    "MM-342": [
+      "acbf2abe",
+      "out_of_scope"
+    ],
+    "MM-343": [
+      "ffde7671",
+      "out_of_scope"
+    ],
+    "MM-344": [
+      "86c44dc4",
+      "out_of_scope"
+    ],
+    "MM-345": [
+      "1e427863",
+      "out_of_scope"
+    ],
+    "MM-346": [
+      "9928da2b",
+      "out_of_scope"
+    ],
+    "MM-347": [
+      "c640bd11",
+      "out_of_scope"
+    ],
+    "MM-348": [
+      "497b050f",
+      "out_of_scope"
+    ],
+    "MM-349": [
+      "3d3ca393",
+      "out_of_scope"
+    ],
+    "MM-350": [
+      "cc52ace1",
+      "out_of_scope"
+    ],
+    "MM-351": [
+      "c3a15f66",
+      "out_of_scope"
+    ],
+    "MM-352": [
+      "90549457",
+      "out_of_scope"
+    ],
+    "MM-353": [
+      "de490cb2",
+      "out_of_scope"
+    ],
+    "MM-354": [
+      "c0901180",
+      "out_of_scope"
+    ],
+    "MM-355": [
+      "565e91b3",
+      "out_of_scope"
+    ],
+    "MM-356": [
+      "dbb8a947",
+      "out_of_scope"
+    ],
+    "MM-357": [
+      "431e5d92",
+      "out_of_scope"
+    ],
+    "MM-358": [
+      "e9bef7cd",
+      "out_of_scope"
+    ],
+    "MM-359": [
+      "69d847a6",
+      "out_of_scope"
+    ],
+    "MM-360": [
+      "daa41e39",
+      "out_of_scope"
+    ],
+    "MM-361": [
+      "0c1a738c",
+      "out_of_scope"
+    ],
+    "MM-362": [
+      "2b39b075",
+      "not_found"
+    ],
+    "MM-363": [
+      "e2573da5",
+      "out_of_scope"
+    ],
+    "MM-364": [
+      "4ddc520b",
+      "out_of_scope"
+    ],
+    "MM-365": [
+      "8e546f00",
+      "out_of_scope"
+    ],
+    "MM-366": [
+      "48cbca04",
+      "out_of_scope"
+    ],
+    "MM-367": [
+      "4c5f0a49",
+      "out_of_scope"
+    ],
+    "MM-368": [
+      "047bc85a",
+      "out_of_scope"
+    ],
+    "MM-369": [
+      "48dff497",
+      "out_of_scope"
+    ],
+    "MM-370": [
+      "6697d337",
+      "out_of_scope"
+    ],
+    "MM-371": [
+      "74c4a3fc",
+      "out_of_scope"
+    ],
+    "MM-372": [
+      "3367b80c",
+      "out_of_scope"
+    ],
+    "MM-373": [
+      "d61671f7",
+      "out_of_scope"
+    ],
+    "MM-374": [
+      "ad001400",
+      "out_of_scope"
+    ],
+    "MM-375": [
+      "d02a21f0",
+      "out_of_scope"
+    ],
+    "MM-376": [
+      "f4f545a7",
+      "out_of_scope"
+    ],
+    "MM-377": [
+      "e5f586c3",
+      "out_of_scope"
+    ],
+    "MM-378": [
+      "e081e064",
+      "out_of_scope"
+    ],
+    "MM-379": [
+      "1bbbbbf5",
+      "out_of_scope"
+    ],
+    "MM-380": [
+      "58c6d8da",
+      "out_of_scope"
+    ],
+    "MM-381": [
+      "091e67bd",
+      "out_of_scope"
+    ],
+    "MM-382": [
+      "c31d0948",
+      "out_of_scope"
+    ],
+    "MM-383": [
+      "ca7b8b44",
+      "out_of_scope"
+    ],
+    "MM-384": [
+      "e5ded544",
+      "out_of_scope"
+    ],
+    "MM-385": [
+      "f8b97d82",
+      "out_of_scope"
+    ],
+    "MM-386": [
+      "98a569b6",
+      "out_of_scope"
+    ],
+    "MM-387": [
+      "24167f16",
+      "out_of_scope"
+    ],
+    "MM-388": [
+      "f6102753",
+      "out_of_scope"
+    ],
+    "MM-389": [
+      "1f59f9fb",
+      "out_of_scope"
+    ],
+    "MM-390": [
+      "783c127e",
+      "out_of_scope"
+    ],
+    "MM-391": [
+      "c44cc82b",
+      "out_of_scope"
+    ],
+    "MM-392": [
+      "571b45a1",
+      "out_of_scope"
+    ],
+    "MM-393": [
+      "9f265d72",
+      "out_of_scope"
+    ],
+    "MM-394": [
+      "61e596ce",
+      "out_of_scope"
+    ],
+    "MM-395": [
+      "0431aec0",
+      "out_of_scope"
+    ],
+    "MM-396": [
+      "e77c6c49",
+      "out_of_scope"
+    ],
+    "MM-397": [
+      "c8ae6367",
+      "out_of_scope"
+    ],
+    "MM-398": [
+      "5412a052",
+      "out_of_scope"
+    ],
+    "MM-399": [
+      "7418714b",
+      "out_of_scope"
+    ],
+    "MM-400": [
+      "a4e28308",
+      "out_of_scope"
+    ],
+    "MM-401": [
+      "9f925866",
+      "out_of_scope"
+    ],
+    "MM-402": [
+      "0b548493",
+      "out_of_scope"
+    ],
+    "MM-403": [
+      "457f493e",
+      "out_of_scope"
+    ],
+    "MM-404": [
+      "198cd80e",
+      "out_of_scope"
+    ],
+    "MM-405": [
+      "6bf52659",
+      "out_of_scope"
+    ],
+    "MM-406": [
+      "e11fc228",
+      "escalated"
+    ],
+    "MM-407": [
+      "6d65c7e6",
+      "out_of_scope"
+    ],
+    "MM-408": [
+      "54bf1bd9",
+      "out_of_scope"
+    ],
+    "MM-409": [
+      "43b20d5d",
+      "out_of_scope"
+    ],
+    "MM-410": [
+      "97fbfd1a",
+      "out_of_scope"
+    ],
+    "MM-411": [
+      "511e685a",
+      "out_of_scope"
+    ],
+    "MM-412": [
+      "91c9e9a4",
+      "out_of_scope"
+    ],
+    "MM-413": [
+      "ff36a05d",
+      "out_of_scope"
+    ],
+    "MM-414": [
+      "cc62ca55",
+      "out_of_scope"
+    ],
+    "MM-415": [
+      "6725cec3",
+      "out_of_scope"
+    ],
+    "MM-416": [
+      "ef4c7e14",
+      "not_found"
+    ],
+    "MM-417": [
+      "90e21e67",
+      "out_of_scope"
+    ],
+    "MM-418": [
+      "1780b43b",
+      "out_of_scope"
+    ],
+    "MM-419": [
+      "2d589ca1",
+      "out_of_scope"
+    ],
+    "MM-420": [
+      "38e68da3",
+      "out_of_scope"
+    ],
+    "MM-421": [
+      "31d343ad",
+      "out_of_scope"
+    ],
+    "MM-422": [
+      "357bd191",
+      "out_of_scope"
+    ],
+    "MM-423": [
+      "7ec7da0b",
+      "out_of_scope"
+    ],
+    "MM-424": [
+      "ddf1a35f",
+      "out_of_scope"
+    ],
+    "MM-425": [
+      "c0ff314d",
+      "out_of_scope"
+    ],
+    "MM-426": [
+      "ae571694",
+      "out_of_scope"
+    ],
+    "MM-427": [
+      "3f48ebc4",
+      "out_of_scope"
+    ],
+    "MM-428": [
+      "cb320597",
+      "out_of_scope"
+    ],
+    "MM-429": [
+      "0ef41c81",
+      "out_of_scope"
+    ],
+    "MM-430": [
+      "e8b81575",
+      "out_of_scope"
+    ],
+    "MM-431": [
+      "35b62043",
+      "out_of_scope"
+    ],
+    "MM-432": [
+      "c50b2928",
+      "out_of_scope"
+    ],
+    "MM-433": [
+      "e26df74d",
+      "out_of_scope"
+    ],
+    "MM-434": [
+      "950b9311",
+      "out_of_scope"
+    ],
+    "MM-435": [
+      "996fb403",
+      "out_of_scope"
+    ],
+    "MM-436": [
+      "01c80912",
+      "out_of_scope"
+    ],
+    "MM-437": [
+      "8e1d04b8",
+      "out_of_scope"
+    ],
+    "MM-438": [
+      "5112540f",
+      "out_of_scope"
+    ],
+    "MM-439": [
+      "4d49835b",
+      "out_of_scope"
+    ],
+    "MM-440": [
+      "b349d34b",
+      "out_of_scope"
+    ],
+    "MM-441": [
+      "2e49b8c2",
+      "out_of_scope"
+    ],
+    "MM-442": [
+      "000c48c5",
+      "out_of_scope"
+    ],
+    "MM-443": [
+      "ec2feff6",
+      "out_of_scope"
+    ],
+    "MM-444": [
+      "5a52331f",
+      "out_of_scope"
+    ],
+    "MM-445": [
+      "21590daf",
+      "out_of_scope"
+    ],
+    "MM-446": [
+      "acc1aca9",
+      "out_of_scope"
+    ],
+    "MM-447": [
+      "a51f3bae",
+      "out_of_scope"
+    ],
+    "MM-448": [
+      "dd046354",
+      "out_of_scope"
+    ],
+    "MM-449": [
+      "b0837620",
+      "out_of_scope"
+    ],
+    "MM-450": [
+      "c7531edc",
+      "out_of_scope"
+    ],
+    "MM-451": [
+      "e026e95a",
+      "out_of_scope"
+    ],
+    "MM-452": [
+      "a6e6fa1e",
+      "out_of_scope"
+    ],
+    "MM-453": [
+      "cd1374cf",
+      "out_of_scope"
+    ],
+    "MM-454": [
+      "131dd7a1",
+      "out_of_scope"
+    ],
+    "MM-455": [
+      "76e22943",
+      "out_of_scope"
+    ],
+    "MM-456": [
+      "176f207c",
+      "out_of_scope"
+    ],
+    "MM-457": [
+      "8ed2c345",
+      "out_of_scope"
+    ],
+    "MM-458": [
+      "602d5abf",
+      "out_of_scope"
+    ],
+    "MM-459": [
+      "8e579282",
+      "out_of_scope"
+    ],
+    "MM-460": [
+      "0072f17c",
+      "out_of_scope"
+    ],
+    "MM-461": [
+      "9cfbee61",
+      "out_of_scope"
+    ],
+    "MM-462": [
+      "d4f09c59",
+      "out_of_scope"
+    ],
+    "MM-463": [
+      "f110394f",
+      "out_of_scope"
+    ],
+    "MM-464": [
+      "4a86de4b",
+      "out_of_scope"
+    ],
+    "MM-465": [
+      "9f02ea9a",
+      "out_of_scope"
+    ],
+    "MM-466": [
+      "f3ee3487",
+      "out_of_scope"
+    ],
+    "MM-467": [
+      "33722ed4",
+      "out_of_scope"
+    ],
+    "MM-468": [
+      "8fa164c3",
+      "out_of_scope"
+    ],
+    "MM-469": [
+      "821ad1da",
+      "out_of_scope"
+    ],
+    "MM-470": [
+      "01b8e0f9",
+      "out_of_scope"
+    ],
+    "MM-471": [
+      "1a396651",
+      "out_of_scope"
+    ],
+    "MM-472": [
+      "9bb6b4fa",
+      "out_of_scope"
+    ],
+    "MM-473": [
+      "1e369c60",
+      "out_of_scope"
+    ],
+    "MM-474": [
+      "6f552fcb",
+      "out_of_scope"
+    ],
+    "MM-475": [
+      "81f0bbd5",
+      "out_of_scope"
+    ],
+    "MM-476": [
+      "ae220afa",
+      "out_of_scope"
+    ],
+    "MM-477": [
+      "0f56d1a1",
+      "out_of_scope"
+    ],
+    "MM-478": [
+      "a81b0309",
+      "out_of_scope"
+    ],
+    "MM-479": [
+      "32790d58",
+      "out_of_scope"
+    ],
+    "MM-480": [
+      "eed2cbe8",
+      "out_of_scope"
+    ],
+    "MM-481": [
+      "b034657d",
+      "out_of_scope"
+    ],
+    "MM-482": [
+      "a3148816",
+      "out_of_scope"
+    ],
+    "MM-483": [
+      "6d39a76d",
+      "out_of_scope"
+    ],
+    "MM-484": [
+      "36bb202b",
+      "out_of_scope"
+    ],
+    "MM-485": [
+      "840cea89",
+      "out_of_scope"
+    ],
+    "MM-486": [
+      "bf52a7fd",
+      "out_of_scope"
+    ],
+    "MM-487": [
+      "1d27aa0e",
+      "out_of_scope"
+    ],
+    "MM-488": [
+      "bd69a312",
+      "out_of_scope"
+    ],
+    "MM-489": [
+      "67e36bd9",
+      "out_of_scope"
+    ],
+    "MM-490": [
+      "4354675e",
+      "out_of_scope"
+    ],
+    "MM-491": [
+      "cf1aec55",
+      "not_found"
+    ],
+    "MM-492": [
+      "100493df",
+      "out_of_scope"
+    ],
+    "MM-493": [
+      "e1db8395",
+      "out_of_scope"
+    ],
+    "MM-494": [
+      "93928ec5",
+      "out_of_scope"
+    ],
+    "MM-495": [
+      "be2314ba",
+      "out_of_scope"
+    ],
+    "MM-496": [
+      "d8136f6b",
+      "out_of_scope"
+    ],
+    "MM-497": [
+      "26dbbbdf",
+      "out_of_scope"
+    ],
+    "MM-498": [
+      "35beb6d4",
+      "out_of_scope"
+    ],
+    "MM-499": [
+      "79646339",
+      "out_of_scope"
+    ],
+    "MM-500": [
+      "c9c0b85c",
+      "out_of_scope"
+    ]
+  }
+}

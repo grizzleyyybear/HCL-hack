@@ -1,4 +1,4 @@
-"""Mine six public sources for realism only (agent A1 public-data, owner Member 1).
+"""Mine six public sources for realism only (area: safety, critic and eval; the KB uses its themes).
 
 Run: .venv/Scripts/python.exe scripts/mine_public_data.py
 
@@ -11,6 +11,9 @@ What it writes (no public text is copied into the knowledge base):
   data/public/manifest.csv           one row per source: licence, use, status (used / skipped:<reason>)
 data/public/structure_templates.md is hand-written (Stripe/Twilio structure, our own words) and only
 checked here. Raw downloads live in data/raw/ (gitignored) and are never copied elsewhere.
+
+  --export-probes  writes only the runtime probe sets for eval/run_public.py into data/raw/probes/ (gitignored,
+                   real third-party text, never committed): msmarco_500, twcs_300, twcs_pii_50, tech_titles_200.
 Every source is optional: a failure (network, auth, missing file) is recorded as skipped, never fatal.
 """
 import collections
@@ -63,7 +66,7 @@ def write_jsonl(path: pathlib.Path, rows: list[dict]) -> None:
     path.write_text("".join(json.dumps(r, ensure_ascii=False) + "\n" for r in rows), encoding="utf-8")
 
 
-# Build one eval-set line in the CLAUDE.md eval case format.
+# Build one eval-set line in the eval case format (eval/README.md).
 def probe(pid: str, account: str, message: str, category: str, answer_type: str, reasons: list[str]) -> dict:
     return {"id": pid, "account_id": account, "message": message, "as_of_date": AS_OF,
             "category": category, "expected_answer_type": answer_type, "expected_sources": [],
@@ -97,7 +100,7 @@ SKIP_WORDS = re.compile(r"\b(thanks|thank you|lucky|love|great|f+u+c+k\w*|shit\w
 # Paraphrases of the 15 sampled tweets into CloudFlow context, written by Claude because Ollama was not
 # available on the build machine. Index i matches sample i of sample_tweets() (fixed seed, same CSV).
 # Each one keeps the source tweet's tone and situation (frustration, repeat contact, asking for a person)
-# but none of its words, names or brands. Every one must escalate under CLAUDE.md Annex A.3.
+# but none of its words, names or brands. Every one must escalate under Annex A.3 of the guide.
 PARAPHRASES = [
     {"text": "Once again your update broke my workflows and your support team blamed my setup for it. The supervisor I spoke to cut me off. I want a manager to review this properly.",
      "sentiment": "angry", "repeated_contact": True, "wants_human": True},
@@ -182,7 +185,7 @@ def paraphrase(clean_text: str, stored: dict) -> tuple[dict, str]:
     return stored, CLAUDE
 
 
-# Expected escalation reasons for a tone probe, following CLAUDE.md Annex A.3 / decide().
+# Expected escalation reasons for a tone probe, following Annex A.3 / decide().
 def tone_reasons(ex: dict) -> list[str]:
     reasons = []
     if re.search(r"refund|charged|invoice", ex["text"], re.I):
@@ -395,6 +398,88 @@ def mine_themes() -> tuple[str, str, set[str]]:
     return gh_status, so_status, licences
 
 
+# ---------------------------------------------------------------- probe export (robustness eval at scale)
+
+PROBES = RAW / "probes"  # gitignored: these files hold real third-party text and must never be committed
+# CloudFlow-support vocabulary: an MS MARCO query with one of these words could be a real CloudFlow question,
+# so it is left out to keep the "never answered" label clean. Deliberately narrower than app/llm.py's domain
+# list, so words such as "run", "error", "status" or "limit" stay in and the probes really test the pipeline.
+CLOUDFLOW_TOPIC = re.compile(
+    r"\b(cloudflow|workflows?|webhooks?|api|apis|connectors?|integrat\w*|salesforce|hubspot|slack|jira|zendesk|"
+    r"stripe|invoices?|refunds?|bill|billing|billed|subscriptions?|passwords?|log ?in|sign ?in|accounts?|tokens?|"
+    r"oauth|sso|saml|2fa|rate limits?|quotas?|429|cf-\d+|automation|software|app|apps|payments?|charges?|"
+    r"charged|pricing|price plans?)\b", re.I)
+PII_EMAIL = re.compile(r"[\w.+-]+@[\w-]+(?:\.[\w-]+)+")
+PII_DIGITS = re.compile(r"(?<!\d)\+?\d(?:[ ().-]{0,2}\d){9,18}(?!\d)")  # 10-19 digits: phone-, order- or card-like
+BRAND = re.compile(r"@([A-Za-z]\w*)")  # TWCS anonymised customers to numeric handles; brand handles have letters
+
+
+# Read cached GitHub + Stack Overflow titles (fetch only when a cache file is missing, so the sample is stable).
+def cached_titles() -> tuple[list[dict], list[dict]]:
+    gh_files = [RAW / "github" / f"{r.replace('/', '_')}.json" for r in GH_REPOS]
+    so_files = [RAW / "stackoverflow" / f"{t}.json" for t in SO_TAGS]
+    gh = ([{**d, "repo": r} for r, p in zip(GH_REPOS, gh_files) for d in json.loads(p.read_text(encoding="utf-8"))]
+          if all(p.exists() for p in gh_files) else fetch_github())
+    so = ([q for p in so_files for q in json.loads(p.read_text(encoding="utf-8"))]
+          if all(p.exists() for p in so_files) else fetch_stackoverflow()[0])
+    return gh, so
+
+
+# Pick 300 inbound TWCS tweets addressed to a brand: 250 opening tweets plus 50 that carry PII-like text
+# (emails, 10-19 digit numbers). All 300 are scrubbed; the 50 are also written unscrubbed to stress-test
+# the pipeline's own redaction. Returns (scrubbed_300, raw_50).
+def twcs_probes(general: int = 250, with_pii: int = 50) -> tuple[list[dict], list[dict]]:
+    ensure_twcs()
+    openers, pii_pool = [], []
+    with TWCS_CSV.open(encoding="utf-8", newline="") as f:
+        for row in csv.DictReader(f):  # full file (~2.8M rows, ~30 s): PII-like tweets are rare
+            text = html.unescape(row["text"])
+            brand = BRAND.search(text)
+            if row["inbound"] != "True" or not brand or not 40 <= len(text) <= 280:
+                continue
+            kinds = (["email"] if PII_EMAIL.search(text) else []) + (["digits"] if PII_DIGITS.search(text) else [])
+            if kinds:
+                pii_pool.append({"brand": brand.group(1), "text": text, "pii_kinds": kinds})
+            elif not row["in_response_to_tweet_id"] and len(openers) < 200_000:
+                openers.append({"brand": brand.group(1), "text": text, "pii_kinds": []})
+    rng = random.Random(2026)
+    emails = [p for p in pii_pool if "email" in p["pii_kinds"]]  # only a handful exist in the whole dataset
+    rest = [p for p in pii_pool if "email" not in p["pii_kinds"]]
+    picked_pii = emails[:with_pii] + rng.sample(rest, with_pii - min(len(emails), with_pii))
+    picked = rng.sample(openers, general) + picked_pii
+    scrubbed = [{"id": f"TW-{i:03d}", "brand": p["brand"], "pii_kinds": p["pii_kinds"], "message": scrub(p["text"])}
+                for i, p in enumerate(picked, start=1)]
+    raw = [{"id": f"TWP-{i:02d}", "pair_id": s["id"], "brand": s["brand"], "pii_kinds": s["pii_kinds"],
+            "message": re.sub(r"\s+", " ", p["text"]).strip()}
+           for i, (s, p) in enumerate(zip(scrubbed[general:], picked_pii), start=1)]
+    return scrubbed, raw
+
+
+# Write the three runtime probe sets for eval/run_public.py into data/raw/probes/ (gitignored).
+def export_probes() -> None:
+    queries = sorted({q for q in load_msmarco() if not CLOUDFLOW_TOPIC.search(q)})
+    marco = [{"id": f"MM-{i:03d}", "message": q} for i, q in enumerate(random.Random(2026).sample(queries, 500), 1)]
+    write_jsonl(PROBES / "msmarco_500.jsonl", marco)
+    print(f"  msmarco_500.jsonl: 500 of {len(queries)} non-CloudFlow queries")
+
+    tweets, raw = twcs_probes()
+    write_jsonl(PROBES / "twcs_300.jsonl", tweets)
+    write_jsonl(PROBES / "twcs_pii_50.jsonl", raw)
+    print(f"  twcs_300.jsonl: {len(tweets)} scrubbed tweets; twcs_pii_50.jsonl: {len(raw)} unscrubbed")
+
+    gh, so = cached_titles()
+    rng = random.Random(2026)
+    gh_pick = rng.sample(gh, min(100, len(gh)))
+    so_pick = rng.sample(so, min(200 - len(gh_pick), len(so)))
+    titles = ([{"source": "github", "repo": d["repo"], "url": d["url"], "message": d["title"]} for d in gh_pick]
+              + [{"source": "stackoverflow", "tags": q["tags"], "url": q["link"], "message": q["title"]} for q in so_pick])
+    titles = [{"id": f"TT-{i:03d}", **t, "themes": [name for name, pattern in THEMES.items()
+                                                    if re.search(pattern, t["message"], re.I)]}
+              for i, t in enumerate(titles, start=1)]
+    write_jsonl(PROBES / "tech_titles_200.jsonl", titles)
+    print(f"  tech_titles_200.jsonl: {len(gh_pick)} GitHub + {len(so_pick)} Stack Overflow titles")
+
+
 # ---------------------------------------------------------------- manifest and main
 
 # Run one source; any exception becomes "skipped:<reason>" so the other sources still run.
@@ -411,6 +496,10 @@ def run_source(name: str, fn) -> str:
 # Run all six sources and write data/public/manifest.csv (one row per source).
 def main() -> None:
     sys.stdout.reconfigure(encoding="utf-8")  # Windows consoles default to cp1252
+    if "--export-probes" in sys.argv:  # robustness probes only; data/public and the manifest are left alone
+        print(f"- exporting probe sets to {PROBES}")
+        export_probes()
+        return
     PUBLIC.mkdir(parents=True, exist_ok=True)
     twcs = run_source("Customer Support on Twitter", mine_twitter)
     marco = run_source("MS MARCO", mine_msmarco)
