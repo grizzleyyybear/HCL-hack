@@ -1,0 +1,12 @@
+.git
+.venv
+.env
+.chroma
+*.db
+*.db-journal
+data/raw
+logs
+__pycache__
+*.pyc
+.pytest_cache
+graphify-out

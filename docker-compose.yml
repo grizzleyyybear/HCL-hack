@@ -1,0 +1,48 @@
+# docker compose up --build   ->  API on http://localhost:8000, UI on http://localhost:8501
+# Ollama runs on the host (ollama serve; ollama pull qwen2.5:7b-instruct); containers reach it via host.docker.internal.
+#
+# Storage:
+#   - named volume insightdesk-data at /data holds Chroma and SQLite, so restarts never re-ingest or lose handoffs.
+#   - ./data is bind-mounted read-write at /app/data: live /ingest files (data/kb/ingested/) land on the host,
+#     and judge CSV folders dropped under ./data are visible to the loader:
+#       docker compose exec api python scripts/load_accounts.py --dir data/test_accounts/
+services:
+  api:
+    build: .
+    image: insightdesk:latest
+    env_file:
+      - path: .env          # optional: MOCK_LLM, OLLAMA_MODEL, EMBED_MODEL, TOP_K, cloud fallback keys
+        required: false
+    environment:            # container paths; these override anything in .env
+      OLLAMA_BASE_URL: http://host.docker.internal:11434
+      CHROMA_DIR: /data/chroma
+      SQLITE_PATH: /data/insightdesk.db
+    ports:
+      - "8000:8000"
+    volumes:
+      - insightdesk-data:/data
+      - ./data:/app/data
+    extra_hosts:
+      - "host.docker.internal:host-gateway"
+    healthcheck:
+      test: ["CMD", "python", "-c", "import urllib.request; urllib.request.urlopen('http://localhost:8000/health', timeout=5)"]
+      interval: 15s
+      timeout: 10s
+      retries: 5
+      start_period: 180s   # first start ingests the whole KB
+
+  ui:
+    build: .               # same image as api; the second build is fully cached
+    image: insightdesk:latest
+    command: ["streamlit", "run", "ui/streamlit_app.py", "--server.port", "8501", "--server.address", "0.0.0.0",
+              "--server.headless", "true", "--browser.gatherUsageStats", "false"]
+    environment:
+      API_URL: http://api:8000
+    ports:
+      - "8501:8501"
+    depends_on:
+      api:
+        condition: service_healthy
+
+volumes:
+  insightdesk-data:
